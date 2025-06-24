@@ -12,8 +12,8 @@ const Header: React.FC = () => {
   return (
     <header className="bg-white border-b border-gray-200 px-8 h-16 flex items-center justify-between shadow-sm">
       <div className="flex items-center">
-        <h1 className="text-2xl font-bold text-blue-700 tracking-tight">
-          Okami
+        <h1 className="text-2xl font-bold text-secondary tracking-tight">
+          Okami Casa de Treino
         </h1>
       </div>
       

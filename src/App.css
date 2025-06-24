@@ -19,6 +19,16 @@
   background: #94a3b8;
 }
 
+
+@theme {
+  --color-primary: #f8b500;
+  --color-secondary: #f76b1c;
+  --color-tertiary: #f6d365;
+  --color-quaternary: #fda085;
+  --color-quinary: #f8b500;
+  --color-senary: #f76b1c;
+  --color-septenary: #f6d365;
+}
 /* Custom animations */
 @keyframes fadeIn {
   from {
@@ -37,7 +47,12 @@
 
 /* Gradient backgrounds */
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   */
+   /* background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); */
+   background: linear-gradient(135deg, #f8b500 0%, #f76b1c 100%);
+
+
 }
 
 .gradient-card {

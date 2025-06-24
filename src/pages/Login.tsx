@@ -51,10 +51,10 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center gradient-bg p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:scale-105">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mb-4">
             <span className="text-2xl font-bold text-white">🥋</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Okami Dojo</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Okami</h1>
           <p className="text-gray-600">Sistema de Gestão</p>
         </div>
 
@@ -119,7 +119,7 @@ const Login: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-secondary to-primary text-white py-3 px-4 rounded-lg font-medium hover:from-primary/80 hover:to-secondary/80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
