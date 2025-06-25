@@ -1,53 +1,100 @@
-import { IStudentService, IApiService } from './interfaces';
-import { Student, Checkin, Payment, Class, PaginatedResponse, FilterParams } from '../types';
+import { Student, PaginatedResponse, FilterParams } from '../types';
+import { httpClient } from './httpClient';
 
-export class StudentService implements IStudentService {
-  constructor(private apiService: IApiService) {}
+export interface StudentService {
+  getStudents(params?: FilterParams): Promise<PaginatedResponse<Student>>;
+  getStudentById(id: string): Promise<Student>;
+  createStudent(data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student>;
+  updateStudent(id: string, data: Partial<Student>): Promise<Student>;
+  deleteStudent(id: string): Promise<void>;
+  enrollInClass(studentId: string, classId: string): Promise<void>;
+  unenrollFromClass(studentId: string, classId: string): Promise<void>;
+  getStudentClasses(studentId: string): Promise<unknown[]>;
+}
 
-  async getAll(params?: FilterParams): Promise<PaginatedResponse<Student>> {
-    const response = await this.apiService.get<PaginatedResponse<Student>>('/students', params);
-    return response.data;
+class StudentServiceImpl implements StudentService {
+  private readonly baseUrl = '/students';
+
+  async getStudents(params?: FilterParams): Promise<PaginatedResponse<Student>> {
+    try {
+      const response = await httpClient.get(this.baseUrl, { params });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch students:', error);
+      throw error;
+    }
   }
 
-  async getById(id: string): Promise<Student> {
-    const response = await this.apiService.get<Student>(`/students/${id}`);
-    return response.data;
+  async getStudentById(id: string): Promise<Student> {
+    try {
+      const response = await httpClient.get(`${this.baseUrl}/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch student ${id}:`, error);
+      throw error;
+    }
   }
 
-  async create(student: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student> {
-    const response = await this.apiService.post<Student>('/students', student);
-    return response.data;
+  async createStudent(data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student> {
+    try {
+      const response = await httpClient.post(this.baseUrl, data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to create student:', error);
+      throw error;
+    }
   }
 
-  async update(id: string, student: Partial<Student>): Promise<Student> {
-    const response = await this.apiService.put<Student>(`/students/${id}`, student);
-    return response.data;
+  async updateStudent(id: string, data: Partial<Student>): Promise<Student> {
+    try {
+      const response = await httpClient.put(`${this.baseUrl}/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to update student ${id}:`, error);
+      throw error;
+    }
   }
 
-  async delete(id: string): Promise<void> {
-    await this.apiService.delete(`/students/${id}`);
-  }
-
-  async getCheckins(id: string): Promise<Checkin[]> {
-    const response = await this.apiService.get<Checkin[]>(`/students/${id}/checkins`);
-    return response.data;
-  }
-
-  async getPayments(id: string): Promise<Payment[]> {
-    const response = await this.apiService.get<Payment[]>(`/students/${id}/payments`);
-    return response.data;
-  }
-
-  async getClasses(id: string): Promise<Class[]> {
-    const response = await this.apiService.get<Class[]>(`/students/${id}/classes`);
-    return response.data;
+  async deleteStudent(id: string): Promise<void> {
+    try {
+      await httpClient.delete(`${this.baseUrl}/${id}`);
+    } catch (error) {
+      console.error(`Failed to delete student ${id}:`, error);
+      throw error;
+    }
   }
 
   async enrollInClass(studentId: string, classId: string): Promise<void> {
-    await this.apiService.post(`/students/${studentId}/classes`, { classId });
+    try {
+      await httpClient.post(`${this.baseUrl}/${studentId}/enroll`, { 
+        class_id: classId
+      });
+    } catch (error) {
+      console.error(`Failed to enroll student ${studentId} in class ${classId}:`, error);
+      throw error;
+    }
   }
 
   async unenrollFromClass(studentId: string, classId: string): Promise<void> {
-    await this.apiService.delete(`/students/${studentId}/classes/${classId}`);
+    try {
+      await httpClient.post(`${this.baseUrl}/${studentId}/unenroll`, { 
+        class_id: classId
+      });
+    } catch (error) {
+      console.error(`Failed to unenroll student ${studentId} from class ${classId}:`, error);
+      throw error;
+    }
   }
-} 
+
+  async getStudentClasses(studentId: string): Promise<unknown[]> {
+    try {
+      const response = await httpClient.get(`${this.baseUrl}/${studentId}/classes`);
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch classes for student ${studentId}:`, error);
+      throw error;
+    }
+  }
+}
+
+export const studentService: StudentService = new StudentServiceImpl(); 

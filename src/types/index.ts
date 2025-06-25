@@ -1,37 +1,37 @@
 export interface Student {
   id: string;
-  fullName: string;
-  birthDate: string;
+  full_name: string;
+  birth_date: string;
   cpf?: string;
   rg?: string;
   belt?: string;
-  beltDegree: number;
+  belt_degree: number;
   address?: string;
   phone?: string;
   email?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  emergencyContactRelationship?: string;
-  medicalObservations?: string;
-  photoUrl?: string;
-  enrollmentDate: string;
-  monthlyFee?: number;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  emergency_contact_relationship?: string;
+  medical_observations?: string;
+  photo_url?: string;
+  enrollment_date: string;
+  monthly_fee?: number;
   status: 'active' | 'inactive' | 'suspended';
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Teacher {
   id: string;
-  fullName: string;
-  birthDate?: string;
+  full_name: string;
+  birth_date?: string;
   cpf?: string;
   phone?: string;
   email?: string;
   belt?: string;
-  beltDegree?: number;
+  belt_degree?: number;
   specialties?: string[];
-  hourlyRate?: number;
+  hourly_rate?: number;
   status: 'active' | 'inactive';
   createdAt: string;
   updatedAt: string;
@@ -43,26 +43,26 @@ export interface Class {
   description?: string;
   teacherId?: string;
   teacher?: Teacher;
-  dayOfWeek: number; // 0=Sunday, 1=Monday, etc.
-  startTime: string;
-  endTime: string;
-  maxStudents: number;
-  beltRequirement?: string;
-  ageGroup?: string;
+  day_of_week: number; // 0=Sunday, 1=Monday, etc.
+  start_time: string;
+  end_time: string;
+  max_students: number;
+  belt_requirement?: string;
+  age_group?: string;
   status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface StudentClass {
   id: string;
-  studentId: string;
-  classId: string;
+  student_id: string;
+  class_id: string;
   student?: Student;
   class?: Class;
-  enrollmentDate: string;
+  enrollment_date: string;
   status: 'active' | 'inactive';
-  createdAt: string;
+  created_at: string;
 }
 
 export interface Checkin {

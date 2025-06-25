@@ -9,7 +9,7 @@ interface LoginForm {
 }
 
 const Login: React.FC = () => {
-  const { login, setLoading, setError, isLoading, error } = useAuthStore();
+  const { login, isLoggingIn, error, clearError } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   
   const {
@@ -20,30 +20,11 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      setLoading(true);
-      setError(null);
-      
-      // TODO: Replace with actual API call
-      // Mock login for development
-      if (data.username === 'admin' && data.password === 'admin') {
-        const mockUser = {
-          id: '1',
-          username: data.username,
-          email: 'admin@okami.com',
-          role: 'admin' as const,
-          status: 'active' as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        
-        login(mockUser, 'mock-token');
-      } else {
-        throw new Error('Credenciais inválidas');
-      }
+      await login({ username: data.username, password: data.password });
+      // Login successful - the auth store will handle navigation via the auth state
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro no login');
-    } finally {
-      setLoading(false);
+      // Error is already handled by the auth store
+      console.error('Login failed:', err);
     }
   };
 
@@ -74,6 +55,7 @@ const Login: React.FC = () => {
                 minLength: { value: 3, message: 'Mínimo 3 caracteres' }
               })}
               placeholder="Digite seu usuário"
+              onFocus={() => error && clearError()}
             />
             {errors.username && (
               <p className="mt-1 text-sm text-red-600">{errors.username.message}</p>
@@ -96,6 +78,7 @@ const Login: React.FC = () => {
                   minLength: { value: 4, message: 'Mínimo 4 caracteres' }
                 })}
                 placeholder="Digite sua senha"
+                onFocus={() => error && clearError()}
               />
               <button
                 type="button"
@@ -118,10 +101,10 @@ const Login: React.FC = () => {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoggingIn}
             className="w-full bg-gradient-to-r from-secondary to-primary text-white py-3 px-4 rounded-lg font-medium hover:from-primary/80 hover:to-secondary/80 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
           >
-            {isLoading ? (
+            {isLoggingIn ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 <span>Entrando...</span>
@@ -138,7 +121,7 @@ const Login: React.FC = () => {
         <div className="mt-8 pt-6 border-t border-gray-200">
           <div className="bg-blue-50 rounded-lg p-4">
             <p className="text-sm text-blue-800 text-center">
-              <span className="font-medium">Teste:</span> admin / admin
+              <span className="font-medium">Teste:</span> admin / admin123
             </p>
           </div>
         </div>
