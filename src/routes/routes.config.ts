@@ -44,6 +44,18 @@ export const adminRoutes: RouteConfig[] = [
         showInSidebar: false,
         roles: ['admin'],
       },
+      {
+        path: '/teachers/:id',
+        name: 'Ver Professor',
+        showInSidebar: false,
+        roles: ['admin'],
+      },
+      {
+        path: '/teachers/:id/edit',
+        name: 'Editar Professor',
+        showInSidebar: false,
+        roles: ['admin'],
+      },
     ],
   },
   {

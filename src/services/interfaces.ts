@@ -21,7 +21,7 @@ export interface IApiService {
 export interface IStudentService {
   getAll(params?: FilterParams): Promise<PaginatedResponse<Student>>;
   getById(id: string): Promise<Student>;
-  create(student: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student>;
+  create(student: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<Student>;
   update(id: string, student: Partial<Student>): Promise<Student>;
   delete(id: string): Promise<void>;
   getCheckins(id: string): Promise<Checkin[]>;
@@ -34,7 +34,7 @@ export interface IStudentService {
 export interface ITeacherService {
   getAll(params?: FilterParams): Promise<PaginatedResponse<Teacher>>;
   getById(id: string): Promise<Teacher>;
-  create(teacher: Omit<Teacher, 'id' | 'createdAt' | 'updatedAt'>): Promise<Teacher>;
+  create(teacher: Omit<Teacher, 'id' | 'created_at' | 'updated_at'>): Promise<Teacher>;
   update(id: string, teacher: Partial<Teacher>): Promise<Teacher>;
   delete(id: string): Promise<void>;
   getClasses(id: string): Promise<Class[]>;
@@ -43,7 +43,7 @@ export interface ITeacherService {
 export interface IClassService {
   getAll(params?: FilterParams): Promise<PaginatedResponse<Class>>;
   getById(id: string): Promise<Class>;
-  create(classData: Omit<Class, 'id' | 'createdAt' | 'updatedAt'>): Promise<Class>;
+  create(classData: Omit<Class, 'id' | 'created_at' | 'updated_at'>): Promise<Class>;
   update(id: string, classData: Partial<Class>): Promise<Class>;
   delete(id: string): Promise<void>;
   getStudents(id: string): Promise<Student[]>;
@@ -53,7 +53,7 @@ export interface IClassService {
 
 export interface ICheckinService {
   getAll(params?: FilterParams): Promise<PaginatedResponse<Checkin>>;
-  create(checkin: Omit<Checkin, 'id' | 'createdAt'>): Promise<Checkin>;
+  create(checkin: Omit<Checkin, 'id' | 'created_at'>): Promise<Checkin>;
   getTodayCheckins(): Promise<Checkin[]>;
   getByStudent(studentId: string): Promise<Checkin[]>;
   getByClass(classId: string): Promise<Checkin[]>;
@@ -63,7 +63,7 @@ export interface ICheckinService {
 export interface IPaymentService {
   getAll(params?: FilterParams): Promise<PaginatedResponse<Payment>>;
   getById(id: string): Promise<Payment>;
-  create(payment: Omit<Payment, 'id' | 'createdAt' | 'updatedAt'>): Promise<Payment>;
+  create(payment: Omit<Payment, 'id' | 'created_at' | 'updated_at'>): Promise<Payment>;
   update(id: string, payment: Partial<Payment>): Promise<Payment>;
   delete(id: string): Promise<void>;
   markAsPaid(id: string, paymentMethod: string, paymentDate?: string): Promise<Payment>;

@@ -24,7 +24,6 @@ const Login: React.FC = () => {
       // Login successful - the auth store will handle navigation via the auth state
     } catch (err) {
       // Error is already handled by the auth store
-      console.error('Login failed:', err);
     }
   };
 

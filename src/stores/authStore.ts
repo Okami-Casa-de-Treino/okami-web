@@ -69,18 +69,13 @@ export const useAuthStore = create<AuthStore>()(
           set({ isLoggingIn: true, error: null });
           
           try {
-            console.log('🔐 Attempting login with:', credentials.username);
             const response = await httpClient.post('/auth/login', credentials);
-            console.log('✅ Login response:', response.data);
             
             const responseData = response.data as { data: { user: User; token: string } };
             const { user, token } = responseData.data;
-            console.log('👤 User:', user);
-            console.log('🔑 Token received:', token ? 'Yes' : 'No');
             
             // Store the token (API returns single token, not separate access/refresh tokens)
             httpClient.setToken(token);
-            console.log('💾 Token stored in localStorage');
             
             set({
               user,
@@ -88,10 +83,7 @@ export const useAuthStore = create<AuthStore>()(
               isLoggingIn: false,
               error: null,
             });
-            
-            console.log('✅ Login successful, auth state updated');
           } catch (error) {
-            console.error('❌ Login failed:', error);
             set({
               error: error instanceof Error ? error.message : 'Login failed',
               isLoggingIn: false,
@@ -266,21 +258,15 @@ export const useAuthSelectors = () => {
 
 // Initialize auth state on app start
 export const initializeAuth = async () => {
-  console.log('🚀 Initializing auth state...');
   const token = httpClient.getToken();
   
   if (token) {
-    console.log('🔑 Token found during initialization, fetching profile...');
     try {
       await useAuthStore.getState().fetchProfile();
-      console.log('✅ Profile fetched successfully during initialization');
     } catch (error) {
-      console.error('❌ Failed to fetch profile during initialization:', error);
       // Token is invalid, clear it
       httpClient.clearTokens();
       useAuthStore.getState().setUser(null);
     }
-  } else {
-    console.log('⚠️ No token found during initialization');
   }
 }; 

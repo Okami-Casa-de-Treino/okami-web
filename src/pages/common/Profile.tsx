@@ -103,7 +103,7 @@ const Profile: React.FC = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-600">Data de criação</p>
                     <p className="text-gray-900">
-                      {new Date(user.createdAt).toLocaleDateString('pt-BR')}
+                      {new Date(user.created_at).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
                 </div>

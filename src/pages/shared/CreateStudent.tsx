@@ -131,7 +131,7 @@ const CreateStudent: React.FC = () => {
         state: { message: 'Aluno criado com sucesso!' }
       });
     } catch (err) {
-      console.error('Failed to create student:', err);
+      // Error is handled by the store
     }
   };
 

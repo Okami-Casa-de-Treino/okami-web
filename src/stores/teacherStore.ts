@@ -39,7 +39,7 @@ interface TeacherActions {
   // CRUD operations
   fetchTeachers: (params?: FilterParams) => Promise<void>;
   fetchTeacherById: (id: string) => Promise<void>;
-  createTeacher: (data: Omit<Teacher, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  createTeacher: (data: Omit<Teacher, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   updateTeacher: (id: string, data: Partial<Teacher>) => Promise<void>;
   deleteTeacher: (id: string) => Promise<void>;
   
@@ -130,7 +130,7 @@ export const useTeacherStore = create<TeacherStore>()(
         try {
           const teacher = await teacherService.getTeacherById(id);
           set({
-            selectedTeacher: teacher,
+            selectedTeacher: teacher.data,
             isLoading: false,
           });
         } catch (error) {
@@ -141,7 +141,7 @@ export const useTeacherStore = create<TeacherStore>()(
         }
       },
 
-      createTeacher: async (data: Omit<Teacher, 'id' | 'createdAt' | 'updatedAt'>) => {
+      createTeacher: async (data: Omit<Teacher, 'id' | 'created_at' | 'updated_at'>) => {
         set({ isCreating: true, error: null });
         
         try {

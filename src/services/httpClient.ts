@@ -57,14 +57,10 @@ class HttpClient {
     this.client.interceptors.request.use(
       (config) => {
         const token = this.getToken();
-        console.log('🔑 Token check:', token ? 'Token found' : 'No token found');
         
         if (token && !config.skipAuth) {
           config.headers.Authorization = `Bearer ${token}`;
-          console.log('🔑 Authorization header set:', `Bearer ${token.substring(0, 20)}...`);
-        } else if (!config.skipAuth) {
-          console.log('⚠️ No token available for authenticated request');
-        }
+        } 
         
         return config;
       },
@@ -75,7 +71,6 @@ class HttpClient {
     this.client.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        console.log('❌ HTTP Error:', error.response?.status, error.response?.data);
         
         // Just return the error without any automatic redirects
         // Let the calling component/store handle the error appropriately
@@ -113,14 +108,11 @@ class HttpClient {
   // ============================================================================
 
   public setToken(token: string): void {
-    console.log('💾 Setting token in localStorage:', token ? `${token.substring(0, 20)}...` : 'null');
     localStorage.setItem(this.TOKEN_KEY, token);
-    console.log('✅ Token set, verifying storage:', localStorage.getItem(this.TOKEN_KEY) ? 'Stored successfully' : 'Storage failed');
   }
 
   public getToken(): string | null {
     const token = localStorage.getItem(this.TOKEN_KEY);
-    console.log('🔍 Getting token from localStorage:', token ? `Found: ${token.substring(0, 20)}...` : 'Not found');
     return token;
   }
 
@@ -133,10 +125,8 @@ class HttpClient {
   }
 
   public clearTokens(): void {
-    console.log('🗑️ Clearing tokens from localStorage');
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
-    console.log('✅ Tokens cleared');
   }
 
   // ============================================================================

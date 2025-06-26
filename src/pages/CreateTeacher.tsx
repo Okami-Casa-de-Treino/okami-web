@@ -15,8 +15,8 @@ import {
   DollarSign,
   FileText
 } from 'lucide-react';
-import { useTeacherStore } from '../../stores';
-import { Teacher } from '../../types';
+import { useTeacherStore } from '../stores';
+import { Teacher } from '../types';
 
 interface CreateTeacherForm {
   full_name: string;
@@ -101,7 +101,6 @@ const CreateTeacher: React.FC = () => {
       const teacherData: Omit<Teacher, 'id' | 'created_at' | 'updated_at'> = {
         ...data,
         specialties: selectedSpecialties.length > 0 ? selectedSpecialties : undefined,
-        hourly_rate: data.hourly_rate ? Number(data.hourly_rate) : undefined,
       };
 
       await createTeacher(teacherData);
@@ -109,7 +108,7 @@ const CreateTeacher: React.FC = () => {
         state: { message: 'Professor criado com sucesso!' }
       });
     } catch (err) {
-      // Error is handled by the store
+      console.error('Failed to create teacher:', err);
     }
   };
 

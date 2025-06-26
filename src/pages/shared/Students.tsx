@@ -17,11 +17,7 @@ const Students: React.FC = () => {
     clearError
   } = useStudentStore();
 
-  console.log('🔍 Pagination:', pagination);
-
   const [searchTerm, setSearchTerm] = useState('');
-
-  console.log('🔍 Students:', students);
 
   useEffect(() => {
     fetchStudents();
@@ -39,7 +35,6 @@ const Students: React.FC = () => {
         // Student deleted successfully
       } catch (error) {
         // Error is handled by the store
-        console.error('Failed to delete student:', error);
       }
     }
   };

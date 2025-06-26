@@ -53,8 +53,8 @@ const Teachers: React.FC = () => {
   };
 
   // Calculate experience years from created date
-  const calculateExperience = (createdAt: string) => {
-    const created = new Date(createdAt);
+  const calculateExperience = (created_at: string) => {
+    const created = new Date(created_at);
     const now = new Date();
     const years = now.getFullYear() - created.getFullYear();
     return years > 0 ? `${years} anos` : 'Menos de 1 ano';
@@ -222,7 +222,7 @@ const Teachers: React.FC = () => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">{teacher.full_name}</p>
-                            <p className="text-sm text-gray-500">{calculateExperience(teacher.createdAt)} de experiência</p>
+                            <p className="text-sm text-gray-500">{calculateExperience(teacher.created_at)} de experiência</p>
                           </div>
                         </div>
                       </td>
@@ -251,15 +251,24 @@ const Teachers: React.FC = () => {
                       <td className="py-4 px-6 text-gray-900">{teacher.phone || 'Não informado'}</td>
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
-                          <button className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                          <button 
+                            onClick={() => navigate(`/teachers/${teacher.id}`)}
+                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Ver detalhes"
+                          >
                             <Eye size={16} />
                           </button>
-                          <button className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                          <button 
+                            onClick={() => navigate(`/teachers/${teacher.id}/edit`)}
+                            className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            title="Editar professor"
+                          >
                             <Edit size={16} />
                           </button>
                           <button 
                             onClick={() => handleDeleteTeacher(teacher.id)}
                             className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Excluir professor"
                           >
                             <Trash2 size={16} />
                           </button>

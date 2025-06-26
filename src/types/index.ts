@@ -33,8 +33,13 @@ export interface Teacher {
   specialties?: string[];
   hourly_rate?: number;
   status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeacherResponse {
+  data: Teacher;
+  success: boolean;
 }
 
 export interface Class {
@@ -75,7 +80,7 @@ export interface Checkin {
   checkinTime: string;
   method: 'manual' | 'qr_code' | 'app';
   notes?: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface Payment {
@@ -91,8 +96,8 @@ export interface Payment {
   discount: number;
   lateFee: number;
   notes?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface User {
@@ -107,9 +112,9 @@ export interface User {
   studentId?: string;
   student?: Student;
   status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
 }
 
 export interface DashboardStats {
