@@ -9,6 +9,7 @@ import CreateTeacher from '../pages/admin/CreateTeacher';
 import TeacherActions from '../pages/admin/TeacherActions';
 import EditTeacher from '../pages/admin/EditTeacher';
 import Classes from '../pages/shared/Classes';
+import CreateClass from '../pages/shared/CreateClass';
 import Checkin from '../pages/student/Checkin';
 import Financial from '../pages/admin/Financial';
 import Reports from '../pages/admin/Reports';
@@ -80,6 +81,14 @@ const AppRoutes: React.FC = () => {
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <Classes />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/classes/create" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <CreateClass />
           </RoleProtectedRoute>
         } 
       />

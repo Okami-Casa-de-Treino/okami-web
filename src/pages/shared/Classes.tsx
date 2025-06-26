@@ -69,7 +69,10 @@ const Classes: React.FC = () => {
             <Calendar size={20} />
             Grade de Horários
           </button>
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm">
+          <button 
+            onClick={() => window.location.href = '/classes/create'}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
+          >
             <Plus size={20} />
             Nova Aula
           </button>
@@ -267,7 +270,10 @@ const Classes: React.FC = () => {
                         <p className="text-gray-900 font-medium">Nenhuma aula encontrada</p>
                         <p className="text-gray-500 text-sm">Comece criando sua primeira aula</p>
                       </div>
-                      <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      <button 
+                        onClick={() => window.location.href = '/classes/create'}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
                         <Plus size={16} />
                         Criar Aula
                       </button>

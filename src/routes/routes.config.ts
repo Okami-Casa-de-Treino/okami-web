@@ -64,6 +64,14 @@ export const adminRoutes: RouteConfig[] = [
     icon: 'Calendar',
     showInSidebar: true,
     roles: ['admin', 'teacher'],
+    children: [
+      {
+        path: '/classes/create',
+        name: 'Nova Turma',
+        showInSidebar: false,
+        roles: ['admin'],
+      },
+    ],
   },
   {
     path: '/checkin',
