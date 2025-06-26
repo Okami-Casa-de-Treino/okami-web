@@ -1,0 +1,53 @@
+import { Class, PaginatedResponse, FilterParams, Student, Checkin, ApiResponse } from '../types';
+import { httpClient } from './httpClient';
+import { IClassService } from './interfaces';
+
+export interface ClassResponse {
+  data: Class;
+  success: boolean;
+}
+
+class ClassServiceImpl implements IClassService {
+  private readonly baseUrl = '/classes';
+
+  async getAll(params?: FilterParams): Promise<PaginatedResponse<Class>> {
+    const response = await httpClient.get<PaginatedResponse<Class>>(this.baseUrl, { params });
+    return response.data;
+  }
+
+  async getById(id: string): Promise<Class> {
+    const response = await httpClient.get<ClassResponse>(`${this.baseUrl}/${id}`);
+    return response.data.data;
+  }
+
+  async create(classData: Omit<Class, 'id' | 'created_at' | 'updated_at'>): Promise<Class> {
+    const response = await httpClient.post<ClassResponse>(this.baseUrl, classData);
+    return response.data.data;
+  }
+
+  async update(id: string, classData: Partial<Class>): Promise<Class> {
+    const response = await httpClient.put<ClassResponse>(`${this.baseUrl}/${id}`, classData);
+    return response.data.data;
+  }
+
+  async delete(id: string): Promise<void> {
+    await httpClient.delete(`${this.baseUrl}/${id}`);
+  }
+
+  async getStudents(id: string): Promise<Student[]> {
+    const response = await httpClient.get<ApiResponse<Student[]>>(`${this.baseUrl}/${id}/students`);
+    return response.data.data;
+  }
+
+  async getCheckins(id: string): Promise<Checkin[]> {
+    const response = await httpClient.get<ApiResponse<Checkin[]>>(`${this.baseUrl}/${id}/checkins`);
+    return response.data.data;
+  }
+
+  async getSchedule(): Promise<Class[]> {
+    const response = await httpClient.get<ApiResponse<Class[]>>(`${this.baseUrl}/schedule`);
+    return response.data.data;
+  }
+}
+
+export const classService = new ClassServiceImpl(); 

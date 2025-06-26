@@ -46,9 +46,9 @@ export interface Class {
   id: string;
   name: string;
   description?: string;
-  teacherId?: string;
+  teacher_id?: string;
   teacher?: Teacher;
-  day_of_week: number; // 0=Sunday, 1=Monday, etc.
+  days_of_week: number[]; // Array of days: 0=Sunday, 1=Monday, etc.
   start_time: string;
   end_time: string;
   max_students: number;

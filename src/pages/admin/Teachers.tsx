@@ -52,13 +52,7 @@ const Teachers: React.FC = () => {
     }
   };
 
-  // Calculate experience years from created date
-  const calculateExperience = (created_at: string) => {
-    const created = new Date(created_at);
-    const now = new Date();
-    const years = now.getFullYear() - created.getFullYear();
-    return years > 0 ? `${years} anos` : 'Menos de 1 ano';
-  };
+
 
   // Format belt display
   const formatBelt = (belt: string | null | undefined, beltDegree: number | null | undefined) => {
@@ -222,7 +216,6 @@ const Teachers: React.FC = () => {
                           </div>
                           <div>
                             <p className="font-medium text-gray-900">{teacher.full_name}</p>
-                            <p className="text-sm text-gray-500">{calculateExperience(teacher.created_at)} de experiência</p>
                           </div>
                         </div>
                       </td>

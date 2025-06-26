@@ -5,4 +5,7 @@ export { useAuthStore, useAuthSelectors, initializeAuth } from './authStore';
 export { useStudentStore, useStudentSelectors } from './studentStore';
 
 // Teacher Store
-export { useTeacherStore, useTeacherSelectors } from './teacherStore'; 
+export { useTeacherStore, useTeacherSelectors } from './teacherStore';
+
+// Class Store
+export { useClassStore, useClassSelectors } from './classStore'; 
