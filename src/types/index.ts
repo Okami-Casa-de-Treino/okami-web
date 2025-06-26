@@ -101,9 +101,11 @@ export interface User {
   name?: string;
   reference?: string;
   email?: string;
-  role: 'admin' | 'teacher' | 'receptionist';
+  role: 'admin' | 'teacher' | 'receptionist' | 'student';
   teacherId?: string;
   teacher?: Teacher;
+  studentId?: string;
+  student?: Student;
   status: 'active' | 'inactive';
   createdAt: string;
   updatedAt: string;

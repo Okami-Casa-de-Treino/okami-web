@@ -1,34 +1,134 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Dashboard from '../pages/Dashboard';
-import Students from '../pages/Students';
-import CreateStudent from '../pages/CreateStudent';
-import Teachers from '../pages/Teachers';
-import CreateTeacher from '../pages/CreateTeacher';
-import Classes from '../pages/Classes';
-import Checkin from '../pages/Checkin';
-import Financial from '../pages/Financial';
-import Reports from '../pages/Reports';
+import RoleProtectedRoute from '../components/common/RoleProtectedRoute';
+import Dashboard from '../pages/admin/Dashboard';
+import Students from '../pages/shared/Students';
+import CreateStudent from '../pages/shared/CreateStudent';
+import Teachers from '../pages/admin/Teachers';
+import CreateTeacher from '../pages/admin/CreateTeacher';
+import Classes from '../pages/shared/Classes';
+import Checkin from '../pages/student/Checkin';
+import Financial from '../pages/admin/Financial';
+import Reports from '../pages/admin/Reports';
+import Profile from '../pages/common/Profile';
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      
+      {/* Dashboard - accessible to all authenticated users */}
       <Route path="/dashboard" element={<Dashboard />} />
       
-      {/* Student Routes */}
-      <Route path="/students" element={<Students />} />
-      <Route path="/students/create" element={<CreateStudent />} />
+      {/* Student Routes - Admin and Receptionist only */}
+      <Route 
+        path="/students" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'receptionist', 'teacher']}>
+            <Students />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/students/create" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'receptionist']}>
+            <CreateStudent />
+          </RoleProtectedRoute>
+        } 
+      />
       
-      {/* Teacher Routes */}
-      <Route path="/teachers" element={<Teachers />} />
-      <Route path="/teachers/create" element={<CreateTeacher />} />
+      {/* Teacher Routes - Admin only */}
+      <Route 
+        path="/teachers" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <Teachers />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/teachers/create" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <CreateTeacher />
+          </RoleProtectedRoute>
+        } 
+      />
       
-      {/* Other Routes */}
-      <Route path="/classes" element={<Classes />} />
-      <Route path="/checkin" element={<Checkin />} />
-      <Route path="/financial" element={<Financial />} />
-      <Route path="/reports" element={<Reports />} />
+      {/* Classes Routes - Admin and Teacher */}
+      <Route 
+        path="/classes" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
+            <Classes />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-classes" 
+        element={
+          <RoleProtectedRoute allowedRoles={['teacher', 'student']}>
+            <Classes />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Check-in Routes - Admin, Teacher, and Receptionist */}
+      <Route 
+        path="/checkin" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'teacher', 'receptionist']}>
+            <Checkin />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-checkins" 
+        element={
+          <RoleProtectedRoute allowedRoles={['student']}>
+            <Checkin />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Financial Routes - Admin only */}
+      <Route 
+        path="/financial" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <Financial />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/my-payments" 
+        element={
+          <RoleProtectedRoute allowedRoles={['student']}>
+            <Financial />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Reports Routes - Admin only */}
+      <Route 
+        path="/reports" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin']}>
+            <Reports />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Profile Route - All authenticated users */}
+      <Route 
+        path="/profile" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'teacher', 'receptionist', 'student']}>
+            <Profile />
+          </RoleProtectedRoute>
+        } 
+      />
       
       {/* Catch all - redirect to dashboard */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

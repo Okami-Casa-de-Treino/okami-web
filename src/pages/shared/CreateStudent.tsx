@@ -14,8 +14,8 @@ import {
   UserPlus,
   Users
 } from 'lucide-react';
-import { useStudentStore } from '../stores/studentStore';
-import { Student } from '../types';
+import { useStudentStore } from '../../stores/studentStore';
+import { Student } from '../../types';
 
 interface CreateStudentForm {
   full_name: string;

@@ -15,8 +15,8 @@ import {
   DollarSign,
   FileText
 } from 'lucide-react';
-import { useTeacherStore } from '../stores';
-import { Teacher } from '../types';
+import { useTeacherStore } from '../../stores';
+import { Teacher } from '../../types';
 
 interface CreateTeacherForm {
   full_name: string;

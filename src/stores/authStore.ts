@@ -244,6 +244,7 @@ export const useAuthSelectors = () => {
     isAdmin: store.user?.role === 'admin',
     isTeacher: store.user?.role === 'teacher',
     isReceptionist: store.user?.role === 'receptionist',
+    isStudent: store.user?.role === 'student',
     
     // Loading states
     isAnyLoading: store.isLoading || store.isLoggingIn || store.isLoggingOut,

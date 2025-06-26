@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Filter, MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react';
-import { useStudentStore } from '../stores/studentStore';
+import { useStudentStore } from '../../stores/studentStore';
 
 const Students: React.FC = () => {
   const navigate = useNavigate();

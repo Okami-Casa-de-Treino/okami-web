@@ -1,4 +1,7 @@
 import React from 'react';
+import { useAuthStore } from '../../stores/authStore';
+import StudentDashboard from '../student/StudentDashboard';
+import TeacherDashboard from '../teacher/TeacherDashboard';
 import { Users, UserCheck, Calendar, CheckSquare, DollarSign, AlertTriangle, TrendingUp, Clock } from 'lucide-react';
 
 interface StatCard {
@@ -10,7 +13,7 @@ interface StatCard {
   trend?: string;
 }
 
-const Dashboard: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   // Mock data - replace with actual API calls
   const stats: StatCard[] = [
     {
@@ -195,6 +198,26 @@ const Dashboard: React.FC = () => {
       </div>
     </div>
   );
+};
+
+const Dashboard: React.FC = () => {
+  const { user } = useAuthStore();
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
+  // Render different dashboards based on user role
+  switch (user.role) {
+    case 'student':
+      return <StudentDashboard />;
+    case 'teacher':
+      return <TeacherDashboard />;
+    case 'admin':
+    case 'receptionist':
+    default:
+      return <AdminDashboard />;
+  }
 };
 
 export default Dashboard; 
