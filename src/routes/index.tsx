@@ -4,6 +4,7 @@ import Dashboard from '../pages/Dashboard';
 import Students from '../pages/Students';
 import CreateStudent from '../pages/CreateStudent';
 import Teachers from '../pages/Teachers';
+import CreateTeacher from '../pages/CreateTeacher';
 import Classes from '../pages/Classes';
 import Checkin from '../pages/Checkin';
 import Financial from '../pages/Financial';
@@ -19,8 +20,11 @@ const AppRoutes: React.FC = () => {
       <Route path="/students" element={<Students />} />
       <Route path="/students/create" element={<CreateStudent />} />
       
-      {/* Other Routes */}
+      {/* Teacher Routes */}
       <Route path="/teachers" element={<Teachers />} />
+      <Route path="/teachers/create" element={<CreateTeacher />} />
+      
+      {/* Other Routes */}
       <Route path="/classes" element={<Classes />} />
       <Route path="/checkin" element={<Checkin />} />
       <Route path="/financial" element={<Financial />} />

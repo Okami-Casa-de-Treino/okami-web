@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Search, Filter, MoreHorizontal, Edit, Trash2, Eye, Award } from 'lucide-react';
 import { useTeacherStore, useTeacherSelectors } from '../stores';
 
 const Teachers: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   
   // Store hooks
   const {
@@ -22,6 +26,18 @@ const Teachers: React.FC = () => {
   useEffect(() => {
     fetchTeachers();
   }, [fetchTeachers]);
+
+  // Handle success message from navigation state
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Clear the message from location state
+      navigate(location.pathname, { replace: true });
+      // Auto-clear message after 5 seconds
+      const timer = setTimeout(() => setSuccessMessage(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state, navigate, location.pathname]);
 
   // Handle search
   const handleSearch = (term: string) => {
@@ -77,11 +93,29 @@ const Teachers: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">Professores</h1>
           <p className="text-gray-600 mt-1">Gerenciar professores cadastrados</p>
         </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm">
+        <button 
+          onClick={() => navigate('/teachers/create')}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
+        >
           <Plus size={20} />
           Novo Professor
         </button>
       </div>
+
+      {/* Success Message */}
+      {successMessage && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-green-800">{successMessage}</p>
+            <button
+              onClick={() => setSuccessMessage('')}
+              className="text-green-600 hover:text-green-800"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Error Display */}
       {error && (
@@ -247,7 +281,10 @@ const Teachers: React.FC = () => {
                           <p className="text-gray-900 font-medium">Nenhum professor encontrado</p>
                           <p className="text-gray-500 text-sm">Comece adicionando seu primeiro professor</p>
                         </div>
-                        <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <button 
+                          onClick={() => navigate('/teachers/create')}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
                           <Plus size={16} />
                           Adicionar Professor
                         </button>

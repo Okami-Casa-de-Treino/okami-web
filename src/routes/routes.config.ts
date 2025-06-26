@@ -31,6 +31,13 @@ export const routes: RouteConfig[] = [
     name: 'Professores',
     icon: 'UserCheck',
     showInSidebar: true,
+    children: [
+      {
+        path: '/teachers/create',
+        name: 'Novo Professor',
+        showInSidebar: false,
+      },
+    ],
   },
   {
     path: '/classes',

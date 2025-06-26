@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Split into tsx and hooks. I want to keep the tsx structure in one file, organize hooks and other functions in a specific hook. example: HomeScreen and useHomeScreen.the hook and the .tsx should be at the like: src > Home > HomeScreen and src > Home > hooks > useHomeScreen
