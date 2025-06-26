@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RoleProtectedRoute from '../components/common/RoleProtectedRoute';
-import Dashboard from '../pages/admin/Dashboard';
+import Dashboard from '../pages/admin/AdminDashboard';
 import Students from '../pages/shared/Students';
 import CreateStudent from '../pages/shared/CreateStudent';
 import Teachers from '../pages/admin/Teachers';
