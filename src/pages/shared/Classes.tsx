@@ -1,8 +1,11 @@
 import React from 'react';
 import { Plus, Search, Calendar, MoreHorizontal, Edit, Trash2, Eye, Clock, Users, Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useClasses } from './hooks/useClasses';
 
 const Classes: React.FC = () => {
+  const navigate = useNavigate();
+  
   const {
     // Data
     classes,
@@ -70,7 +73,7 @@ const Classes: React.FC = () => {
             Grade de Horários
           </button>
           <button 
-            onClick={() => window.location.href = '/classes/create'}
+            onClick={() => navigate('/classes/create')}
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
           >
             <Plus size={20} />
@@ -239,16 +242,25 @@ const Classes: React.FC = () => {
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
-                        <button className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                        <button 
+                          onClick={() => navigate(`/classes/${classItem.id}`)}
+                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Ver detalhes"
+                        >
                           <Eye size={16} />
                         </button>
-                        <button className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+                        <button 
+                          onClick={() => navigate(`/classes/${classItem.id}/edit`)}
+                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Editar aula"
+                        >
                           <Edit size={16} />
                         </button>
                         <button 
                           onClick={() => handleDelete(classItem.id)}
                           disabled={isDeleting}
                           className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          title="Excluir aula"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -271,7 +283,7 @@ const Classes: React.FC = () => {
                         <p className="text-gray-500 text-sm">Comece criando sua primeira aula</p>
                       </div>
                       <button 
-                        onClick={() => window.location.href = '/classes/create'}
+                        onClick={() => navigate('/classes/create')}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         <Plus size={16} />
