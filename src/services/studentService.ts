@@ -4,7 +4,7 @@ import { httpClient } from './httpClient';
 export interface StudentService {
   getStudents(params?: FilterParams): Promise<PaginatedResponse<Student>>;
   getStudentById(id: string): Promise<Student>;
-  createStudent(data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student>;
+  createStudent(data: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<Student>;
   updateStudent(id: string, data: Partial<Student>): Promise<Student>;
   deleteStudent(id: string): Promise<void>;
   enrollInClass(studentId: string, classId: string): Promise<void>;
@@ -35,7 +35,7 @@ class StudentServiceImpl implements StudentService {
     }
   }
 
-  async createStudent(data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>): Promise<Student> {
+  async createStudent(data: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<Student> {
     try {
       const response = await httpClient.post(this.baseUrl, data);
       return response.data;

@@ -37,7 +37,7 @@ interface StudentActions {
   // CRUD operations
   fetchStudents: (params?: FilterParams) => Promise<void>;
   fetchStudentById: (id: string) => Promise<void>;
-  createStudent: (data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>) => Promise<void>;
+  createStudent: (data: Omit<Student, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   updateStudent: (id: string, data: Partial<Student>) => Promise<void>;
   deleteStudent: (id: string) => Promise<void>;
   
@@ -138,7 +138,7 @@ export const useStudentStore = create<StudentStore>()(
         }
       },
 
-      createStudent: async (data: Omit<Student, 'id' | 'createdAt' | 'updatedAt'>) => {
+      createStudent: async (data: Omit<Student, 'id' | 'created_at' | 'updated_at'>) => {
         set({ isCreating: true, error: null });
         
         try {
@@ -275,7 +275,7 @@ export const useStudentStore = create<StudentStore>()(
     }),
     {
       name: 'student-store',
-      partialize: (state) => ({
+      partialize: (state: StudentState) => ({
         filters: state.filters,
         pagination: state.pagination,
       }),
