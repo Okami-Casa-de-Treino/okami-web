@@ -7,6 +7,15 @@ export interface ClassResponse {
   success: boolean;
 }
 
+export interface ScheduleResponse {
+  schedule: Record<string, Class[]>;
+  summary: {
+    total_classes: number;
+    days_with_classes: number;
+    teachers_count: number;
+  };
+}
+
 class ClassServiceImpl implements IClassService {
   private readonly baseUrl = '/classes';
 
@@ -44,9 +53,9 @@ class ClassServiceImpl implements IClassService {
     return response.data.data;
   }
 
-  async getSchedule(): Promise<Class[]> {
-    const response = await httpClient.get<ApiResponse<Class[]>>(`${this.baseUrl}/schedule`);
-    return response.data.data;
+  async getSchedule(): Promise<Record<string, Class[]>> {
+    const response = await httpClient.get<ApiResponse<ScheduleResponse>>(`${this.baseUrl}/schedule`);
+    return response.data.data.schedule;
   }
 }
 

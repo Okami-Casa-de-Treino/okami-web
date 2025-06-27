@@ -22,7 +22,7 @@ export const useClasses = () => {
     hasError,
     isEmpty,
     pagination,
-    filters,
+    // filters,
     activeClasses,
     totalClasses
   } = useClassSelectors();

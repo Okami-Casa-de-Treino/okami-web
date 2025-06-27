@@ -13,7 +13,7 @@ interface ClassState {
   selectedClass: Class | null;
   classStudents: Student[];
   classCheckins: Checkin[];
-  schedule: Class[];
+  schedule: Record<string, Class[]>;
   
   // Pagination
   pagination: {
@@ -74,7 +74,7 @@ const initialState: ClassState = {
   selectedClass: null,
   classStudents: [],
   classCheckins: [],
-  schedule: [],
+  schedule: {},
   pagination: {
     total: 0,
     page: 1,

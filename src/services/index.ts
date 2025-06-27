@@ -8,7 +8,11 @@ export type { StudentService } from './studentService';
 export { teacherService } from './teacherService';
 export type { TeacherService } from './teacherService';
 export { classService } from './classService';
-export type { ClassResponse } from './classService';
+export type { ClassResponse, ScheduleResponse } from './classService';
+export { checkinService } from './checkinService';
+export type { CheckinResponse, CheckinCreateData } from './checkinService';
+export { paymentService } from './paymentService';
+export type { PaymentResponse, PaymentCreateData, MarkAsPaidData } from './paymentService';
 
 // Legacy API service (if still needed)
 export { apiService } from './api'; 

@@ -8,4 +8,10 @@ export { useStudentStore, useStudentSelectors } from './studentStore';
 export { useTeacherStore, useTeacherSelectors } from './teacherStore';
 
 // Class Store
-export { useClassStore, useClassSelectors } from './classStore'; 
+export { useClassStore, useClassSelectors } from './classStore';
+
+// Checkin Store
+export { useCheckinStore, useCheckinSelectors } from './checkinStore';
+
+// Payment Store
+export { usePaymentStore } from './paymentStore'; 

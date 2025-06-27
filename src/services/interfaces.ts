@@ -48,7 +48,7 @@ export interface IClassService {
   delete(id: string): Promise<void>;
   getStudents(id: string): Promise<Student[]>;
   getCheckins(id: string): Promise<Checkin[]>;
-  getSchedule(): Promise<Class[]>;
+  getSchedule(): Promise<Record<string, Class[]>>;
 }
 
 export interface ICheckinService {
