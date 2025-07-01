@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   User, 
   Mail, 
@@ -11,15 +11,13 @@ import {
   AlertCircle,
   Save,
   ArrowLeft,
-  UserPlus,
-  Users
+  Edit
 } from 'lucide-react';
 import { useStudentStore } from '../../stores/studentStore';
-import { Student } from '../../types';
 import { getBeltOptions, getMaxDegree, relationshipOptions, AgeGroup } from '../../utils/beltSystem';
 import { StepIndicator } from '../../components/common/StepIndicator';
 
-interface CreateStudentForm {
+interface EditStudentForm {
   full_name: string;
   email: string;
   phone: string;
@@ -34,12 +32,22 @@ interface CreateStudentForm {
   emergency_contact_phone?: string;
   emergency_contact_relationship?: string;
   medical_observations?: string;
+  monthly_fee?: number;
   status: 'active' | 'inactive' | 'suspended';
 }
 
-const CreateStudent: React.FC = () => {
+const EditStudent: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { createStudent, isCreating, error, clearError } = useStudentStore();
+  const { 
+    selectedStudent, 
+    fetchStudentById, 
+    updateStudent, 
+    isLoading,
+    isUpdating, 
+    error, 
+    clearError 
+  } = useStudentStore();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
 
@@ -49,8 +57,8 @@ const CreateStudent: React.FC = () => {
     formState: { errors },
     trigger,
     watch,
-    setValue
-  } = useForm<CreateStudentForm>({
+    reset
+  } = useForm<EditStudentForm>({
     defaultValues: {
       status: 'active',
       belt_degree: 1,
@@ -61,22 +69,59 @@ const CreateStudent: React.FC = () => {
 
   const selectedAgeGroup = watch('age_group');
 
+  // Load student data
+  useEffect(() => {
+    if (id) {
+      fetchStudentById(id);
+    }
+  }, [id, fetchStudentById]);
+
+  // Populate form when student data is loaded
+  useEffect(() => {
+    if (selectedStudent) {
+      const birthDate = selectedStudent.birth_date 
+        ? new Date(selectedStudent.birth_date).toISOString().split('T')[0] 
+        : '';
+      
+      // Determine age group based on birth date or existing data
+      const ageGroup = selectedStudent.birth_date 
+        ? (new Date().getFullYear() - new Date(selectedStudent.birth_date).getFullYear() < 16 ? 'kids' : 'adults')
+        : 'adults';
+
+      reset({
+        full_name: selectedStudent.full_name || '',
+        email: selectedStudent.email || '',
+        phone: selectedStudent.phone || '',
+        birth_date: birthDate,
+        cpf: selectedStudent.cpf || '',
+        rg: selectedStudent.rg || '',
+        address: selectedStudent.address || '',
+        age_group: ageGroup,
+        belt: selectedStudent.belt || 'Branca',
+        belt_degree: selectedStudent.belt_degree || 1,
+        emergency_contact_name: selectedStudent.emergency_contact_name || '',
+        emergency_contact_phone: selectedStudent.emergency_contact_phone || '',
+        emergency_contact_relationship: selectedStudent.emergency_contact_relationship || '',
+        medical_observations: selectedStudent.medical_observations || '',
+        monthly_fee: selectedStudent.monthly_fee || undefined,
+        status: selectedStudent.status || 'active'
+      });
+    }
+  }, [selectedStudent, reset]);
+
   // Using belt system utilities
 
-  const onSubmit = async (data: CreateStudentForm) => {
+  const onSubmit = async (data: EditStudentForm) => {
+    if (!id) return;
+
     try {
       // Remove age_group as it's only used for UI logic, not stored in database
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { age_group, ...studentData } = data;
       
-      const finalStudentData: Omit<Student, 'id' | 'created_at' | 'updated_at'> = {
-        ...studentData,
-        enrollment_date: new Date().toISOString(),
-      };
-
-      await createStudent(finalStudentData);
+      await updateStudent(id, studentData);
       navigate('/students', { 
-        state: { message: 'Aluno criado com sucesso!' }
+        state: { message: 'Aluno atualizado com sucesso!' }
       });
     } catch (err) {
       // Error is handled by the store
@@ -108,7 +153,7 @@ const CreateStudent: React.FC = () => {
     }
   };
 
-  const getFieldsForStep = (step: number): (keyof CreateStudentForm)[] => {
+  const getFieldsForStep = (step: number): (keyof EditStudentForm)[] => {
     switch (step) {
       case 1:
         return ['full_name', 'email', 'phone', 'birth_date'];
@@ -133,18 +178,32 @@ const CreateStudent: React.FC = () => {
     }
   };
 
-  const handleAgeGroupChange = (ageGroup: AgeGroup, e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    setValue('age_group', ageGroup);
-    // Reset belt when age group changes
-    const defaultBelt = ageGroup === 'kids' ? 'Branca' : 'Branca';
-    setValue('belt', defaultBelt);
-    setValue('belt_degree', 1);
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <p className="text-gray-500">Carregando dados do aluno...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedStudent) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500">Aluno não encontrado</p>
+          <button 
+            onClick={() => navigate('/students')}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Voltar para lista
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -166,11 +225,11 @@ const CreateStudent: React.FC = () => {
               </button>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <UserPlus size={28} className="mr-3 text-blue-600" />
-                  Novo Aluno
+                  <Edit size={28} className="mr-3 text-green-600" />
+                  Editar Aluno
                 </h1>
                 <p className="text-gray-600 mt-1">
-                  {getStepTitle(currentStep)} ({currentStep} de {totalSteps})
+                  {selectedStudent.full_name} - {getStepTitle(currentStep)} ({currentStep} de {totalSteps})
                 </p>
               </div>
             </div>
@@ -418,48 +477,37 @@ const CreateStudent: React.FC = () => {
             {/* Step 4: Student Settings */}
             {currentStep === 4 && (
               <div className="space-y-6">
-                {/* Age Group Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    <Users size={16} className="inline mr-2" />
-                    Categoria de Idade *
-                  </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      type="button"
-                      onClick={(e) => handleAgeGroupChange('kids', e)}
-                      className={`p-4 border-2 rounded-lg transition-all duration-200 ${
-                        selectedAgeGroup === 'kids'
-                          ? 'border-blue-600 bg-blue-50 text-blue-700'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="text-2xl mb-2">👶</div>
-                        <div className="font-semibold">Infantil</div>
-                        <div className="text-sm text-gray-600">4-15 anos</div>
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => handleAgeGroupChange('adults', e)}
-                      className={`p-4 border-2 rounded-lg transition-all duration-200 ${
-                        selectedAgeGroup === 'adults'
-                          ? 'border-blue-600 bg-blue-50 text-blue-700'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="text-2xl mb-2">🥋</div>
-                        <div className="font-semibold">Adulto</div>
-                        <div className="text-sm text-gray-600">16+ anos</div>
-                      </div>
-                    </button>
-                  </div>
-                  <input type="hidden" {...register('age_group')} />
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-blue-900 mb-2">Configurações do Aluno</h3>
+                  <p className="text-blue-700 text-sm">
+                    Configure as informações específicas de treino e status do aluno.
+                  </p>
                 </div>
 
                 <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Mensalidade (R$)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      {...register('monthly_fee', {
+                        valueAsNumber: true,
+                        min: { value: 0, message: 'Valor deve ser positivo' }
+                      })}
+                      placeholder="150.00"
+                    />
+                    {errors.monthly_fee && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" />
+                        {errors.monthly_fee.message}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -485,32 +533,26 @@ const CreateStudent: React.FC = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Grau da Faixa
                         <span className="text-xs text-gray-500 ml-2">
-                          (máx: {getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)})
+                          (0 a {getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)})
                         </span>
                       </label>
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max={getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                        {...register('belt_degree', { 
+                        {...register('belt_degree', {
                           valueAsNumber: true,
-                          min: { value: 1, message: 'Grau mínimo é 1' },
-                                                      max: { value: getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup), message: `Grau máximo é ${getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)}` }
+                          min: { value: 0, message: 'Grau mínimo é 0' },
+                          max: { value: getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup), message: `Grau máximo é ${getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)}` }
                         })}
                       />
-                      {errors.belt_degree && (
-                        <p className="mt-1 text-sm text-red-600 flex items-center">
-                          <AlertCircle size={14} className="mr-1" />
-                          {errors.belt_degree.message}
-                        </p>
-                      )}
                     </div>
                   </div>
 
                   <div className="max-w-md">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Status Inicial
+                      Status
                     </label>
                     <select
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
@@ -528,36 +570,25 @@ const CreateStudent: React.FC = () => {
                   <h4 className="font-semibold text-blue-900 mb-2">
                     Sistema de Faixas - {selectedAgeGroup === 'kids' ? 'Infantil' : 'Adulto'}
                   </h4>
-                  <div className="text-sm text-blue-800">
-                    {selectedAgeGroup === 'kids' ? (
-                      <div>
-                        <p className="mb-2">Sistema infantil (4-15 anos):</p>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
-                          {getBeltOptions('kids').map((belt, index) => (
-                            <span key={belt} className="bg-white px-2 py-1 rounded">
-                              {index + 1}. {belt}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="mb-2">Sistema adulto (16+ anos):</p>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          {getBeltOptions('adults').map((belt, index) => (
-                            <span key={belt} className="bg-white px-2 py-1 rounded">
-                              {index + 1}. {belt}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  <div className="text-sm text-blue-700">
+                    <p className="mb-2">
+                      {selectedAgeGroup === 'kids' 
+                        ? 'Sistema infantil: Faixas coloridas para crianças até 16 anos'
+                        : 'Sistema adulto: Faixas tradicionais do Jiu-Jitsu brasileiro'
+                      }
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {getBeltOptions(selectedAgeGroup).map((belt) => (
+                        <span key={belt} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">
+                          {belt}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
@@ -579,18 +610,18 @@ const CreateStudent: React.FC = () => {
               ) : (
                 <button
                   type="submit"
-                  disabled={isCreating}
+                  disabled={isUpdating}
                   className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
                 >
-                  {isCreating ? (
+                  {isUpdating ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Criando...
+                      Salvando...
                     </>
                   ) : (
                     <>
                       <Save size={16} className="mr-2" />
-                      Criar Aluno
+                      Salvar Alterações
                     </>
                   )}
                 </button>
@@ -603,4 +634,4 @@ const CreateStudent: React.FC = () => {
   );
 };
 
-export default CreateStudent; 
+export default EditStudent; 

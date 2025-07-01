@@ -127,7 +127,7 @@ export const useStudentStore = create<StudentStore>()(
         try {
           const student = await studentService.getStudentById(id);
           set({
-            selectedStudent: student,
+            selectedStudent: student.data,
             isLoading: false,
           });
         } catch (error) {
