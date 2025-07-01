@@ -7,10 +7,10 @@ import ClassDetailsTabNavigation from './ClassDetails/ClassDetailsTabNavigation'
 import ClassBasicInfo from './ClassDetails/ClassBasicInfo';
 import ClassScheduleInfo from './ClassDetails/ClassScheduleInfo';
 import ClassRequirements from './ClassDetails/ClassRequirements';
-import ClassMetadata from './ClassDetails/ClassMetadata';
 import ClassStudentsList from './ClassDetails/ClassStudentsList';
 import ClassCheckinsList from './ClassDetails/ClassCheckinsList';
 import ClassDeleteModal from './ClassDetails/ClassDeleteModal';
+import { ClassMetadata } from './ClassDetails/ClassMetadata';
 
 const ClassDetails: React.FC = () => {
   const [showStudentAssignmentModal, setShowStudentAssignmentModal] = useState(false);

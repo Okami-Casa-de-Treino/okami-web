@@ -5,6 +5,7 @@ import Dashboard from '../pages/admin/AdminDashboard';
 import Students from '../pages/shared/Students';
 import CreateStudent from '../pages/shared/CreateStudent';
 import EditStudent from '../pages/shared/EditStudent';
+import StudentDetails from '../pages/shared/StudentDetails';
 import Teachers from '../pages/admin/Teachers';
 import CreateTeacher from '../pages/admin/CreateTeacher';
 import TeacherActions from '../pages/admin/TeacherActions';
@@ -48,6 +49,14 @@ const AppRoutes: React.FC = () => {
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'receptionist']}>
             <EditStudent />
+          </RoleProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/students/:id" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'receptionist', 'teacher']}>
+            <StudentDetails />
           </RoleProtectedRoute>
         } 
       />

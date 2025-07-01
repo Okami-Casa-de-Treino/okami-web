@@ -48,6 +48,12 @@ export const StudentTableRow: React.FC<StudentTableRowProps> = ({
     }
   };
 
+  const handleViewStudent = () => {
+    if (student.id) {
+      navigate(`/students/${student.id}`);
+    }
+  };
+
   return (
     <tr className="hover:bg-gray-50 transition-colors">
       <td className="py-4 px-6">
@@ -77,7 +83,11 @@ export const StudentTableRow: React.FC<StudentTableRowProps> = ({
       </td>
       <td className="py-4 px-6">
         <div className="flex items-center gap-2">
-          <button className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+          <button 
+            onClick={handleViewStudent}
+            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            title="Ver detalhes"
+          >
             <Eye size={16} />
           </button>
           <button 

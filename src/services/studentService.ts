@@ -1,4 +1,4 @@
-import { Student, PaginatedResponse, FilterParams } from '../types';
+import { Student, StudentClass, PaginatedResponse, FilterParams } from '../types';
 import { httpClient } from './httpClient';
 
 export interface StudentService {
@@ -9,7 +9,7 @@ export interface StudentService {
   deleteStudent(id: string): Promise<void>;
   enrollInClass(studentId: string, classId: string): Promise<void>;
   unenrollFromClass(studentId: string, classId: string): Promise<void>;
-  getStudentClasses(studentId: string): Promise<unknown[]>;
+  getStudentClasses(studentId: string): Promise<StudentClass[]>;
 }
 
 class StudentServiceImpl implements StudentService {
@@ -49,9 +49,9 @@ class StudentServiceImpl implements StudentService {
     await httpClient.delete(`${this.baseUrl}/${studentId}/classes/${classId}`);
   }
 
-  async getStudentClasses(studentId: string): Promise<unknown[]> {
-    const response = await httpClient.get<unknown[]>(`${this.baseUrl}/${studentId}/classes`);
-    return response.data;
+  async getStudentClasses(studentId: string): Promise<StudentClass[]> {
+    const response = await httpClient.get<{ success: boolean; data: StudentClass[] }>(`${this.baseUrl}/${studentId}/classes`);
+    return response.data.data;
   }
 }
 
