@@ -11,6 +11,8 @@ import { ErrorDisplay } from './components/ErrorDisplay';
 import { useStudentDetails } from './hooks/useStudentDetails';
 
 const StudentDetailsScreen: React.FC = () => {
+  console.log('StudentDetailsScreen rendering');
+  
   const {
     // Data
     student,
@@ -29,6 +31,7 @@ const StudentDetailsScreen: React.FC = () => {
     handleDelete,
     clearError,
     refreshStudentData,
+    refreshPaymentsData,
     
     // Helpers
     getStatusColor,
@@ -126,6 +129,8 @@ const StudentDetailsScreen: React.FC = () => {
           {activeTab === 'payments' && (
             <StudentPaymentsList
               payments={payments}
+              student={student}
+              onRefresh={refreshPaymentsData}
             />
           )}
         </div>

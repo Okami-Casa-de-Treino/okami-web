@@ -51,10 +51,10 @@ interface PaymentState {
   fetchPayments: () => Promise<void>;
   fetchPaymentById: (id: string) => Promise<void>;
   createPayment: (data: {
-    studentId: string;
+    student_id: string;
     amount: number;
-    dueDate: string;
-    referenceMonth: string;
+    due_date: string;
+    reference_month: string;
     discount?: number;
     notes?: string;
   }) => Promise<Payment | null>;
@@ -199,7 +199,7 @@ export const usePaymentStore = create<PaymentState>()(
             ...data,
             status: 'pending',
             discount: data.discount || 0,
-            lateFee: 0,
+            late_fee: 0,
           });
           
           set((state) => ({

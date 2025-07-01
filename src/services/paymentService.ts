@@ -8,10 +8,10 @@ export interface PaymentResponse {
 }
 
 export interface PaymentCreateData {
-  studentId: string;
+  student_id: string;
   amount: number;
-  dueDate: string;
-  referenceMonth: string;
+  due_date: string;
+  reference_month: string;
   discount?: number;
   notes?: string;
   type?: 'monthly' | 'enrollment' | 'other';
@@ -36,12 +36,40 @@ class PaymentServiceImpl implements IPaymentService {
   }
 
   async create(paymentData: Omit<Payment, 'id' | 'created_at' | 'updated_at'>): Promise<Payment> {
-    const response = await httpClient.post<PaymentResponse>(this.baseUrl, paymentData);
+    // Transform camelCase to snake_case for API
+    const apiData = {
+      student_id: paymentData.student_id,
+      amount: paymentData.amount,
+      due_date: paymentData.due_date,
+      reference_month: paymentData.reference_month,
+      discount: paymentData.discount || 0,
+      late_fee: paymentData.late_fee || 0,
+      status: paymentData.status || 'pending',
+      notes: paymentData.notes,
+      payment_date: paymentData.payment_date,
+      payment_method: paymentData.payment_method
+    };
+
+    const response = await httpClient.post<PaymentResponse>(this.baseUrl, apiData);
     return response.data.data;
   }
 
   async update(id: string, paymentData: Partial<Payment>): Promise<Payment> {
-    const response = await httpClient.put<PaymentResponse>(`${this.baseUrl}/${id}`, paymentData);
+    // Transform camelCase to snake_case for API
+    const apiData: Record<string, unknown> = {};
+    
+    if (paymentData.student_id !== undefined) apiData.student_id = paymentData.student_id;
+    if (paymentData.amount !== undefined) apiData.amount = paymentData.amount;
+    if (paymentData.due_date !== undefined) apiData.due_date = paymentData.due_date;
+    if (paymentData.reference_month !== undefined) apiData.reference_month = paymentData.reference_month;
+    if (paymentData.discount !== undefined) apiData.discount = paymentData.discount;
+    if (paymentData.late_fee !== undefined) apiData.late_fee = paymentData.late_fee;
+    if (paymentData.status !== undefined) apiData.status = paymentData.status;
+    if (paymentData.notes !== undefined) apiData.notes = paymentData.notes;
+    if (paymentData.payment_date !== undefined) apiData.payment_date = paymentData.payment_date;
+    if (paymentData.payment_method !== undefined) apiData.payment_method = paymentData.payment_method;
+
+    const response = await httpClient.put<PaymentResponse>(`${this.baseUrl}/${id}`, apiData);
     return response.data.data;
   }
 

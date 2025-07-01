@@ -85,16 +85,16 @@ export interface Checkin {
 
 export interface Payment {
   id: string;
-  studentId: string;
+  student_id: string;
   student?: Student;
   amount: number;
-  dueDate: string;
-  paymentDate?: string;
-  paymentMethod?: 'cash' | 'card' | 'pix' | 'bank_transfer';
+  due_date: string;
+  payment_date?: string;
+  payment_method?: 'cash' | 'card' | 'pix' | 'bank_transfer';
   status: 'pending' | 'paid' | 'overdue' | 'cancelled';
-  referenceMonth: string;
+  reference_month: string;
   discount: number;
-  lateFee: number;
+  late_fee: number;
   notes?: string;
   created_at: string;
   updated_at: string;
