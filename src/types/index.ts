@@ -76,8 +76,8 @@ export interface Checkin {
   classId: string;
   student?: Student;
   class?: Class;
-  checkinDate: string;
-  checkinTime: string;
+  checkin_date: string;
+  checkin_time: string;
   method: 'manual' | 'qr_code' | 'app';
   notes?: string;
   created_at: string;

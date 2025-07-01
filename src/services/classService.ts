@@ -1,6 +1,7 @@
 import { Class, PaginatedResponse, FilterParams, Student, Checkin, ApiResponse } from '../types';
 import { httpClient } from './httpClient';
 import { IClassService } from './interfaces';
+import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
 export interface ClassResponse {
   data: Class;
@@ -43,8 +44,8 @@ class ClassServiceImpl implements IClassService {
     await httpClient.delete(`${this.baseUrl}/${id}`);
   }
 
-  async getStudents(id: string): Promise<Student[]> {
-    const response = await httpClient.get<ApiResponse<Student[]>>(`${this.baseUrl}/${id}/students`);
+  async getStudents(id: string): Promise<StudentEnrollment[]> {
+    const response = await httpClient.get<ApiResponse<StudentEnrollment[]>>(`${this.baseUrl}/${id}/students`);
     return response.data.data;
   }
 

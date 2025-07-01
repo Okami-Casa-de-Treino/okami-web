@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { Class, PaginatedResponse, FilterParams, Student, Checkin } from '../types';
+import { Class, PaginatedResponse, FilterParams, Checkin } from '../types';
 import { classService } from '../services/classService';
+import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
 // ============================================================================
 // TYPES AND INTERFACES
@@ -11,7 +12,7 @@ interface ClassState {
   // Data
   classes: Class[];
   selectedClass: Class | null;
-  classStudents: Student[];
+  classStudents: StudentEnrollment[];
   classCheckins: Checkin[];
   schedule: Record<string, Class[]>;
   

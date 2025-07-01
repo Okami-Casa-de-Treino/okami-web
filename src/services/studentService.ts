@@ -40,15 +40,13 @@ class StudentServiceImpl implements StudentService {
   }
 
   async enrollInClass(studentId: string, classId: string): Promise<void> {
-    await httpClient.post(`${this.baseUrl}/${studentId}/enroll`, { 
+    await httpClient.post(`${this.baseUrl}/${studentId}/classes`, { 
       class_id: classId
     });
   }
 
   async unenrollFromClass(studentId: string, classId: string): Promise<void> {
-    await httpClient.post(`${this.baseUrl}/${studentId}/unenroll`, { 
-      class_id: classId
-    });
+    await httpClient.delete(`${this.baseUrl}/${studentId}/classes/${classId}`);
   }
 
   async getStudentClasses(studentId: string): Promise<unknown[]> {

@@ -76,13 +76,13 @@ export const useCheckin = () => {
   // Process recent checkins
   const recentCheckins = useMemo(() => {
     return todayCheckins
-      .sort((a, b) => new Date(b.checkinTime).getTime() - new Date(a.checkinTime).getTime())
+      .sort((a, b) => new Date(b.checkin_time).getTime() - new Date(a.checkin_time).getTime())
       .slice(0, 10)
       .map(checkin => ({
         id: checkin.id,
         studentName: checkin.student?.full_name || 'N/A',
         className: checkin.class?.name || 'N/A',
-        time: formatTime(checkin.checkinTime),
+        time: formatTime(checkin.checkin_time),
         method: checkin.method === 'qr_code' ? 'QR Code' : 'Manual',
         avatar: getAvatarEmoji(checkin.student?.full_name || ''),
         status: 'success',
@@ -110,8 +110,8 @@ export const useCheckin = () => {
       const checkinData = {
         studentId: data.student_id,
         classId: data.class_id,
-        checkinDate: new Date().toISOString().split('T')[0],
-        checkinTime: new Date().toISOString(),
+        checkin_date: new Date().toISOString().split('T')[0],
+        checkin_time: new Date().toISOString(),
         method: data.type,
         notes: data.notes,
       };

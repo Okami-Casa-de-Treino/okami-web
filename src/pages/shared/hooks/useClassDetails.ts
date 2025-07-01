@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
-import { Class, Student, Checkin } from '../../../types';
+
+import { TabType } from '../ClassDetails/types';
 
 export const useClassDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,7 +24,7 @@ export const useClassDetails = () => {
 
   const { fetchTeachers } = useTeacherStore();
 
-  const [activeTab, setActiveTab] = useState<'details' | 'students' | 'checkins'>('details');
+  const [activeTab, setActiveTab] = useState<TabType>('details');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Load class data when component mounts
@@ -70,6 +71,14 @@ export const useClassDetails = () => {
   const dismissError = useCallback(() => {
     clearError();
   }, [clearError]);
+
+  const refreshClassData = useCallback(() => {
+    if (id) {
+      fetchClassById(id);
+      fetchClassStudents(id);
+      fetchClassCheckins(id);
+    }
+  }, [id, fetchClassById, fetchClassStudents, fetchClassCheckins]);
 
   // Helper functions
   const formatDaysOfWeek = (days: number[]): string => {
@@ -142,6 +151,7 @@ export const useClassDetails = () => {
     confirmDelete,
     cancelDelete,
     dismissError,
+    refreshClassData,
     
     // Helpers
     formatDaysOfWeek,

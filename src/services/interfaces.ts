@@ -10,6 +10,7 @@ import {
   PaginatedResponse,
   FilterParams 
 } from '../types';
+import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
 export interface IApiService {
   get<T>(endpoint: string, params?: Record<string, unknown>): Promise<ApiResponse<T>>;
@@ -46,7 +47,7 @@ export interface IClassService {
   create(classData: Omit<Class, 'id' | 'created_at' | 'updated_at'>): Promise<Class>;
   update(id: string, classData: Partial<Class>): Promise<Class>;
   delete(id: string): Promise<void>;
-  getStudents(id: string): Promise<Student[]>;
+  getStudents(id: string): Promise<StudentEnrollment[]>;
   getCheckins(id: string): Promise<Checkin[]>;
   getSchedule(): Promise<Record<string, Class[]>>;
 }
