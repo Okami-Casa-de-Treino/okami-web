@@ -79,7 +79,7 @@ export const StudentTableRow: React.FC<StudentTableRowProps> = ({
       </td>
       <td className="py-4 px-6 text-gray-900">{student.phone || '-'}</td>
       <td className="py-4 px-6 font-medium text-gray-900">
-        {student.monthly_fee ? `R$ ${student.monthly_fee.toFixed(2)}` : '-'}
+        {student.monthly_fee && !isNaN(Number(student.monthly_fee)) ? `R$ ${Number(student.monthly_fee).toFixed(2)}` : '-'}
       </td>
       <td className="py-4 px-6">
         <div className="flex items-center gap-2">

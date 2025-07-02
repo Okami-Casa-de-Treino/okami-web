@@ -97,14 +97,14 @@ export const StudentBasicInfo: React.FC<StudentBasicInfoProps> = ({
           </div>
         )}
 
-        {student.monthly_fee && (
+        {student.monthly_fee && !isNaN(Number(student.monthly_fee)) && (
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">
               <DollarSign size={14} className="inline mr-1" />
               Mensalidade
             </label>
             <p className="text-gray-900 font-semibold">
-              R$ {student.monthly_fee.toFixed(2).replace('.', ',')}
+              R$ {Number(student.monthly_fee).toFixed(2).replace('.', ',')}
             </p>
           </div>
         )}

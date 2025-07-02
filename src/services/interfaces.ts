@@ -70,7 +70,7 @@ export interface IPaymentService {
   markAsPaid(id: string, paymentMethod: string, paymentDate?: string): Promise<Payment>;
   getOverdue(): Promise<Payment[]>;
   getByStudent(studentId: string): Promise<Payment[]>;
-  generateMonthlyPayments(month: string): Promise<Payment[]>;
+  generateMonthlyPayments(reference_month: string, due_day: number): Promise<Payment[]>;
 }
 
 export interface IAuthService {

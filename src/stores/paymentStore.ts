@@ -65,7 +65,7 @@ interface PaymentState {
   markAsPaid: (id: string, paymentMethod: string, paymentDate?: string) => Promise<Payment | null>;
   fetchOverduePayments: () => Promise<void>;
   fetchStudentPayments: (studentId: string) => Promise<void>;
-  generateMonthlyPayments: (month: number, year: number) => Promise<Payment[]>;
+  generateMonthlyPayments: (reference_month: string, due_day: number) => Promise<Payment[]>;
   
   // Utility actions
   clearError: () => void;
@@ -152,7 +152,7 @@ export const usePaymentStore = create<PaymentState>()(
           });
 
           set((state) => ({
-            payments: response.data,
+            payments: Array.isArray(response.data) ? response.data : [],
             pagination: {
               ...state.pagination,
               total: response.total,
@@ -162,6 +162,7 @@ export const usePaymentStore = create<PaymentState>()(
           }));
         } catch (error) {
           set((state) => ({
+            payments: [],
             error: error instanceof Error ? error.message : 'Erro ao carregar pagamentos',
             loading: { ...state.loading, list: false },
           }));
@@ -313,11 +314,12 @@ export const usePaymentStore = create<PaymentState>()(
         try {
           const payments = await paymentService.getOverdue();
           set((state) => ({
-            overduePayments: payments,
+            overduePayments: Array.isArray(payments) ? payments : [],
             loading: { ...state.loading, overdue: false },
           }));
         } catch (error) {
           set((state) => ({
+            overduePayments: [],
             error: error instanceof Error ? error.message : 'Erro ao carregar pagamentos em atraso',
             loading: { ...state.loading, overdue: false },
           }));
@@ -333,36 +335,36 @@ export const usePaymentStore = create<PaymentState>()(
         try {
           const payments = await paymentService.getByStudent(studentId);
           set((state) => ({
-            studentPayments: payments,
+            studentPayments: Array.isArray(payments) ? payments : [],
             loading: { ...state.loading, student: false },
           }));
         } catch (error) {
           set((state) => ({
+            studentPayments: [],
             error: error instanceof Error ? error.message : 'Erro ao carregar pagamentos do aluno',
             loading: { ...state.loading, student: false },
           }));
         }
       },
 
-      generateMonthlyPayments: async (month, year) => {
+      generateMonthlyPayments: async (reference_month, due_day) => {
         set((state) => ({
           loading: { ...state.loading, generateMonthly: true },
           error: null,
         }));
 
         try {
-          const payments = await paymentService.generateMonthlyPayments(`${year}-${month.toString().padStart(2, '0')}`);
+          const payments = await paymentService.generateMonthlyPayments(reference_month, due_day);
           
-          // Add generated payments to the list
           set((state) => ({
-            payments: [...payments, ...state.payments],
             loading: { ...state.loading, generateMonthly: false },
           }));
 
-          // Refresh the list
-          get().fetchPayments();
+          // Refresh the list to get all payments including the new ones
+          await get().fetchPayments();
+          await get().fetchOverduePayments();
           
-          return payments;
+          return Array.isArray(payments) ? payments : [];
         } catch (error) {
           set((state) => ({
             error: error instanceof Error ? error.message : 'Erro ao gerar pagamentos mensais',

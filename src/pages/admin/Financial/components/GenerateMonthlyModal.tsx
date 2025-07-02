@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { X, Loader2, Calendar } from 'lucide-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { format } from 'date-fns';
 
 interface GenerateMonthlyData {
-  month: number;
-  year: number;
+  reference_month: string; // Format: YYYY-MM-DD (first day of month)
+  due_day: number;
 }
 
 interface GenerateMonthlyModalProps {
@@ -20,39 +23,22 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
   loading
 }) => {
   const currentDate = new Date();
-  const [formData, setFormData] = useState<GenerateMonthlyData>({
-    month: currentDate.getMonth() + 1,
-    year: currentDate.getFullYear()
-  });
-
-  const months = [
-    { value: 1, label: 'Janeiro' },
-    { value: 2, label: 'Fevereiro' },
-    { value: 3, label: 'Março' },
-    { value: 4, label: 'Abril' },
-    { value: 5, label: 'Maio' },
-    { value: 6, label: 'Junho' },
-    { value: 7, label: 'Julho' },
-    { value: 8, label: 'Agosto' },
-    { value: 9, label: 'Setembro' },
-    { value: 10, label: 'Outubro' },
-    { value: 11, label: 'Novembro' },
-    { value: 12, label: 'Dezembro' }
-  ];
-
-  const years = Array.from({ length: 5 }, (_, i) => currentDate.getFullYear() + i);
+  const [selectedMonth, setSelectedMonth] = useState(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
+  const [dueDate, setDueDate] = useState(new Date(currentDate.getFullYear(), currentDate.getMonth(), 10));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const success = await onSubmit(formData);
+    // Format the data for the API
+    const apiData: GenerateMonthlyData = {
+      reference_month: format(selectedMonth, 'yyyy-MM-dd'),
+      due_day: dueDate.getDate()
+    };
+    
+    const success = await onSubmit(apiData);
     if (success) {
       onClose();
     }
-  };
-
-  const handleChange = (field: keyof GenerateMonthlyData, value: number) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   if (!isOpen) return null;
@@ -87,46 +73,42 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Mês *
+                Mês de Referência *
               </label>
-              <select
-                value={formData.month}
-                onChange={(e) => handleChange('month', parseInt(e.target.value))}
+              <DatePicker
+                selected={selectedMonth}
+                onChange={(date: Date | null) => date && setSelectedMonth(date)}
+                dateFormat="MMMM yyyy"
+                showMonthYearPicker
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholderText="Selecione o mês"
                 required
-              >
-                {months.map((month) => (
-                  <option key={month.value} value={month.value}>
-                    {month.label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ano *
+                Data de Vencimento *
               </label>
-              <select
-                value={formData.year}
-                onChange={(e) => handleChange('year', parseInt(e.target.value))}
+              <DatePicker
+                selected={dueDate}
+                onChange={(date: Date | null) => date && setDueDate(date)}
+                dateFormat="dd/MM/yyyy"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholderText="Selecione a data de vencimento"
                 required
-              >
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Escolha qualquer data - apenas o dia será usado como vencimento mensal
+              </p>
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4">
               <h4 className="font-medium text-gray-900 mb-2">Resumo da Geração</h4>
               <div className="space-y-1 text-sm text-gray-600">
-                <p>• Período: {months.find(m => m.value === formData.month)?.label} de {formData.year}</p>
+                <p>• Período: {format(selectedMonth, 'MMMM yyyy')}</p>
                 <p>• Serão geradas cobranças para todos os alunos ativos</p>
-                <p>• Data de vencimento: último dia do mês selecionado</p>
+                <p>• Data de vencimento: Dia {dueDate.getDate()} de cada mês</p>
                 <p>• Status inicial: Pendente</p>
               </div>
             </div>

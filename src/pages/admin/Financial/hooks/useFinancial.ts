@@ -24,8 +24,8 @@ interface CreatePaymentData {
   amount: number;
   due_date: string;
   reference_month: string;
-  discount?: number;
-  notes?: string;
+  discount?: number | null;
+  notes?: string | null;
 }
 
 interface MarkAsPaidData {
@@ -34,8 +34,8 @@ interface MarkAsPaidData {
 }
 
 interface GenerateMonthlyData {
-  month: number;
-  year: number;
+  reference_month: string; // Format: YYYY-MM-DD
+  due_day: number;
 }
 
 export const useFinancial = () => {
@@ -93,32 +93,40 @@ export const useFinancial = () => {
 
   // Computed stats
   const stats = useMemo((): PaymentStats => {
-    const paidPayments = payments.filter(p => p.status === 'paid');
-    const pendingPayments = payments.filter(p => p.status === 'pending' || p.status === 'overdue');
+    const paymentsArray = Array.isArray(payments) ? payments : [];
+    const overdueArray = Array.isArray(overduePayments) ? overduePayments : [];
+    
+    const paidPayments = paymentsArray.filter(p => p.status === 'paid');
+    const pendingPayments = paymentsArray.filter(p => p.status === 'pending' || p.status === 'overdue');
     
     return {
       totalRevenue: paidPayments.reduce((sum, p) => {
-        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
-        const discount = typeof p.discount === 'string' ? parseFloat(p.discount) : p.discount;
-        const lateFee = typeof p.late_fee === 'string' ? parseFloat(p.late_fee) : p.late_fee;
+        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : (p.amount || 0);
+        const discount = typeof p.discount === 'string' ? parseFloat(p.discount) : (p.discount || 0);
+        const lateFee = typeof p.late_fee === 'string' ? parseFloat(p.late_fee) : (p.late_fee || 0);
         return sum + (amount + lateFee - discount);
       }, 0),
       pendingCount: pendingPayments.length,
       pendingAmount: pendingPayments.reduce((sum, p) => {
-        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : p.amount;
-        const discount = typeof p.discount === 'string' ? parseFloat(p.discount) : p.discount;
-        const lateFee = typeof p.late_fee === 'string' ? parseFloat(p.late_fee) : p.late_fee;
+        const amount = typeof p.amount === 'string' ? parseFloat(p.amount) : (p.amount || 0);
+        const discount = typeof p.discount === 'string' ? parseFloat(p.discount) : (p.discount || 0);
+        const lateFee = typeof p.late_fee === 'string' ? parseFloat(p.late_fee) : (p.late_fee || 0);
         return sum + (amount + lateFee - discount);
       }, 0),
-      overdueCount: overduePayments.length,
-      paymentRate: payments.length > 0 ? Math.round((paidPayments.length / payments.length) * 100) : 0
+      overdueCount: overdueArray.length,
+      paymentRate: paymentsArray.length > 0 ? Math.round((paidPayments.length / paymentsArray.length) * 100) : 0
     };
   }, [payments, overduePayments]);
 
   // Handlers
   const handleCreatePayment = async (data: CreatePaymentData): Promise<boolean> => {
     try {
-      const result = await createPayment(data);
+      const paymentData = {
+        ...data,
+        discount: data.discount ?? undefined,
+        notes: data.notes ?? undefined
+      };
+      const result = await createPayment(paymentData);
       if (result) {
         setShowCreateModal(false);
         return true;
@@ -170,8 +178,8 @@ export const useFinancial = () => {
 
   const handleGenerateMonthly = async (data: GenerateMonthlyData): Promise<boolean> => {
     try {
-      const result = await generateMonthlyPayments(data.month, data.year);
-      if (result && result.length > 0) {
+      const result = await generateMonthlyPayments(data.reference_month, data.due_day);
+      if (result) {
         setShowGenerateModal(false);
         return true;
       }

@@ -97,11 +97,10 @@ class PaymentServiceImpl implements IPaymentService {
     return response.data.data;
   }
 
-  async generateMonthlyPayments(month: string): Promise<Payment[]> {
-    const [year, monthNum] = month.split('-');
+  async generateMonthlyPayments(reference_month: string, due_day: number): Promise<Payment[]> {
     const data = {
-      month: parseInt(monthNum, 10),
-      year: parseInt(year, 10),
+      reference_month,
+      due_day,
     };
     
     const response = await httpClient.post<ApiResponse<Payment[]>>(`${this.baseUrl}/generate-monthly`, data);
