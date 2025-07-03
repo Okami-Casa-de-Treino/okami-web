@@ -1,49 +1,18 @@
 import { z } from 'zod';
 import { isValidPhoneLength, isValidCPF, unformatPhoneNumber, unformatCPF } from '../../../utils/masks';
+import { adultsBelts, getMaxDegree } from '../../../utils/beltSystem';
+import { SPECIALTIES } from '../../../utils';
 
 // Martial arts belts enum
-export const BeltEnum = z.enum([
-  'Branca',
-  'Azul',
-  'Roxa',
-  'Marrom',
-  'Preta',
-  'Coral',
-  'Vermelha'
-]);
+export const BeltEnum = z.enum(adultsBelts as [string, ...string[]]);
 
 // Teacher status enum
 export const TeacherStatusEnum = z.enum(['active', 'inactive']);
 
 // Available specialties
-export const SpecialtiesEnum = z.enum([
-  'Jiu Jitsu',
-  'Karatê',
-  'Judô',
-  'Taekwondo',
-  'Muay Thai',
-  'Boxe',
-  'MMA',
-  'Defesa Pessoal',
-  'Kung Fu',
-  'Capoeira',
-  'Krav Maga',
-]);
+  export const SpecialtiesEnum = z.enum(SPECIALTIES as [string, ...string[]]);
 
-// Helper function to get max degree for a belt
-const getMaxDegreeForBelt = (belt: string): number => {
-  switch (belt) {
-    case 'Branca':
-    case 'Azul':
-    case 'Roxa':
-    case 'Marrom':
-      return 4;
-    case 'Preta':
-      return 10;
-    default:
-      return 1;
-  }
-};
+
 
 // Create Teacher form schema
 export const createTeacherSchema = z.object({
@@ -121,7 +90,7 @@ export const createTeacherSchema = z.object({
 }).refine(
   (data) => {
     // Validate belt degree based on belt
-    const maxDegree = getMaxDegreeForBelt(data.belt);
+    const maxDegree = getMaxDegree(data.belt, 'Adulto');
     return data.belt_degree <= maxDegree;
   },
   {

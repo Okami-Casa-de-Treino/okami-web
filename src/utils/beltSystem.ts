@@ -27,17 +27,17 @@ export const adultsBelts = [
 ];
 
 export const relationshipOptions = [
-  'Pai', 'Mãe', 'Avô', 'Avó', 'Tio', 'Tia', 'Irmão', 'Irmã', 'Responsável', 'Outro'
+  'Pai/Mãe', 'Avô/Avó', 'Tio/Tia', 'Irmão/Irmã', 'Responsável', 'Cônjuge', 'Outro'
 ];
 
-export type AgeGroup = 'kids' | 'adults';
+export type AgeGroup = 'Infantil' | 'Adulto';
 
 export const getBeltOptions = (ageGroup: AgeGroup): string[] => {
-  return ageGroup === 'kids' ? kidsBelts : adultsBelts;
+  return ageGroup === 'Infantil' ? kidsBelts : adultsBelts;
 };
 
 export const getMaxDegree = (belt: string, ageGroup: AgeGroup): number => {
-  if (ageGroup === 'kids') {
+  if (ageGroup === 'Infantil') {
     return 1; // Kids belts typically don't have degrees
   }
   
@@ -57,8 +57,8 @@ export const getMaxDegree = (belt: string, ageGroup: AgeGroup): number => {
 };
 
 export const determineAgeGroup = (birthDate: string): AgeGroup => {
-  if (!birthDate) return 'adults';
+  if (!birthDate) return 'Adulto';
   
   const age = new Date().getFullYear() - new Date(birthDate).getFullYear();
-  return age < 16 ? 'kids' : 'adults';
+  return age < 16 ? 'Infantil' : 'Adulto';
 }; 

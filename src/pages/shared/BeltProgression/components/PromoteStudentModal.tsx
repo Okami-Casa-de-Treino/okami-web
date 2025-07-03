@@ -62,7 +62,7 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
 
   // Get current student details
   const currentStudent = students.find(s => s.id === watchedStudentId);
-  const ageGroup = currentStudent ? determineAgeGroup(currentStudent.birth_date) : 'adults';
+  const ageGroup = currentStudent ? determineAgeGroup(currentStudent.birth_date) : 'Adulto';
   const availableBelts = getBeltOptions(ageGroup);
   const maxDegree = watchedBelt ? getMaxDegree(watchedBelt, ageGroup) : 1;
 

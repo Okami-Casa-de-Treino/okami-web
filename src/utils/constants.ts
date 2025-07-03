@@ -42,11 +42,8 @@ export const STUDENT_STATUS = [
 ];
 
 export const AGE_GROUPS = [
-  'Infantil (4-7 anos)',
-  'Juvenil (8-12 anos)',
-  'Adolescente (13-17 anos)',
-  'Adulto (18+ anos)',
-  'Sênior (50+ anos)'
+  'Infantil',
+  'Adulto'
 ];
 
 export const SPECIALTIES = [
