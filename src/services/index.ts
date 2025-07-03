@@ -13,6 +13,8 @@ export { checkinService } from './checkinService';
 export type { CheckinResponse, CheckinCreateData } from './checkinService';
 export { paymentService } from './paymentService';
 export type { PaymentResponse, PaymentCreateData, MarkAsPaidData } from './paymentService';
+export { beltProgressionService } from './beltProgressionService';
+export type { BeltProgressionService, BeltProgressionResponse, BeltProgressResponse, BeltOverviewResponse } from './beltProgressionService';
 
 // Legacy API service (if still needed)
 export { apiService } from './api'; 

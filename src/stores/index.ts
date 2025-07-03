@@ -14,4 +14,7 @@ export { useClassStore, useClassSelectors } from './classStore';
 export { useCheckinStore, useCheckinSelectors } from './checkinStore';
 
 // Payment Store
-export { usePaymentStore } from './paymentStore'; 
+export { usePaymentStore } from './paymentStore';
+
+// Belt Progression Store
+export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProgressionStore'; 

@@ -6,7 +6,7 @@ import { studentService } from '../../../../services/studentService';
 import { checkinService } from '../../../../services/checkinService';
 import { paymentService } from '../../../../services/paymentService';
 
-export type TabType = 'details' | 'classes' | 'checkins' | 'payments';
+export type TabType = 'details' | 'belt-progression' | 'classes' | 'checkins' | 'payments';
 
 export const useStudentDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,6 +70,17 @@ export const useStudentDetails = () => {
       fetchStudentById(id);
       if (student?.id) {
         loadRelatedData(student.id);
+      }
+    }
+  };
+
+  const refreshPaymentsData = async () => {
+    if (student?.id) {
+      try {
+        const paymentsResponse = await paymentService.getByStudent(student.id);
+        setPayments(paymentsResponse);
+      } catch (error) {
+        console.error('Error refreshing payments data:', error);
       }
     }
   };
@@ -148,6 +159,7 @@ export const useStudentDetails = () => {
     handleDelete,
     clearError,
     refreshStudentData,
+    refreshPaymentsData,
     
     // Helpers
     getStatusColor,

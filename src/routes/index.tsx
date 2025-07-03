@@ -15,6 +15,7 @@ import CreateClass from '../pages/shared/CreateClass';
 import ClassDetails from '../pages/shared/ClassDetails';
 import EditClass from '../pages/shared/EditClass';
 import Checkin from '../pages/student/Checkin';
+import BeltProgression from '../pages/shared/BeltProgression';
 import Financial from '../pages/admin/Financial';
 import Reports from '../pages/admin/Reports';
 import Profile from '../pages/common/Profile';
@@ -151,6 +152,16 @@ const AppRoutes: React.FC = () => {
         element={
           <RoleProtectedRoute allowedRoles={['student']}>
             <Checkin />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Belt Progression Routes - Admin and Teacher */}
+      <Route 
+        path="/belt-progression" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
+            <BeltProgression />
           </RoleProtectedRoute>
         } 
       />

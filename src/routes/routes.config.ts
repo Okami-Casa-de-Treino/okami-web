@@ -93,6 +93,13 @@ export const adminRoutes: RouteConfig[] = [
     roles: ['admin', 'teacher', 'receptionist'],
   },
   {
+    path: '/belt-progression',
+    name: 'Progressão de Faixas',
+    icon: 'Award',
+    showInSidebar: true,
+    roles: ['admin', 'teacher'],
+  },
+  {
     path: '/financial',
     name: 'Financeiro',
     icon: 'DollarSign',
@@ -128,6 +135,13 @@ export const teacherRoutes: RouteConfig[] = [
     path: '/checkin',
     name: 'Check-in',
     icon: 'CheckCircle',
+    showInSidebar: true,
+    roles: ['teacher'],
+  },
+  {
+    path: '/belt-progression',
+    name: 'Progressão de Faixas',
+    icon: 'Award',
     showInSidebar: true,
     roles: ['teacher'],
   },

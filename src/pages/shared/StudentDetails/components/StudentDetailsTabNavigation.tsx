@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, GraduationCap, CheckCircle, CreditCard } from 'lucide-react';
+import { User, GraduationCap, CheckCircle, CreditCard, Award } from 'lucide-react';
 import { TabType } from '../hooks/useStudentDetails';
 import { StudentClass, Checkin, Payment } from '../../../../types';
 
@@ -23,6 +23,12 @@ export const StudentDetailsTabNavigation: React.FC<StudentDetailsTabNavigationPr
       id: 'details' as TabType,
       label: 'Detalhes',
       icon: User,
+      count: null,
+    },
+    {
+      id: 'belt-progression' as TabType,
+      label: 'Progressão',
+      icon: Award,
       count: null,
     },
     {

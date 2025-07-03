@@ -3,6 +3,7 @@ import { StudentDetailsHeader } from './components/StudentDetailsHeader';
 import { StudentBasicInfo } from './components/StudentBasicInfo';
 import { StudentContactInfo } from './components/StudentContactInfo';
 import { StudentMartialArtsInfo } from './components/StudentMartialArtsInfo';
+import { StudentBeltProgressionInfo } from './components/StudentBeltProgressionInfo';
 import { StudentClassesList } from './components/StudentClassesList';
 import { StudentCheckinsList } from './components/StudentCheckinsList';
 import { StudentPaymentsList } from './components/StudentPaymentsList';
@@ -110,6 +111,12 @@ const StudentDetailsScreen: React.FC = () => {
                 getBeltDisplay={getBeltDisplay}
               />
             </div>
+          )}
+
+          {activeTab === 'belt-progression' && (
+            <StudentBeltProgressionInfo
+              student={student}
+            />
           )}
 
           {activeTab === 'classes' && (

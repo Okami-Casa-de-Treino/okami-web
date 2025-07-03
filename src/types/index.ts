@@ -149,4 +149,122 @@ export interface FilterParams extends Record<string, unknown> {
   status?: string;
   startDate?: string;
   endDate?: string;
+}
+
+// ============================================================================
+// BELT PROGRESSION TYPES
+// ============================================================================
+
+export interface BeltPromotion {
+  id: string;
+  student_id: string;
+  promoted_by: string;
+  previous_belt: string;
+  previous_degree: number;
+  new_belt: string;
+  new_degree: number;
+  promotion_date: string;
+  promotion_type: 'regular' | 'skip_degree' | 'honorary' | 'correction';
+  requirements_met: {
+    technique_test?: boolean;
+    sparring_test?: boolean;
+    attendance?: boolean;
+    time_requirement?: boolean;
+    [key: string]: boolean | undefined;
+  };
+  notes?: string;
+  certificate_url?: string;
+  student?: Student;
+  promoted_by_user?: {
+    id: string;
+    username: string;
+    role: string;
+  };
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BeltProgress {
+  student: {
+    id: string;
+    full_name: string;
+    current_belt: string;
+    current_degree: number;
+    enrollment_date: string;
+    status: string;
+  };
+  progress: {
+    days_since_enrollment: number;
+    current_level: string;
+    total_promotions?: number;
+    last_promotion_date?: string;
+    time_at_current_belt?: number;
+  };
+  promotion_history?: BeltPromotion[];
+  message?: string;
+}
+
+export interface BeltProgressResponse {
+  success: boolean;
+  data: BeltProgress;
+}
+
+export interface BeltDistribution {
+  belt: string;
+  degree: number;
+  count: number;
+  percentage: string;
+}
+
+export interface BeltOverview {
+  belt_distribution: BeltDistribution[];
+  summary: {
+    total_active_students: number;
+    unique_belt_levels: number;
+    recent_promotions: number;
+    promotions_this_month: number;
+  };
+  recent_promotions: {
+    student_name: string;
+    previous_belt: string;
+    new_belt: string;
+    promotion_date: string;
+    promoted_by: string;
+  }[];
+}
+
+export interface PromoteStudentData {
+  student_id: string;
+  new_belt: string;
+  new_degree: number;
+  promotion_type?: 'regular' | 'skip_degree' | 'honorary' | 'correction';
+  requirements_met?: {
+    technique_test?: boolean;
+    sparring_test?: boolean;
+    attendance?: boolean;
+    time_requirement?: boolean;
+    [key: string]: boolean | undefined;
+  };
+  notes?: string;
+  certificate_url?: string;
+  promotion_date?: string;
+}
+
+export interface PromotionResponse {
+  student: {
+    id: string;
+    full_name: string;
+    belt: string;
+    belt_degree: number;
+    email: string;
+    phone: string;
+  };
+  promotion: {
+    previous_belt: string;
+    previous_degree: number;
+    new_belt: string;
+    new_degree: number;
+    promotion_date: string;
+    notes?: string;
+  };
 } 

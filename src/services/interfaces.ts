@@ -8,7 +8,12 @@ import {
   DashboardStats,
   ApiResponse,
   PaginatedResponse,
-  FilterParams 
+  FilterParams,
+  BeltPromotion,
+  BeltProgress,
+  BeltOverview,
+  PromoteStudentData,
+  PromotionResponse
 } from '../types';
 import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
@@ -86,4 +91,17 @@ export interface IReportService {
   getFinancialReport(params?: FilterParams): Promise<Record<string, unknown>>;
   getStudentReport(params?: FilterParams): Promise<Record<string, unknown>>;
   getClassReport(params?: FilterParams): Promise<Record<string, unknown>>;
+}
+
+export interface IBeltProgressionService {
+  // Promotions
+  getAllPromotions(params?: FilterParams): Promise<PaginatedResponse<BeltPromotion>>;
+  getPromotionById(id: string): Promise<BeltPromotion>;
+  promoteStudent(data: PromoteStudentData): Promise<PromotionResponse>;
+  
+  // Student progress
+  getStudentProgress(studentId: string): Promise<BeltProgress>;
+  
+  // Overview and statistics
+  getBeltOverview(): Promise<BeltOverview>;
 } 
