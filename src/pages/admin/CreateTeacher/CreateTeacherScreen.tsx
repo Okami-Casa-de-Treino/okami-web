@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import { 
   User, 
   Mail, 
@@ -15,159 +13,40 @@ import {
   DollarSign,
   FileText
 } from 'lucide-react';
-import { useTeacherStore } from '../stores';
-import { Teacher } from '../types';
+import { useCreateTeacher } from './hooks/useCreateTeacher';
 
-interface CreateTeacherForm {
-  full_name: string;
-  email: string;
-  phone: string;
-  birth_date?: string;
-  cpf?: string;
-  belt?: string;
-  belt_degree?: number;
-  specialties?: string[];
-  hourly_rate?: number;
-  status: 'active' | 'inactive';
-}
-
-const CreateTeacher: React.FC = () => {
-  const navigate = useNavigate();
-  const { createTeacher, isCreating, error, clearError } = useTeacherStore();
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>([]);
-  const totalSteps = 3;
-
+const CreateTeacherScreen: React.FC = () => {
   const {
+    // Form
     register,
     handleSubmit,
-    formState: { errors },
-    trigger,
-    watch
-  } = useForm<CreateTeacherForm>({
-    defaultValues: {
-      status: 'active',
-      belt_degree: 1,
-      belt: 'Branca',
-      specialties: []
-    }
-  });
-
-  // Martial arts belts
-  const belts = [
-    'Branca',
-    'Azul',
-    'Roxa',
-    'Marrom',
-    'Preta',
-    'Coral',
-    'Vermelha'
-  ];
-
-  // Common martial arts specialties
-  const availableSpecialties = [
-    'Jiu Jitsu',
-    'Karatê',
-    'Judô',
-    'Taekwondo',
-    'Muay Thai',
-    'Boxe',
-    'MMA',
-    'Defesa Pessoal',
-    'Kung Fu',
-    'Capoeira',
-    'Krav Maga',
-  ];
-
-  const getMaxDegree = () => {
-    const currentBelt = watch('belt');
+    errors,
+    watch,
     
-    switch (currentBelt) {
-      case 'Branca':
-        return 4;
-      case 'Azul':
-      case 'Roxa':
-      case 'Marrom':
-        return 4;
-      case 'Preta':
-        return 10;
-      default:
-        return 1;
-    }
-  };
-
-  const onSubmit = async (data: CreateTeacherForm) => {
-    try {
-      const teacherData: Omit<Teacher, 'id' | 'created_at' | 'updated_at'> = {
-        ...data,
-        specialties: selectedSpecialties.length > 0 ? selectedSpecialties : undefined,
-      };
-
-      await createTeacher(teacherData);
-      navigate('/teachers', { 
-        state: { message: 'Professor criado com sucesso!' }
-      });
-    } catch (err) {
-      console.error('Failed to create teacher:', err);
-    }
-  };
-
-  const nextStep = async (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    // Steps
+    currentStep,
+    totalSteps,
+    nextStep,
+    prevStep,
+    getStepTitle,
     
-    const fieldsToValidate = getFieldsForStep(currentStep);
-    const isValid = await trigger(fieldsToValidate);
+    // Data
+    belts,
+    availableSpecialties,
+    getMaxDegree,
     
-    if (isValid && currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = (e?: React.MouseEvent) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
+    // Handlers
+    onSubmit,
+    handleSpecialtyToggle,
+    handlePhoneChange,
+    handleCPFChange,
+    goBack,
     
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const getFieldsForStep = (step: number): (keyof CreateTeacherForm)[] => {
-    switch (step) {
-      case 1:
-        return ['full_name', 'email', 'phone'];
-      case 2:
-        return []; // Step 2 fields are all optional
-      case 3:
-        return ['status'];
-      default:
-        return [];
-    }
-  };
-
-  const getStepTitle = (step: number): string => {
-    switch (step) {
-      case 1: return 'Informações Básicas';
-      case 2: return 'Qualificações e Especialidades';
-      case 3: return 'Configurações do Professor';
-      default: return '';
-    }
-  };
-
-  const handleSpecialtyToggle = (specialty: string) => {
-    setSelectedSpecialties(prev => {
-      if (prev.includes(specialty)) {
-        return prev.filter(s => s !== specialty);
-      } else {
-        return [...prev, specialty];
-      }
-    });
-  };
+    // State
+    isCreating,
+    error,
+    clearError,
+  } = useCreateTeacher();
 
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center mb-8">
@@ -211,11 +90,7 @@ const CreateTeacher: React.FC = () => {
             <div className="flex items-center space-x-4">
               <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  navigate('/teachers');
-                }}
+                onClick={goBack}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <ArrowLeft size={20} />
@@ -245,11 +120,7 @@ const CreateTeacher: React.FC = () => {
               </span>
               <button 
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  clearError();
-                }}
+                onClick={clearError}
                 className="text-red-500 hover:text-red-700"
               >
                 ×
@@ -259,8 +130,16 @@ const CreateTeacher: React.FC = () => {
 
           <form onSubmit={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             if (currentStep === totalSteps) {
               handleSubmit(onSubmit)(e);
+            }
+          }} onKeyDown={(e) => {
+            // Prevent form submission on Enter key unless we're on the last step
+            if (e.key === 'Enter' && currentStep < totalSteps) {
+              e.preventDefault();
+              e.stopPropagation();
+              nextStep();
             }
           }}>
             {/* Step 1: Basic Information */}
@@ -277,10 +156,7 @@ const CreateTeacher: React.FC = () => {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         errors.full_name ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      {...register('full_name', { 
-                        required: 'Nome completo é obrigatório',
-                        minLength: { value: 2, message: 'Nome deve ter pelo menos 2 caracteres' }
-                      })}
+                      {...register('full_name')}
                       placeholder="Digite o nome completo do professor"
                     />
                     {errors.full_name && (
@@ -301,13 +177,7 @@ const CreateTeacher: React.FC = () => {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      {...register('email', { 
-                        required: 'E-mail é obrigatório',
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'E-mail inválido'
-                        }
-                      })}
+                      {...register('email')}
                       placeholder="professor@email.com"
                     />
                     {errors.email && (
@@ -328,10 +198,10 @@ const CreateTeacher: React.FC = () => {
                       className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                         errors.phone ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      {...register('phone', { 
-                        required: 'Telefone é obrigatório'
-                      })}
+                      {...register('phone')}
+                      onChange={handlePhoneChange}
                       placeholder="(11) 99999-9999"
+                      maxLength={15}
                     />
                     {errors.phone && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -351,6 +221,12 @@ const CreateTeacher: React.FC = () => {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       {...register('birth_date')}
                     />
+                    {errors.birth_date && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" />
+                        {errors.birth_date.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -360,10 +236,20 @@ const CreateTeacher: React.FC = () => {
                     </label>
                     <input
                       type="text"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.cpf ? 'border-red-500' : 'border-gray-300'
+                      }`}
                       {...register('cpf')}
+                      onChange={handleCPFChange}
                       placeholder="000.000.000-00"
+                      maxLength={14}
                     />
+                    {errors.cpf && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" />
+                        {errors.cpf.message}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -401,12 +287,10 @@ const CreateTeacher: React.FC = () => {
                       type="number"
                       min="1"
                       max={getMaxDegree()}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                      {...register('belt_degree', { 
-                        valueAsNumber: true,
-                        min: { value: 1, message: 'Grau mínimo é 1' },
-                        max: { value: getMaxDegree(), message: `Grau máximo é ${getMaxDegree()}` }
-                      })}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.belt_degree ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      {...register('belt_degree', { valueAsNumber: true })}
                     />
                     {errors.belt_degree && (
                       <p className="mt-1 text-sm text-red-600 flex items-center">
@@ -429,7 +313,7 @@ const CreateTeacher: React.FC = () => {
                         type="button"
                         onClick={() => handleSpecialtyToggle(specialty)}
                         className={`p-3 text-sm border-2 rounded-lg transition-all duration-200 ${
-                          selectedSpecialties.includes(specialty)
+                          (watch('specialties') || []).includes(specialty as any)
                             ? 'border-blue-600 bg-blue-50 text-blue-700'
                             : 'border-gray-300 hover:border-gray-400'
                         }`}
@@ -438,11 +322,11 @@ const CreateTeacher: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  {selectedSpecialties.length > 0 && (
+                  {(watch('specialties') || []).length > 0 && (
                     <div className="mt-3">
                       <p className="text-sm text-gray-600 mb-2">Especialidades selecionadas:</p>
                       <div className="flex flex-wrap gap-2">
-                        {selectedSpecialties.map((specialty) => (
+                        {(watch('specialties') || []).map((specialty) => (
                           <span
                             key={specialty}
                             className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
@@ -471,11 +355,10 @@ const CreateTeacher: React.FC = () => {
                     type="number"
                     step="0.01"
                     min="0"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                    {...register('hourly_rate', { 
-                      valueAsNumber: true,
-                      min: { value: 0, message: 'Valor deve ser positivo' }
-                    })}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                      errors.hourly_rate ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    {...register('hourly_rate', { valueAsNumber: true })}
                     placeholder="0.00"
                   />
                   {errors.hourly_rate && (
@@ -512,8 +395,8 @@ const CreateTeacher: React.FC = () => {
                     <p><strong>E-mail:</strong> {watch('email') || 'Não informado'}</p>
                     <p><strong>Telefone:</strong> {watch('phone') || 'Não informado'}</p>
                     <p><strong>Faixa:</strong> {watch('belt')} {watch('belt_degree')}º Dan</p>
-                    {selectedSpecialties.length > 0 && (
-                      <p><strong>Especialidades:</strong> {selectedSpecialties.join(', ')}</p>
+                    {(watch('specialties') || []).length > 0 && (
+                      <p><strong>Especialidades:</strong> {(watch('specialties') || []).join(', ')}</p>
                     )}
                     {watch('hourly_rate') && (
                       <p><strong>Valor por Hora:</strong> R$ {Number(watch('hourly_rate')).toFixed(2)}</p>
@@ -528,7 +411,7 @@ const CreateTeacher: React.FC = () => {
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
-                onClick={(e) => prevStep(e)}
+                onClick={prevStep}
                 disabled={currentStep === 1}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
@@ -538,7 +421,11 @@ const CreateTeacher: React.FC = () => {
               {currentStep < totalSteps ? (
                 <button
                   type="button"
-                  onClick={(e) => nextStep(e)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    nextStep();
+                  }}
                   className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Próximo
@@ -547,6 +434,9 @@ const CreateTeacher: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isCreating}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                   className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
                 >
                   {isCreating ? (
@@ -570,4 +460,4 @@ const CreateTeacher: React.FC = () => {
   );
 };
 
-export default CreateTeacher; 
+export default CreateTeacherScreen; 
