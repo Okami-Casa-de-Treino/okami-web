@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { paymentService } from '../services/paymentService';
-import { Payment } from '../types';
+import { Payment, ApiResponse } from '../types';
 
 interface PaymentFilters {
   studentId?: string;
@@ -65,7 +65,7 @@ interface PaymentState {
   markAsPaid: (id: string, paymentMethod: string, paymentDate?: string) => Promise<Payment | null>;
   fetchOverduePayments: () => Promise<void>;
   fetchStudentPayments: (studentId: string) => Promise<void>;
-  generateMonthlyPayments: (reference_month: string, due_day: number) => Promise<Payment[]>;
+  generateMonthlyPayments: (reference_month: string, due_day: number) => Promise<ApiResponse<Payment[]>>;
   
   // Utility actions
   clearError: () => void;
@@ -354,7 +354,7 @@ export const usePaymentStore = create<PaymentState>()(
         }));
 
         try {
-          const payments = await paymentService.generateMonthlyPayments(reference_month, due_day);
+          const response = await paymentService.generateMonthlyPayments(reference_month, due_day);
           
           set((state) => ({
             loading: { ...state.loading, generateMonthly: false },
@@ -364,13 +364,17 @@ export const usePaymentStore = create<PaymentState>()(
           await get().fetchPayments();
           await get().fetchOverduePayments();
           
-          return Array.isArray(payments) ? payments : [];
+          return response;
         } catch (error) {
           set((state) => ({
             error: error instanceof Error ? error.message : 'Erro ao gerar pagamentos mensais',
             loading: { ...state.loading, generateMonthly: false },
           }));
-          return [];
+          return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Erro ao gerar pagamentos mensais',
+            data: []
+          };
         }
       },
 

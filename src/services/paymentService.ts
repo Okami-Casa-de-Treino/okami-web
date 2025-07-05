@@ -97,14 +97,14 @@ class PaymentServiceImpl implements IPaymentService {
     return response.data.data;
   }
 
-  async generateMonthlyPayments(reference_month: string, due_day: number): Promise<Payment[]> {
+  async generateMonthlyPayments(reference_month: string, due_day: number): Promise<ApiResponse<Payment[]>> {
     const data = {
       reference_month,
       due_day,
     };
     
     const response = await httpClient.post<ApiResponse<Payment[]>>(`${this.baseUrl}/generate-monthly`, data);
-    return response.data.data;
+    return response.data;
   }
 }
 

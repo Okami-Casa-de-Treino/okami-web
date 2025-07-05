@@ -10,10 +10,27 @@ interface GenerateMonthlyData {
   due_day: number;
 }
 
+interface GenerateMonthlyResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    reference_month: string;
+    due_date: string;
+    total_active_students: number;
+    students_with_existing_payment: number;
+    payments_generated: number;
+    debug_info?: {
+      target_year: number;
+      target_month: number;
+      students_with_payments: string[];
+    };
+  };
+}
+
 interface GenerateMonthlyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: GenerateMonthlyData) => Promise<boolean>;
+  onSubmit: (data: GenerateMonthlyData) => Promise<GenerateMonthlyResponse>;
   loading: boolean;
 }
 
@@ -38,15 +55,25 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
     };
     
     try {
-      const success = await onSubmit(apiData);
-      if (success) {
-        toast.success('Mensalidades geradas com sucesso!', {
-          autoClose: 5000,
-          position: 'top-right'
-        });
+      const response = await onSubmit(apiData);
+      
+      if (response.success) {
+        // Check if payments were actually generated
+        if (response.data && response.data.payments_generated > 0) {
+          toast.success(`Mensalidades geradas com sucesso! ${response.data.payments_generated} cobranças criadas.`, {
+            autoClose: 5000,
+            position: 'top-right'
+          });
+        } else {
+          // Show the specific message from the API when no payments were generated
+          toast.info(response.message, {
+            autoClose: 7000,
+            position: 'top-right'
+          });
+        }
         onClose();
       } else {
-        toast.error('Erro ao gerar mensalidades. Tente novamente.', {
+        toast.error(response.message || 'Erro ao gerar mensalidades. Tente novamente.', {
           autoClose: 5000,
           position: 'top-right'
         });
@@ -84,7 +111,7 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
             <p className="text-sm text-blue-800">
               <strong>Atenção:</strong> Esta ação irá gerar cobranças mensais para todos os alunos ativos 
               do mês/ano selecionado. Certifique-se de que as mensalidades ainda não foram geradas 
-              para evitar duplicatas.
+              para evitar duplicatas. Verifique se o campo "mensalidade" está preenchido para cada aluno.
             </p>
           </div>
 

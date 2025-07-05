@@ -38,6 +38,23 @@ interface GenerateMonthlyData {
   due_day: number;
 }
 
+interface GenerateMonthlyResponse {
+  success: boolean;
+  message: string;
+  data: {
+    reference_month: string;
+    due_date: string;
+    total_active_students: number;
+    students_with_existing_payment: number;
+    payments_generated: number;
+    debug_info: {
+      target_year: number;
+      target_month: number;
+      students_with_payments: string[];
+    };
+  };
+}
+
 export const useFinancial = () => {
   // Store states
   const {
@@ -176,17 +193,29 @@ export const useFinancial = () => {
     }
   };
 
-  const handleGenerateMonthly = async (data: GenerateMonthlyData): Promise<boolean> => {
+  const handleGenerateMonthly = async (data: GenerateMonthlyData): Promise<GenerateMonthlyResponse> => {
     try {
       const result = await generateMonthlyPayments(data.reference_month, data.due_day);
-      if (result) {
-        setShowGenerateModal(false);
-        return true;
-      }
-      return false;
+      console.log('result', result);
+      return result as unknown as GenerateMonthlyResponse;
     } catch (error) {
       console.error('Error generating monthly payments:', error);
-      return false;
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'Erro ao gerar pagamentos mensais',
+        data: {
+          reference_month: '',
+          due_date: '',
+          total_active_students: 0,
+          students_with_existing_payment: 0,
+          payments_generated: 0,
+          debug_info: {
+            target_year: 0,
+            target_month: 0,
+            students_with_payments: []
+          }
+        }
+      };
     }
   };
 
