@@ -17,4 +17,7 @@ export { useCheckinStore, useCheckinSelectors } from './checkinStore';
 export { usePaymentStore } from './paymentStore';
 
 // Belt Progression Store
-export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProgressionStore'; 
+export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProgressionStore';
+
+// Sidebar Store
+export { useSidebarStore } from './sidebarStore'; 

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useAuthStore } from '../../stores/authStore';
-import { LogOut, User } from 'lucide-react';
+import { useSidebarStore } from '../../stores/sidebarStore';
+import { LogOut, User, Menu } from 'lucide-react';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
+  const { toggleSidebar } = useSidebarStore();
 
   const handleLogout = () => {
     logout();
@@ -11,7 +13,14 @@ const Header: React.FC = () => {
 
   return (
     <header className="bg-white border-b border-gray-200 px-8 h-16 flex items-center justify-between shadow-sm">
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
+        <button
+          onClick={toggleSidebar}
+          className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors duration-200"
+          aria-label="Toggle sidebar"
+        >
+          <Menu size={20} />
+        </button>
         <h1 className="text-2xl font-bold text-secondary tracking-tight">
           Okami Casa de Treino
         </h1>
