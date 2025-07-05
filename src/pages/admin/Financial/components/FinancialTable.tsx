@@ -12,7 +12,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Payment } from '../../../../types';
-import { formatDate } from '../../../../utils/dateUtils';
+import { formatDate, formatMonthYear } from '../../../../utils/dateUtils';
 
 interface Pagination {
   page: number;
@@ -225,7 +225,7 @@ export const FinancialTable: React.FC<FinancialTableProps> = ({
                           {payment.student?.full_name || 'Aluno não encontrado'}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {payment.reference_month} - {payment.notes || 'Mensalidade'}
+                          {formatMonthYear(payment.reference_month)} - {payment.notes || 'Mensalidade'}
                         </p>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ export const FinancialTable: React.FC<FinancialTableProps> = ({
                   <td className="py-4 px-6">
                     <p className="font-semibold text-gray-900">{formatCurrency(payment.amount)}</p>
                     {payment.due_date && (
-                      <p className="text-sm text-gray-500">Pago em {formatDate(payment.due_date)}</p>
+                      <p className="text-sm text-gray-500">Vencimento: {formatDate(payment.due_date)}</p>
                     )}
                     {payment.discount > 0 && (
                       <p className="text-sm text-green-600">Desconto: {formatCurrency(payment.discount)}</p>

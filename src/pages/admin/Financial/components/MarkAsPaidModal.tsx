@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { Payment } from '../../../../types';
+import { useToast } from '../../../../hooks/useToast';
 
 interface MarkAsPaidData {
   paymentMethod: 'cash' | 'card' | 'pix' | 'bank_transfer';
@@ -27,6 +28,8 @@ export const MarkAsPaidModal: React.FC<MarkAsPaidModalProps> = ({
     paymentDate: new Date().toISOString().split('T')[0]
   });
 
+  const { success, error: showError } = useToast();
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -37,9 +40,18 @@ export const MarkAsPaidModal: React.FC<MarkAsPaidModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const success = await onSubmit(payment.id, formData);
-    if (success) {
-      onClose();
+    try {
+      const isSuccess = await onSubmit(payment.id, formData);
+      if (isSuccess) {
+        success('Pagamento marcado como pago com sucesso!');
+        onClose();
+      } else {
+        showError('Erro ao marcar pagamento como pago');
+      }
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : 'Erro ao marcar pagamento como pago'
+      );
     }
   };
 
@@ -74,7 +86,7 @@ export const MarkAsPaidModal: React.FC<MarkAsPaidModalProps> = ({
                   {payment.student?.full_name || 'Aluno não encontrado'}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {payment.referenceMonth} - {payment.notes || 'Mensalidade'}
+                  {payment.reference_month} - {payment.notes || 'Mensalidade'}
                 </p>
               </div>
             </div>

@@ -53,7 +53,10 @@ export const useAdminDashboard = () => {
              paymentDate.getFullYear() === currentYear;
     });
     
-    const monthlyRevenue = monthlyPayments.reduce((total, payment) => total + payment.amount, 0);
+    const monthlyRevenue = monthlyPayments.reduce((total, payment) => {
+      const amount = typeof payment.amount === 'string' ? parseFloat(payment.amount) : (payment.amount || 0);
+      return total + amount;
+    }, 0);
     
     // Calculate pending payments
     const pendingPayments = payments.filter(payment => payment.status === 'pending');
