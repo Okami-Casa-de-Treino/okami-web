@@ -3,6 +3,7 @@ import { X, Loader2, Calendar } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import { useToast } from '../../../../hooks/useToast';
 
 interface GenerateMonthlyData {
   reference_month: string; // Format: YYYY-MM-DD (first day of month)
@@ -22,6 +23,7 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
   onSubmit,
   loading
 }) => {
+  const toast = useToast();
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1));
   const [dueDate, setDueDate] = useState(new Date(currentDate.getFullYear(), currentDate.getMonth(), 10));
@@ -35,9 +37,25 @@ export const GenerateMonthlyModal: React.FC<GenerateMonthlyModalProps> = ({
       due_day: dueDate.getDate()
     };
     
-    const success = await onSubmit(apiData);
-    if (success) {
-      onClose();
+    try {
+      const success = await onSubmit(apiData);
+      if (success) {
+        toast.success('Mensalidades geradas com sucesso!', {
+          autoClose: 5000,
+          position: 'top-right'
+        });
+        onClose();
+      } else {
+        toast.error('Erro ao gerar mensalidades. Tente novamente.', {
+          autoClose: 5000,
+          position: 'top-right'
+        });
+      }
+    } catch (error) {
+      toast.error('Erro inesperado ao gerar mensalidades. Tente novamente.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
     }
   };
 

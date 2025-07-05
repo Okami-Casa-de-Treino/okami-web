@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useStudentStore } from '../../../../stores/studentStore';
+import { useToast } from '../../../../hooks/useToast';
 
 const createPaymentSchema = z.object({
   student_id: z.string().min(1, 'Aluno é obrigatório'),
@@ -31,6 +32,7 @@ export const CreatePaymentModal: React.FC<CreatePaymentModalProps> = ({
   loading,
   selectedStudentId
 }) => {
+  const toast = useToast();
   const { students, fetchStudents } = useStudentStore();
   
   const {
@@ -73,10 +75,26 @@ export const CreatePaymentModal: React.FC<CreatePaymentModalProps> = ({
   const onFormSubmit = async (data: CreatePaymentFormData) => {
     console.log('Form data being submitted:', data);
     
-    const success = await onSubmit(data);
-    if (success) {
-      reset();
-      onClose();
+    try {
+      const success = await onSubmit(data);
+      if (success) {
+        toast.success('Cobrança criada com sucesso!', {
+          autoClose: 5000,
+          position: 'top-right'
+        });
+        reset();
+        onClose();
+      } else {
+        toast.error('Erro ao criar cobrança. Tente novamente.', {
+          autoClose: 5000,
+          position: 'top-right'
+        });
+      }
+    } catch (error) {
+      toast.error('Erro inesperado ao criar cobrança. Tente novamente.', {
+        autoClose: 5000,
+        position: 'top-right'
+      });
     }
   };
 
