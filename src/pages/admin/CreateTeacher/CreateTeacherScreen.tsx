@@ -132,6 +132,7 @@ const CreateTeacherScreen: React.FC = () => {
             e.preventDefault();
             e.stopPropagation();
             if (currentStep === totalSteps) {
+              //@ts-expect-error - onSubmit is not typed
               handleSubmit(onSubmit)(e);
             }
           }} onKeyDown={(e) => {
@@ -313,7 +314,7 @@ const CreateTeacherScreen: React.FC = () => {
                         type="button"
                         onClick={() => handleSpecialtyToggle(specialty)}
                         className={`p-3 text-sm border-2 rounded-lg transition-all duration-200 ${
-                          (watch('specialties') || []).includes(specialty as any)
+                          (watch('specialties') || []).includes(specialty)
                             ? 'border-blue-600 bg-blue-50 text-blue-700'
                             : 'border-gray-300 hover:border-gray-400'
                         }`}

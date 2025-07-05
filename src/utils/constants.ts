@@ -51,7 +51,7 @@ export const SPECIALTIES = [
   'Judô',
   'Aikido',
   'Taekwondo',
-  'Jiu-Jitsu',
+  'Jiu Jitsu',
   'Kung Fu',
   'Capoeira',
   'Muay Thai',

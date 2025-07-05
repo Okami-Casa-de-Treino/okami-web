@@ -1,10 +1,10 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { useTeacherStore } from '../../../../stores';
+import { useToast } from '../../../../hooks/useToast';
 import { Teacher } from '../../../../types';
 import { 
   createTeacherSchema, 
@@ -16,14 +16,19 @@ import {
   formatPhoneNumber, 
   formatCPF
 } from '../../../../utils/masks';
+import { SPECIALTIES } from '../../../../utils/constants';
 
 type SpecialtyType = z.infer<typeof SpecialtiesEnum>;
 
 export const useCreateTeacher = () => {
   const navigate = useNavigate();
   const { createTeacher, isCreating, error, clearError } = useTeacherStore();
+  const { success, error: showError } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const totalSteps = 3;
+
+  console.log(error);
 
   const form = useForm<CreateTeacherFormData>({
     //@ts-expect-error - resolver is not typed
@@ -61,21 +66,8 @@ export const useCreateTeacher = () => {
     'Vermelha'
   ];
 
-  // Common martial arts specialties
-  const availableSpecialties = [
-    'Jiu Jitsu',
-    'Karatê',
-    'Judô',
-    'Taekwondo',
-    'Muay Thai',
-    'Boxe',
-    'MMA',
-    'Defesa Pessoal',
-    'Kung Fu',
-    'Capoeira',
-    'Krav Maga',
-  ];
 
+  console.log('errors', errors);
   const getMaxDegree = () => {
     const currentBelt = watch('belt');
     
@@ -93,6 +85,20 @@ export const useCreateTeacher = () => {
     }
   };
 
+  // Handle success/error after createTeacher completes
+  useEffect(() => {
+    if (isSubmitting && !isCreating) {
+      if (error) {
+        showError(error);
+        setIsSubmitting(false);
+      } else {
+        success('Professor criado com sucesso!');
+        navigate('/teachers');
+        setIsSubmitting(false);
+      }
+    }
+  }, [isSubmitting, isCreating, error, showError, success, navigate]);
+
   const onSubmit = async (data: CreateTeacherFormData) => {
     // Only allow submission if we're on the last step
     if (currentStep !== totalSteps) {
@@ -107,12 +113,18 @@ export const useCreateTeacher = () => {
         ...transformedData,
       };
 
+      // Clear any previous errors and set submitting state
+      clearError();
+      setIsSubmitting(true);
+
       await createTeacher(teacherData);
-      navigate('/teachers', { 
-        state: { message: 'Professor criado com sucesso!' }
-      });
+      
+      // The useEffect will handle success/error after the store updates
     } catch (err) {
-      // Error is handled by the store
+      // Handle validation or other errors
+      const errorMessage = 'Erro ao criar professor. Verifique os dados e tente novamente.';
+      showError(errorMessage);
+      setIsSubmitting(false);
       console.error('Error creating teacher:', err);
     }
   };
@@ -215,7 +227,7 @@ export const useCreateTeacher = () => {
     
     // Data
     belts,
-    availableSpecialties,
+    availableSpecialties: SPECIALTIES,
     getMaxDegree,
     
     // Handlers
