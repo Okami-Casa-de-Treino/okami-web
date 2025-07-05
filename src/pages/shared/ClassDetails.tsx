@@ -62,6 +62,7 @@ const ClassDetails: React.FC = () => {
     window.history.back();
   };
 
+  console.log('classData', classData?.student_classes);
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
@@ -185,6 +186,7 @@ const ClassDetails: React.FC = () => {
           classId={classData.id}
           className={classData.name}
           onStudentAssigned={handleStudentAssigned}
+          assignedStudents={classData.student_classes}
         />
       </div>
     </div>

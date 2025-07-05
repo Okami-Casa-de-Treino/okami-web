@@ -1,3 +1,5 @@
+import { StudentEnrollment } from "../pages/shared/ClassDetails/types";
+
 export interface Student {
   id: string;
   full_name: string;
@@ -57,6 +59,7 @@ export interface Class {
   status: 'active' | 'inactive';
   created_at: string;
   updated_at: string;
+  student_classes: StudentEnrollment[];
 }
 
 export interface StudentClass {

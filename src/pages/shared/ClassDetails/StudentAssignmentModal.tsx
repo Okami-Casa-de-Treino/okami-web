@@ -5,10 +5,10 @@ import {
   User, 
   Plus, 
   Minus, 
-  AlertCircle,
-  CheckCircle 
+  AlertCircle
 } from 'lucide-react';
 import { useStudentStore } from '../../../stores';
+import { useToast } from '../../../hooks/useToast';
 import { StudentEnrollment } from './types';
 
 interface StudentAssignmentModalProps {
@@ -30,8 +30,7 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAssigning, setIsAssigning] = useState(false);
-  const [assignmentError, setAssignmentError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [localEnrolledStudents, setLocalEnrolledStudents] = useState<Set<string>>(new Set());
 
   const {
     students,
@@ -42,15 +41,18 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
     error
   } = useStudentStore();
 
+  const { success, error: showError } = useToast();
+
   // Load students when modal opens
   useEffect(() => {
     if (isOpen) {
       fetchStudents({ limit: 100 });
       setSearchTerm('');
-      setAssignmentError(null);
-      setSuccessMessage(null);
+      // Initialize local enrolled students from props
+      const enrolledIds = new Set(assignedStudents?.map(enrollment => enrollment.student.id) || []);
+      setLocalEnrolledStudents(enrolledIds);
     }
-  }, [isOpen, fetchStudents]);
+  }, [isOpen, fetchStudents, assignedStudents]);
 
   // Filter students based on search term
   const filteredStudents = useMemo(() => {
@@ -64,36 +66,23 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
     );
   }, [students, searchTerm]);
 
-  // Separate assigned and unassigned students - extract student IDs from enrollment data
-  const assignedStudentIds = useMemo(() => 
-    new Set(assignedStudents?.map(enrollment => enrollment.student.id)), 
-    [assignedStudents]
-  );
-
-  const unassignedStudents = useMemo(() => 
-    filteredStudents.filter(student => !assignedStudentIds.has(student.id)),
-    [filteredStudents, assignedStudentIds]
-  );
-
-  const currentAssignedStudents = useMemo(() => 
-    filteredStudents.filter(student => assignedStudentIds.has(student.id)),
-    [filteredStudents, assignedStudentIds]
+  // Check if students are already assigned to the class using local state
+  const isStudentAssigned = useMemo(() => 
+    (studentId: string) => localEnrolledStudents.has(studentId),
+    [localEnrolledStudents]
   );
 
   const handleAssignStudent = async (studentId: string, studentName: string) => {
     setIsAssigning(true);
-    setAssignmentError(null);
-    setSuccessMessage(null);
 
     try {
       await enrollInClass(studentId, classId);
-      setSuccessMessage(`${studentName} foi matriculado na aula com sucesso!`);
+      // Update local state immediately
+      setLocalEnrolledStudents(prev => new Set([...prev, studentId]));
+      success(`${studentName} foi matriculado na aula com sucesso!`);
       onStudentAssigned?.();
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
-      setAssignmentError(
+      showError(
         err instanceof Error ? err.message : 'Erro ao matricular aluno na aula'
       );
     } finally {
@@ -103,18 +92,19 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
 
   const handleUnassignStudent = async (studentId: string, studentName: string) => {
     setIsAssigning(true);
-    setAssignmentError(null);
-    setSuccessMessage(null);
 
     try {
       await unenrollFromClass(studentId, classId);
-      setSuccessMessage(`${studentName} foi removido da aula com sucesso!`);
+      // Update local state immediately
+      setLocalEnrolledStudents(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(studentId);
+        return newSet;
+      });
+      success(`${studentName} foi removido da aula com sucesso!`);
       onStudentAssigned?.();
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
-      setAssignmentError(
+      showError(
         err instanceof Error ? err.message : 'Erro ao remover aluno da aula'
       );
     } finally {
@@ -124,8 +114,6 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
 
   const handleClose = () => {
     setSearchTerm('');
-    setAssignmentError(null);
-    setSuccessMessage(null);
     onClose();
   };
 
@@ -166,32 +154,18 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
           </div>
         </div>
 
-        {/* Messages */}
-        {(assignmentError || error || successMessage) && (
+        {/* Error from store */}
+        {error && (
           <div className="px-4 sm:px-6 pt-4 flex-shrink-0">
-            {(assignmentError || error) && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
-                  <div className="min-w-0">
-                    <h3 className="text-red-800 font-medium">Erro</h3>
-                    <p className="text-red-600 text-sm">{assignmentError || error}</p>
-                  </div>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-3">
+                <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
+                <div className="min-w-0">
+                  <h3 className="text-red-800 font-medium">Erro</h3>
+                  <p className="text-red-600 text-sm">{error}</p>
                 </div>
               </div>
-            )}
-            
-            {successMessage && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="text-green-600 flex-shrink-0" size={20} />
-                  <div className="min-w-0">
-                    <h3 className="text-green-800 font-medium">Sucesso</h3>
-                    <p className="text-green-600 text-sm">{successMessage}</p>
-                  </div>
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         )}
 
@@ -203,92 +177,40 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
             </div>
           ) : (
             <div className="h-full overflow-y-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 p-4 sm:p-6">
-                {/* Unassigned Students */}
-                <div className="flex flex-col min-h-0">
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4 flex-shrink-0">
-                    Alunos Disponíveis ({unassignedStudents.length})
-                  </h3>
-                  <div className="flex-1 min-h-0 border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="h-full overflow-y-auto">
-                      {unassignedStudents.length > 0 ? (
-                        <div className="divide-y divide-gray-200">
-                          {unassignedStudents.map((student) => (
-                            <div key={student.id} className="p-3 sm:p-4 hover:bg-gray-50">
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-3 min-w-0 flex-1">
-                                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <User size={16} className="text-gray-600" />
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
-                                      {student.full_name}
-                                    </p>
-                                    <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                      {student.email || student.phone}
-                                    </p>
-                                    {student.belt && (
-                                      <p className="text-xs text-gray-400">
-                                        Faixa {student.belt}
-                                        {student.belt_degree && ` ${student.belt_degree}º`}
-                                      </p>
-                                    )}
-                                  </div>
+              <div className="p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
+                  Alunos ({filteredStudents.length})
+                </h3>
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  {filteredStudents.length > 0 ? (
+                    <div className="divide-y divide-gray-200">
+                      {filteredStudents.map((student) => {
+                        const isAssigned = isStudentAssigned(student.id);
+                        return (
+                          <div key={student.id} className="p-3 sm:p-4 hover:bg-gray-50">
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                  isAssigned ? 'bg-green-100' : 'bg-gray-100'
+                                }`}>
+                                  <User size={16} className={isAssigned ? 'text-green-600' : 'text-gray-600'} />
                                 </div>
-                                <button
-                                  onClick={() => handleAssignStudent(student.id, student.full_name)}
-                                  disabled={isAssigning}
-                                  className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-600 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex-shrink-0"
-                                >
-                                  <Plus size={14} />
-                                  <span className="hidden sm:inline">Matricular</span>
-                                </button>
+                                <div className="min-w-0 flex-1">
+                                  <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                                    {student.full_name}
+                                  </p>
+                                  <p className="text-xs sm:text-sm text-gray-500 truncate">
+                                    {student.email || student.phone}
+                                  </p>
+                                  {student.belt && (
+                                    <p className="text-xs text-gray-400">
+                                      Faixa {student.belt}
+                                      {student.belt_degree && ` ${student.belt_degree}º`}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center h-32">
-                          <p className="text-gray-500 text-sm text-center px-4">
-                            {searchTerm ? 'Nenhum aluno encontrado' : 'Todos os alunos já estão matriculados'}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Assigned Students */}
-                <div className="flex flex-col min-h-0">
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4 flex-shrink-0">
-                    Alunos Matriculados ({currentAssignedStudents.length})
-                  </h3>
-                  <div className="flex-1 min-h-0 border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="h-full overflow-y-auto">
-                      {currentAssignedStudents.length > 0 ? (
-                        <div className="divide-y divide-gray-200">
-                          {currentAssignedStudents.map((student) => (
-                            <div key={student.id} className="p-3 sm:p-4 hover:bg-gray-50">
-                              <div className="flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-3 min-w-0 flex-1">
-                                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                    <User size={16} className="text-green-600" />
-                                  </div>
-                                  <div className="min-w-0 flex-1">
-                                    <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
-                                      {student.full_name}
-                                    </p>
-                                    <p className="text-xs sm:text-sm text-gray-500 truncate">
-                                      {student.email || student.phone}
-                                    </p>
-                                    {student.belt && (
-                                      <p className="text-xs text-gray-400">
-                                        Faixa {student.belt}
-                                        {student.belt_degree && ` ${student.belt_degree}º`}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
+                              {isAssigned ? (
                                 <button
                                   onClick={() => handleUnassignStudent(student.id, student.full_name)}
                                   disabled={isAssigning}
@@ -297,19 +219,28 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
                                   <Minus size={14} />
                                   <span className="hidden sm:inline">Remover</span>
                                 </button>
-                              </div>
+                              ) : (
+                                <button
+                                  onClick={() => handleAssignStudent(student.id, student.full_name)}
+                                  disabled={isAssigning}
+                                  className="flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-600 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex-shrink-0"
+                                >
+                                  <Plus size={14} />
+                                  <span className="hidden sm:inline">Matricular</span>
+                                </button>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center h-32">
-                          <p className="text-gray-500 text-sm text-center px-4">
-                            {searchTerm ? 'Nenhum aluno matriculado encontrado' : 'Nenhum aluno matriculado'}
-                          </p>
-                        </div>
-                      )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-32">
+                      <p className="text-gray-500 text-sm text-center px-4">
+                        {searchTerm ? 'Nenhum aluno encontrado' : 'Nenhum aluno disponível'}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
