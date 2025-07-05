@@ -142,8 +142,6 @@ export const FinancialTable: React.FC<FinancialTableProps> = ({
       .toUpperCase();
   };
 
-  console.log(payments);
-
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

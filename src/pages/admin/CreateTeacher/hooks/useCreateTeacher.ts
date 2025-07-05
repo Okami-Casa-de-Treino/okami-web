@@ -28,8 +28,6 @@ export const useCreateTeacher = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const totalSteps = 3;
 
-  console.log(error);
-
   const form = useForm<CreateTeacherFormData>({
     //@ts-expect-error - resolver is not typed
     resolver: zodResolver(createTeacherSchema),
@@ -67,7 +65,6 @@ export const useCreateTeacher = () => {
   ];
 
 
-  console.log('errors', errors);
   const getMaxDegree = () => {
     const currentBelt = watch('belt');
     
@@ -102,7 +99,6 @@ export const useCreateTeacher = () => {
   const onSubmit = async (data: CreateTeacherFormData) => {
     // Only allow submission if we're on the last step
     if (currentStep !== totalSteps) {
-      console.log('Preventing submission - not on last step');
       return;
     }
 

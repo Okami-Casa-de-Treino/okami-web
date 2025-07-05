@@ -73,7 +73,6 @@ export const CreatePaymentModal: React.FC<CreatePaymentModalProps> = ({
   }, [isOpen, fetchStudents, selectedStudentId, setValue]);
 
   const onFormSubmit = async (data: CreatePaymentFormData) => {
-    console.log('Form data being submitted:', data);
     
     try {
       const success = await onSubmit(data);

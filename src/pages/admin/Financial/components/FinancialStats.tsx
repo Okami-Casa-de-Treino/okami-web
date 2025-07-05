@@ -24,7 +24,6 @@ export const FinancialStats: React.FC<FinancialStatsProps> = ({
       currency: 'BRL'
     }).format(amount);
   };
-  console.log('stats', stats);
 
   if (loading) {
     return (

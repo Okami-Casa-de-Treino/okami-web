@@ -3,6 +3,7 @@ import { useAuthStore } from '../../stores/authStore';
 import StudentDashboard from '../student/StudentDashboard';
 import TeacherDashboard from '../teacher/TeacherDashboard';
 import { Users, UserCheck, Calendar, CheckSquare, DollarSign, AlertTriangle, TrendingUp, Clock } from 'lucide-react';
+import { useAdminDashboard } from './hooks/useAdminDashboard';
 
 interface StatCard {
   title: string;
@@ -14,71 +15,58 @@ interface StatCard {
 }
 
 const AdminDashboard: React.FC = () => {
-  // Mock data - replace with actual API calls
+  const { stats: dashboardStats, recentActivities, upcomingClasses, isLoading } = useAdminDashboard();
+
+  // Map dashboard stats to StatCard format
   const stats: StatCard[] = [
     {
       title: 'Total de Alunos',
-      value: 142,
+      value: dashboardStats[0]?.value || 0,
       icon: <Users size={24} />,
       color: 'blue',
-      description: '12 novos este mês',
-      trend: '+8.2%'
+      description: dashboardStats[0]?.description || '',
+      trend: dashboardStats[0]?.trend || '0'
     },
     {
       title: 'Professores Ativos',
-      value: 8,
+      value: dashboardStats[1]?.value || 0,
       icon: <UserCheck size={24} />,
       color: 'green',
-      description: 'Todos disponíveis',
-      trend: '100%'
+      description: dashboardStats[1]?.description || '',
+      trend: dashboardStats[1]?.trend || '0%'
     },
     {
-      title: 'Aulas Hoje',
-      value: 6,
+      title: 'Aulas Ativas',
+      value: dashboardStats[2]?.value || 0,
       icon: <Calendar size={24} />,
       color: 'purple',
-      description: '2 em andamento',
-      trend: '33%'
+      description: dashboardStats[2]?.description || '',
+      trend: dashboardStats[2]?.trend || '0%'
     },
     {
       title: 'Check-ins Hoje',
-      value: 45,
+      value: dashboardStats[3]?.value || 0,
       icon: <CheckSquare size={24} />,
       color: 'orange',
-      description: 'Última hora: 3',
-      trend: '+12%'
+      description: dashboardStats[3]?.description || '',
+      trend: dashboardStats[3]?.trend || '0'
     },
     {
       title: 'Receita Mensal',
-      value: 'R$ 28.500',
+      value: dashboardStats[4]?.value || 'R$ 0,00',
       icon: <DollarSign size={24} />,
       color: 'emerald',
-      description: '+15% vs mês anterior',
-      trend: '+15%'
+      description: dashboardStats[4]?.description || '',
+      trend: dashboardStats[4]?.trend || 'R$ 0,00'
     },
     {
       title: 'Pagamentos Pendentes',
-      value: 23,
+      value: dashboardStats[5]?.value || 0,
       icon: <AlertTriangle size={24} />,
       color: 'red',
-      description: '8 em atraso',
-      trend: '-5%'
+      description: dashboardStats[5]?.description || '',
+      trend: dashboardStats[5]?.trend || '0'
     }
-  ];
-
-  const recentActivities = [
-    { time: '10:30', activity: 'João Silva fez check-in na aula de Judô', type: 'checkin' },
-    { time: '10:15', activity: 'Maria Santos pagou mensalidade', type: 'payment' },
-    { time: '09:45', activity: 'Novo aluno cadastrado: Pedro Lima', type: 'student' },
-    { time: '09:30', activity: 'Aula de Karatê iniciada', type: 'class' },
-    { time: '09:00', activity: 'Professor Carlos chegou', type: 'teacher' }
-  ];
-
-  const upcomingClasses = [
-    { time: '11:00', name: 'Karatê Infantil', teacher: 'Sensei Carlos', students: 15, status: 'next' },
-    { time: '14:00', name: 'Judô Adulto', teacher: 'Sensei Ana', students: 22, status: 'scheduled' },
-    { time: '16:00', name: 'Aikido', teacher: 'Sensei Roberto', students: 18, status: 'scheduled' },
-    { time: '18:00', name: 'Karatê Avançado', teacher: 'Sensei Carlos', students: 12, status: 'scheduled' }
   ];
 
   const getColorClasses = (color: string) => {
@@ -92,6 +80,28 @@ const AdminDashboard: React.FC = () => {
     };
     return colors[color as keyof typeof colors] || colors.blue;
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p className="text-gray-600 mt-1">Visão geral do sistema</p>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 animate-pulse">
+              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/2 mb-2"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -171,13 +181,13 @@ const AdminDashboard: React.FC = () => {
             {upcomingClasses.map((classItem, index) => (
               <div key={index} className="flex items-center gap-4 p-4 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all">
                 <div className="flex-shrink-0">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-semibold text-sm ${
-                    classItem.status === 'next' 
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
-                      : 'bg-gray-100 text-gray-600'
-                  }`}>
-                    {classItem.time}
-                  </div>
+                                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center font-semibold text-sm ${
+                      classItem.status === 'next' 
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {classItem.time}
+                    </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <h4 className="font-semibold text-gray-900">{classItem.name}</h4>

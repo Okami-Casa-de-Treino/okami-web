@@ -2,11 +2,13 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
 
 // Configure dayjs
 dayjs.locale('pt-br');
 dayjs.extend(relativeTime);
 dayjs.extend(customParseFormat);
+dayjs.extend(utc);
 
 /**
  * Format date to Brazilian format (DD/MM/YYYY)
@@ -14,6 +16,8 @@ dayjs.extend(customParseFormat);
 export const formatDate = (date: string | Date): string => {
   return dayjs(date).format('DD/MM/YYYY');
 };
+
+
 
 /**
  * Format date and time to Brazilian format (DD/MM/YYYY HH:mm)
@@ -26,6 +30,10 @@ export const formatDateTime = (date: string | Date): string => {
  * Format time only (HH:mm)
  */
 export const formatTime = (date: string | Date): string => {
+  // If it's an ISO string with timezone, use UTC to avoid timezone conversion
+  if (typeof date === 'string' && date.includes('T') && date.includes('Z')) {
+    return dayjs.utc(date).format('HH:mm');
+  }
   return dayjs(date).format('HH:mm');
 };
 
@@ -49,6 +57,9 @@ export const formatLongDate = (date: string | Date): string => {
 export const formatShortDateWithWeekday = (date: string | Date): string => {
   return dayjs(date).format('ddd, DD/MM');
 };
+
+
+
 
 /**
  * Calculate age from birth date

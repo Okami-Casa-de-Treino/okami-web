@@ -67,7 +67,6 @@ export const useCreateStudent = () => {
   const onSubmit = async (data: CreateStudentFormData) => {
     // Only allow submission if we're on the last step
     if (currentStep !== totalSteps) {
-      console.log('Preventing submission - not on last step');
       return;
     }
 
@@ -170,8 +169,6 @@ export const useCreateStudent = () => {
   const goBack = () => {
     navigate('/students');
   };
-
-  console.log(errors);
 
   return {
     // Form

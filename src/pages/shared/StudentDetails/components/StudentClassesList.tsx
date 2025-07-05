@@ -27,7 +27,6 @@ export const StudentClassesList: React.FC<StudentClassesListProps> = ({
   classes,
   onRefresh,
 }) => {
-  console.log('classes', classes);
   const getStatusColor = (status: string): string => {
     switch (status) {
       case 'active':

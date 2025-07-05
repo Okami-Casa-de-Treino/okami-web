@@ -19,8 +19,6 @@ export const StudentBeltProgressionInfo: React.FC<StudentBeltProgressionInfoProp
   const { fetchStudentProgress, clearStudentProgress } = useBeltProgressionStore();
   const { studentProgress, isLoadingProgress, error } = useBeltProgressionSelectors();
 
-  console.log('studentProgress', studentProgress);
-
   useEffect(() => {
     if (student.id) {
       fetchStudentProgress(student.id);

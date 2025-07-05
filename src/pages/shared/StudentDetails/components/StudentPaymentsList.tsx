@@ -38,7 +38,6 @@ export const StudentPaymentsList: React.FC<StudentPaymentsListProps> = ({
 
   const handleCreatePayment = async (modalData: CreatePaymentData): Promise<boolean> => {
     try {
-      console.log('Payment data being submitted:', modalData);
       
       const result = await createPayment(modalData);
       if (result) {

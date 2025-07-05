@@ -44,7 +44,6 @@ const Checkin: React.FC = () => {
   // Handle QR Code Scanner
   const handleQRScanner = () => {
     // TODO: Implement QR code scanner functionality
-    console.log('QR Scanner clicked');
   };
 
   // Handle Manual Checkin

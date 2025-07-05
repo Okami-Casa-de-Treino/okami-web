@@ -196,7 +196,6 @@ export const useFinancial = () => {
   const handleGenerateMonthly = async (data: GenerateMonthlyData): Promise<GenerateMonthlyResponse> => {
     try {
       const result = await generateMonthlyPayments(data.reference_month, data.due_day);
-      console.log('result', result);
       return result as unknown as GenerateMonthlyResponse;
     } catch (error) {
       console.error('Error generating monthly payments:', error);

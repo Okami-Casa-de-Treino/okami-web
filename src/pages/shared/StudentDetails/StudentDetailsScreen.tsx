@@ -11,9 +11,7 @@ import { StudentDetailsTabNavigation } from './components/StudentDetailsTabNavig
 import { ErrorDisplay } from './components/ErrorDisplay';
 import { useStudentDetails } from './hooks/useStudentDetails';
 
-const StudentDetailsScreen: React.FC = () => {
-  console.log('StudentDetailsScreen rendering');
-  
+const StudentDetailsScreen: React.FC = () => {  
   const {
     // Data
     student,
