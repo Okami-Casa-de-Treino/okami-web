@@ -66,7 +66,7 @@ const StudentAssignmentModal: React.FC<StudentAssignmentModalProps> = ({
 
   // Separate assigned and unassigned students - extract student IDs from enrollment data
   const assignedStudentIds = useMemo(() => 
-    new Set(assignedStudents.map(enrollment => enrollment.student.id)), 
+    new Set(assignedStudents?.map(enrollment => enrollment.student.id)), 
     [assignedStudents]
   );
 

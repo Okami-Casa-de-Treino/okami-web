@@ -184,7 +184,6 @@ const ClassDetails: React.FC = () => {
           onClose={handleCloseStudentAssignment}
           classId={classData.id}
           className={classData.name}
-          assignedStudents={students}
           onStudentAssigned={handleStudentAssigned}
         />
       </div>
