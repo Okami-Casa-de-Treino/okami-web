@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
+import { useToast } from '../../../hooks/useToast';
 import { Class, Teacher } from '../../../types';
 
 export interface CreateClassForm {
@@ -21,9 +22,11 @@ export const useCreateClass = () => {
   const navigate = useNavigate();
   const { createClass, isCreating, error, clearError } = useClassStore();
   const { fetchTeachers, teachers } = useTeacherStore();
+  const { success, error: showError } = useToast();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const totalSteps = 3;
 
   const form = useForm<CreateClassForm>({
@@ -82,6 +85,20 @@ export const useCreateClass = () => {
     setValue('days_of_week', selectedDays);
   }, [selectedDays, setValue]);
 
+  // Handle success/error after createClass completes
+  useEffect(() => {
+    if (isSubmitting && !isCreating) {
+      if (error) {
+        showError(error);
+        setIsSubmitting(false);
+      } else {
+        success('Aula criada com sucesso!');
+        navigate('/classes');
+        setIsSubmitting(false);
+      }
+    }
+  }, [isSubmitting, isCreating, error, showError, success, navigate]);
+
   const onSubmit = async (data: CreateClassForm) => {
     try {
       const classData: Omit<Class, 'id' | 'created_at' | 'updated_at'> = {
@@ -91,12 +108,18 @@ export const useCreateClass = () => {
         end_time: data.end_time, // API expects HH:MM format
       };
 
+      // Clear any previous errors and set submitting state
+      clearError();
+      setIsSubmitting(true);
+
       await createClass(classData);
-      navigate('/classes', { 
-        state: { message: 'Aula criada com sucesso!' }
-      });
+      
+      // The useEffect will handle success/error after the store updates
     } catch (err) {
-      // Error is handled by the store
+      // Handle validation or other errors
+      const errorMessage = 'Erro ao criar aula. Verifique os dados e tente novamente.';
+      showError(errorMessage);
+      setIsSubmitting(false);
       console.error('Failed to create class:', err);
     }
   };
