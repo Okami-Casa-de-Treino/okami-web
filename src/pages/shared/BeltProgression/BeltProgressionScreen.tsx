@@ -21,6 +21,7 @@ const BeltProgressionScreen: React.FC = () => {
     fetchPromotions
   } = useBeltProgression();
 
+
   return (
     <div className="space-y-6">
       <BeltProgressionHeader />

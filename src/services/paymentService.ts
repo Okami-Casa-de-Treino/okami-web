@@ -1,6 +1,6 @@
 import { Payment, PaginatedResponse, FilterParams, ApiResponse } from '../types';
 import { httpClient } from './httpClient';
-import { IPaymentService } from './interfaces';
+import { IPaymentService } from '../types/interfaces';
 
 export interface PaymentResponse {
   data: Payment;

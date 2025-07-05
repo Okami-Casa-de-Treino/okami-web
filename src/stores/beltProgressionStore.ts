@@ -202,7 +202,7 @@ export const useBeltProgressionStore = create<BeltProgressionStore>()(
         try {
           const overview = await beltProgressionService.getBeltOverview();
           set({
-            beltOverview: overview,
+            beltOverview: overview.data,
             isLoadingOverview: false,
           });
         } catch (error) {

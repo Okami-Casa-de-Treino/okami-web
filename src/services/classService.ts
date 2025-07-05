@@ -1,6 +1,6 @@
 import { Class, PaginatedResponse, FilterParams, Student, Checkin, ApiResponse } from '../types';
 import { httpClient } from './httpClient';
-import { IClassService } from './interfaces';
+import { IClassService } from '../types/interfaces';
 import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
 export interface ClassResponse {

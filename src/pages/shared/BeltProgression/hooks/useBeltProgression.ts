@@ -43,14 +43,12 @@ export const useBeltProgression = () => {
 
   // Handle promote student
   const handlePromoteStudent = useCallback(async (data: PromoteStudentData) => {
-    try {
+    
       const result = await promoteStudent(data);
       // Refresh overview after promotion
       await fetchBeltOverview();
       return result;
-    } catch (error) {
-      throw error;
-    }
+   
   }, [promoteStudent, fetchBeltOverview]);
 
   // Handle refresh

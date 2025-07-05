@@ -1,6 +1,6 @@
 import { Checkin, PaginatedResponse, FilterParams, ApiResponse } from '../types';
 import { httpClient } from './httpClient';
-import { ICheckinService } from './interfaces';
+import { ICheckinService } from '../types/interfaces';
 
 export interface CheckinResponse {
   data: Checkin;

@@ -14,7 +14,7 @@ import {
   BeltOverview,
   PromoteStudentData,
   PromotionResponse
-} from '../types';
+} from '.';
 import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
 export interface IApiService {
@@ -103,5 +103,24 @@ export interface IBeltProgressionService {
   getStudentProgress(studentId: string): Promise<BeltProgress>;
   
   // Overview and statistics
-  getBeltOverview(): Promise<BeltOverview>;
+  getBeltOverview(): Promise<ApiResponse<BeltOverview>>;
+}
+
+export interface ToastOptions {
+  position?: 'top-right' | 'top-left' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center';
+  autoClose?: number | false;
+  hideProgressBar?: boolean;
+  closeOnClick?: boolean;
+  pauseOnHover?: boolean;
+  draggable?: boolean;
+}
+
+export interface IToastService {
+  success: (message: string, options?: ToastOptions) => void;
+  error: (message: string, options?: ToastOptions) => void;
+  warning: (message: string, options?: ToastOptions) => void;
+  info: (message: string, options?: ToastOptions) => void;
+  loading: (message: string, options?: ToastOptions) => void;
+  dismiss: (toastId?: string | number) => void;
+  dismissAll: () => void;
 } 
