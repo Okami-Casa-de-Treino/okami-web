@@ -195,7 +195,7 @@ const EditStudent: React.FC = () => {
         <div className="text-center">
           <p className="text-gray-500">Aluno não encontrado</p>
           <button 
-            onClick={() => navigate('/students')}
+            onClick={() => navigate(-1)}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             Voltar para lista
@@ -217,7 +217,7 @@ const EditStudent: React.FC = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  navigate('/students');
+                  navigate(-1);
                 }}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >

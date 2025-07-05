@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Save, X, User, Calendar, Clock, Settings, AlertCircle } from 'lucide-react';
 import { useEditClass } from './hooks/useEditClass';
+import { useNavigate } from 'react-router-dom';
 
 const EditClass: React.FC = () => {
   const {
@@ -38,6 +39,8 @@ const EditClass: React.FC = () => {
     getStepTitle,
     getSelectedTeacher,
   } = useEditClass();
+
+  const navigate = useNavigate();
 
   if (isLoading || !isDataLoaded) {
     return (
@@ -103,11 +106,11 @@ const EditClass: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={handleCancel}
+            onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
           >
             <ArrowLeft size={20} />
-            Voltar para Aulas
+            Voltar
           </button>
           
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
