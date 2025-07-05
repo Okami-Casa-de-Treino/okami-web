@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useStudentStore } from '../../../../stores/studentStore';
+import { useToast } from '../../../../hooks/useToast';
 import { Student } from '../../../../types';
 import { 
   createStudentSchema, 
@@ -18,7 +19,9 @@ import { getBeltOptions, getMaxDegree, relationshipOptions, AgeGroup } from '../
 export const useCreateStudent = () => {
   const navigate = useNavigate();
   const { createStudent, isCreating, error, clearError } = useStudentStore();
+  const { success, error: showError } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const totalSteps = 4;
 
   const form = useForm<CreateStudentFormData>({
@@ -48,6 +51,19 @@ export const useCreateStudent = () => {
 
   const selectedAgeGroup = watch('age_group') as AgeGroup;
 
+  useEffect(() => {
+    if (isSubmitting && !isCreating) {
+      if (error) {
+        showError(error);
+        setIsSubmitting(false);
+      } else {
+        success('Aluno criado com sucesso!');
+        navigate('/students');
+        setIsSubmitting(false);
+      }
+    }
+  }, [isSubmitting, isCreating, error, showError, success, navigate]);
+
   const onSubmit = async (data: CreateStudentFormData) => {
     // Only allow submission if we're on the last step
     if (currentStep !== totalSteps) {
@@ -67,12 +83,15 @@ export const useCreateStudent = () => {
         enrollment_date: new Date().toISOString(),
       };
 
+      clearError();
+      setIsSubmitting(true);
+      
       await createStudent(finalStudentData);
-      navigate('/students', { 
-        state: { message: 'Aluno criado com sucesso!' }
-      });
+      
     } catch (err) {
-      // Error is handled by the store
+      const errorMessage = 'Erro ao criar aluno. Verifique os dados e tente novamente.';
+      showError(errorMessage);
+      setIsSubmitting(false);
       console.error('Error creating student:', err);
     }
   };

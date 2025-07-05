@@ -17,6 +17,20 @@ export interface ApiError {
   details?: unknown;
 }
 
+class ApiErrorInstance extends Error {
+  public status?: number;
+  public code?: string;
+  public details?: unknown;
+
+  constructor(message: string, status?: number, code?: string, details?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+  }
+}
+
 export interface RequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean;
   skipErrorHandling?: boolean;
@@ -79,28 +93,26 @@ class HttpClient {
     );
   }
 
-  private handleError(error: AxiosError): ApiError {
-    const apiError: ApiError = {
-      message: 'An unexpected error occurred',
-      status: error.response?.status,
-      code: error.code,
-      details: error.response?.data,
-    };
+  private handleError(error: AxiosError): ApiErrorInstance {
+    let message = 'An unexpected error occurred';
+    let status = error.response?.status;
+    const code = error.code;
+    const details = error.response?.data;
 
     if (error.response) {
       // Server responded with error status
       const data = error.response.data as { message?: string; error?: string };
-      apiError.message = data?.message || data?.error || `HTTP ${error.response.status}`;
-      apiError.status = error.response.status;
+      message = data?.message || data?.error || `HTTP ${error.response.status}`;
+      status = error.response.status;
     } else if (error.request) {
       // Request was made but no response received
-      apiError.message = 'Network error - please check your connection';
+      message = 'Network error - please check your connection';
     } else {
       // Something else happened
-      apiError.message = error.message || 'Request failed';
+      message = error.message || 'Request failed';
     }
 
-    return apiError;
+    return new ApiErrorInstance(message, status, code, details);
   }
 
   // ============================================================================
@@ -208,4 +220,4 @@ class HttpClient {
 // ============================================================================
 
 export const httpClient = new HttpClient();
-export { HttpClient }; 
+export { HttpClient, ApiErrorInstance }; 
