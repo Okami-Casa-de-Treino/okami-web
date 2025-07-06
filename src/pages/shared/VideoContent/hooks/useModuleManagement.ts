@@ -14,6 +14,7 @@ export const useModuleManagement = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showViewDrawer, setShowViewDrawer] = useState(false);
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
 
   useEffect(() => {
@@ -36,13 +37,14 @@ export const useModuleManagement = () => {
 
   const handleViewClick = (module: Module) => {
     setSelectedModule(module);
-    // TODO: Navigate to module details or videos in this module
+    setShowViewDrawer(true);
   };
 
   const handleCloseModals = () => {
     setShowCreateModal(false);
     setShowEditModal(false);
     setShowDeleteModal(false);
+    setShowViewDrawer(false);
     setSelectedModule(null);
   };
 
@@ -69,6 +71,7 @@ export const useModuleManagement = () => {
     showCreateModal,
     showEditModal,
     showDeleteModal,
+    showViewDrawer,
     selectedModule,
 
     // Actions

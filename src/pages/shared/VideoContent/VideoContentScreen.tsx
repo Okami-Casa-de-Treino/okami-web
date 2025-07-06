@@ -5,13 +5,14 @@ import { VideoContentStats } from './components/VideoContentStats';
 import { VideoContentTable } from './components/VideoContentTable';
 import { VideoUploadModal } from './components/VideoUploadModal';
 import { VideoEditModal } from './components/VideoEditModal';
-import { VideoViewModal } from './components/VideoViewModal';
+import { VideoViewDrawer } from './components/VideoViewDrawer';
 import { ModuleHeader } from './components/ModuleHeader';
 import { ModuleTable } from './components/ModuleTable';
 import { ModuleStats } from './components/ModuleStats';
 import { CreateModuleModal } from './components/CreateModuleModal';
 import { EditModuleModal } from './components/EditModuleModal';
 import { DeleteModuleModal } from './components/DeleteModuleModal';
+import { ModuleDetailsDrawer } from './components/ModuleDetailsDrawer';
 import { useVideoContent } from './hooks/useVideoContent';
 import { useModuleManagement } from './hooks/useModuleManagement';
 import { ErrorDisplay } from '../Students/components/ErrorDisplay';
@@ -31,17 +32,17 @@ export const VideoContentScreen: React.FC = () => {
     selectedVideo,
     isUploadModalOpen,
     isEditModalOpen,
-    isViewModalOpen,
+    isViewDrawerOpen,
     handleModuleFilterChange,
     handleSearch,
     handlePageChange,
     handleVideoEdit,
     handleVideoDelete,
     openEditModal,
-    openViewModal,
+    openViewDrawer,
     setIsUploadModalOpen,
     setIsEditModalOpen,
-    setIsViewModalOpen,
+    setIsViewDrawerOpen,
     clearError,
   } = useVideoContent();
 
@@ -52,6 +53,7 @@ export const VideoContentScreen: React.FC = () => {
     showCreateModal,
     showEditModal,
     showDeleteModal,
+    showViewDrawer,
     selectedModule: selectedModuleForEdit,
     handleCreateClick,
     handleEditClick,
@@ -137,7 +139,7 @@ export const VideoContentScreen: React.FC = () => {
                 pagination={pagination}
                 onPageChange={handlePageChange}
                 onEdit={openEditModal}
-                onView={openViewModal}
+                onView={openViewDrawer}
                 onDelete={handleVideoDelete}
               />
             </div>
@@ -157,9 +159,9 @@ export const VideoContentScreen: React.FC = () => {
               modules={modules}
             />
 
-            <VideoViewModal 
-              isOpen={isViewModalOpen}
-              onClose={() => setIsViewModalOpen(false)}
+            <VideoViewDrawer 
+              isOpen={isViewDrawerOpen}
+              onClose={() => setIsViewDrawerOpen(false)}
               video={selectedVideo}
             />
           </>
@@ -213,6 +215,12 @@ export const VideoContentScreen: React.FC = () => {
                 onSuccess={handleDeleteSuccess}
               />
             )}
+
+            <ModuleDetailsDrawer
+              isOpen={showViewDrawer}
+              module={selectedModuleForEdit}
+              onClose={handleCloseModals}
+            />
           </>
         )}
       </div>

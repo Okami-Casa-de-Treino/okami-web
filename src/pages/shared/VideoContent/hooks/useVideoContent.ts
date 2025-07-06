@@ -28,7 +28,7 @@ export const useVideoContent = () => {
 
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isViewDrawerOpen, setIsViewDrawerOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [selectedModule, setSelectedModule] = useState<string>('all');
 
@@ -125,10 +125,10 @@ export const useVideoContent = () => {
     setIsEditModalOpen(true);
   };
 
-  // Open view modal
-  const openViewModal = (video: Video) => {
+  // Open view drawer
+  const openViewDrawer = (video: Video) => {
     setSelectedVideo(video);
-    setIsViewModalOpen(true);
+    setIsViewDrawerOpen(true);
   };
 
   // Get module by ID
@@ -170,7 +170,7 @@ export const useVideoContent = () => {
     selectedVideo,
     isUploadModalOpen,
     isEditModalOpen,
-    isViewModalOpen,
+    isViewDrawerOpen,
 
     // Forms
     uploadForm,
@@ -184,10 +184,10 @@ export const useVideoContent = () => {
     handleVideoEdit,
     handleVideoDelete,
     openEditModal,
-    openViewModal,
+    openViewDrawer,
     setIsUploadModalOpen,
     setIsEditModalOpen,
-    setIsViewModalOpen,
+    setIsViewDrawerOpen,
     clearError,
 
     // Utilities

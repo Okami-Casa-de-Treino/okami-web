@@ -83,8 +83,19 @@ class VideoService implements IVideoService {
   }
 
   async getByModule(moduleId: string): Promise<Video[]> {
-    const response = await httpClient.get<Video[]>(`/videos/module/${moduleId}`);
-    return response.data;
+    const response = await httpClient.get<{ data?: Video[]; videos?: Video[] }>(`/videos/module/${moduleId}`);
+    // Handle different possible response structures
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+    if (response.data?.data && Array.isArray(response.data.data)) {
+      return response.data.data;
+    }
+    if (response.data?.videos && Array.isArray(response.data.videos)) {
+      return response.data.videos;
+    }
+    // Return empty array if no valid data found
+    return [];
   }
 
   async getByClass(classId: string): Promise<Video[]> {
