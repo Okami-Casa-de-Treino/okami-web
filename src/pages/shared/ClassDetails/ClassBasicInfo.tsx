@@ -36,7 +36,7 @@ const ClassBasicInfo: React.FC<ClassBasicInfoProps> = ({
               {classData.teacher?.belt && (
                 <span className="ml-2 text-gray-500 text-sm">
                   Faixa {classData.teacher.belt}
-                  {classData.teacher.belt_degree && ` ${classData.teacher.belt_degree}º Dan`}
+                  {classData.teacher.belt_degree && ` ${classData.teacher.belt_degree}º Grau`}
                 </span>
               )}
             </p>

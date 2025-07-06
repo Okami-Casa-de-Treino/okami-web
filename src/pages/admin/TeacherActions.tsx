@@ -62,7 +62,7 @@ const TeacherActions: React.FC = () => {
   // Format belt display
   const formatBelt = (belt: string | null | undefined, beltDegree: number | null | undefined) => {
     if (!belt) return 'Sem faixa';
-    if (beltDegree) return `${belt} ${beltDegree}º Dan`;
+    if (beltDegree) return `${belt} ${beltDegree}º Grau`;
     return belt;
   };
 

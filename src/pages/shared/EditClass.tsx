@@ -218,7 +218,7 @@ const EditClass: React.FC = () => {
                       <option key={teacher.id} value={teacher.id}>
                         {teacher.full_name}
                         {teacher.belt && ` - Faixa ${teacher.belt}`}
-                        {teacher.belt_degree && ` ${teacher.belt_degree}º Dan`}
+                        {teacher.belt_degree && ` ${teacher.belt_degree}º Grau`}
                       </option>
                     ))}
                   </select>

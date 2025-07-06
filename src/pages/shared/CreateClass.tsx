@@ -158,7 +158,7 @@ const CreateClass: React.FC = () => {
                 {getSelectedTeacher()?.belt && (
                   <span className="ml-2 text-blue-600">
                     Faixa {getSelectedTeacher()?.belt}
-                    {getSelectedTeacher()?.belt_degree && ` ${getSelectedTeacher()?.belt_degree}º Dan`}
+                    {getSelectedTeacher()?.belt_degree && ` ${getSelectedTeacher()?.belt_degree}º Grau`}
                   </span>
                 )}
               </p>

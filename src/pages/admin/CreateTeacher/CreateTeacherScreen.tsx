@@ -395,7 +395,7 @@ const CreateTeacherScreen: React.FC = () => {
                     <p><strong>Nome:</strong> {watch('full_name') || 'Não informado'}</p>
                     <p><strong>E-mail:</strong> {watch('email') || 'Não informado'}</p>
                     <p><strong>Telefone:</strong> {watch('phone') || 'Não informado'}</p>
-                    <p><strong>Faixa:</strong> {watch('belt')} {watch('belt_degree')}º Dan</p>
+                    <p><strong>Faixa:</strong> {watch('belt')} {watch('belt_degree')}º Grau</p>
                     {(watch('specialties') || []).length > 0 && (
                       <p><strong>Especialidades:</strong> {(watch('specialties') || []).join(', ')}</p>
                     )}
