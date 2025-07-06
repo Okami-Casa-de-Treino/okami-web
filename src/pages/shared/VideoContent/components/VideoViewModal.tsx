@@ -77,7 +77,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
 
             <div className="space-y-6">
               {/* Video Player */}
-              <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden relative">
+              <div className="aspect-video rounded-lg overflow-hidden relative">
                 {video.file_url ? (
                   <>
                     <video
@@ -132,7 +132,10 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                         setVideoError(errorMessage);
                         setIsVideoLoading(false);
                       }}
-                      style={{ backgroundColor: '#000' }}
+                      style={{ 
+                        backgroundColor: '#000',
+                        objectFit: 'contain'
+                      }}
                     >
                       <source src={video.file_url} type="video/mp4" />
                       <source src={video.file_url} type="video/webm" />
@@ -152,12 +155,24 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                     
                     {/* Custom play button overlay */}
                     {!isVideoLoading && !videoError && !isPlaying && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 hover:bg-opacity-30 transition-all cursor-pointer group">
+                      <div className="absolute inset-0 flex items-center justify-center transition-all cursor-pointer group">
                         <button
                           onClick={handlePlayPause}
-                          className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-4 transition-all group-hover:scale-110"
+                          className="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 transition-all group-hover:scale-110 shadow-lg"
                         >
-                          <Play className="h-12 w-12 text-white" />
+                          <div className="w-0 h-0 border-l-[20px] border-l-blue-600 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-1"></div>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Pause button overlay when playing */}
+                    {!isVideoLoading && !videoError && isPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center transition-all cursor-pointer group opacity-0 hover:opacity-100">
+                        <button
+                          onClick={handlePlayPause}
+                          className="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 transition-all group-hover:scale-110 shadow-lg"
+                        >
+                          <div className="w-4 h-4 border-l-2 border-r-2 border-blue-600 ml-1"></div>
                         </button>
                       </div>
                     )}
@@ -195,7 +210,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
                       <div className="text-center">
-                        <Play className="mx-auto h-16 w-16 text-white" />
+                        <Play className="mx-auto h-16 w-16 text-white cursor-pointer" />
                         <p className="text-sm text-white">Video not available</p>
                       </div>
                     </div>
@@ -203,7 +218,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <div className="text-center">
-                      <Play className="mx-auto h-16 w-16 text-gray-400" />
+                      <Play className="mx-auto h-16 w-16 text-gray-400 cursor-pointer" />
                       <p className="text-sm text-gray-400">No video available</p>
                     </div>
                   </div>
