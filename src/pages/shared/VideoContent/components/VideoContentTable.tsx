@@ -26,6 +26,7 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
   onView,
   onDelete,
 }) => {
+  console.log(videos);
   const formatDuration = (seconds?: number): string => {
     if (!seconds) return 'Desconhecido';
     const minutes = Math.floor(seconds / 60);
