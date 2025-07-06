@@ -27,7 +27,7 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
   onDelete,
 }) => {
   const formatDuration = (seconds?: number): string => {
-    if (!seconds) return 'Unknown';
+    if (!seconds) return 'Desconhecido';
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
@@ -64,9 +64,9 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
     return (
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
         <Play className="mx-auto h-12 w-12 text-gray-400" />
-        <h3 className="mt-2 text-sm font-medium text-gray-900">No videos found</h3>
+        <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhum vídeo encontrado</h3>
         <p className="mt-1 text-sm text-gray-500">
-          Get started by uploading your first video.
+          Comece enviando seu primeiro vídeo.
         </p>
       </div>
     );
@@ -79,22 +79,22 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Video
+                Vídeo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Module
+                Módulo
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Duration
+                Duração
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Assigned Class
+                Turma Atribuída
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Upload Date
+                Data de Envio
               </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+                Ações
               </th>
             </tr>
           </thead>
@@ -136,18 +136,18 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {video.assignedClass ? (
+                  {video.assigned_class ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {video.assignedClass.name}
+                      {video.assigned_class.name}
                     </span>
                   ) : (
-                    <span className="text-gray-400">Not assigned</span>
+                    <span className="text-gray-400">Não atribuído</span>
                   )}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    {formatDate(video.uploadDate)}
+                    {formatDate(video.upload_date)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -155,21 +155,21 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
                     <button
                       onClick={() => onView(video)}
                       className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                      title="View video"
+                      title="Visualizar vídeo"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => onEdit(video)}
                       className="text-green-600 hover:text-green-900 p-1 rounded"
-                      title="Edit video"
+                      title="Editar vídeo"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => onDelete(video.id)}
                       className="text-red-600 hover:text-red-900 p-1 rounded"
-                      title="Delete video"
+                      title="Excluir vídeo"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -190,30 +190,30 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
               disabled={pagination.currentPage === 1}
               className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Previous
+              Anterior
             </button>
             <button
               onClick={() => onPageChange(pagination.currentPage + 1)}
               disabled={pagination.currentPage === pagination.totalPages}
               className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
+              Próximo
             </button>
           </div>
           <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-gray-700">
-                Showing{' '}
+                Mostrando{' '}
                 <span className="font-medium">
                   {((pagination.currentPage - 1) * pagination.itemsPerPage) + 1}
                 </span>{' '}
-                to{' '}
+                a{' '}
                 <span className="font-medium">
                   {Math.min(pagination.currentPage * pagination.itemsPerPage, pagination.totalItems)}
                 </span>{' '}
-                of{' '}
+                de{' '}
                 <span className="font-medium">{pagination.totalItems}</span>{' '}
-                results
+                resultados
               </p>
             </div>
             <div>
@@ -223,7 +223,7 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
                   disabled={pagination.currentPage === 1}
                   className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  Anterior
                 </button>
                 {[...Array(pagination.totalPages)].map((_, i) => (
                   <button
@@ -243,7 +243,7 @@ export const VideoContentTable: React.FC<VideoContentTableProps> = ({
                   disabled={pagination.currentPage === pagination.totalPages}
                   className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  Próximo
                 </button>
               </nav>
             </div>

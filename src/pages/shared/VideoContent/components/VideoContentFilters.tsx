@@ -40,7 +40,7 @@ export const VideoContentFilters: React.FC<VideoContentFiltersProps> = ({
               type="text"
               value={searchTerm}
               onChange={handleSearchChange}
-              placeholder="Search videos by title or description..."
+              placeholder="Pesquisar vídeos por título ou descrição..."
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
@@ -57,7 +57,7 @@ export const VideoContentFilters: React.FC<VideoContentFiltersProps> = ({
               onChange={handleModuleChange}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             >
-              <option value="all">All Modules</option>
+              <option value="all">Todos os Módulos</option>
               {Array.isArray(modules) && modules.map((module) => (
                 <option key={module.id} value={module.id}>
                   {module.name}
@@ -73,12 +73,12 @@ export const VideoContentFilters: React.FC<VideoContentFiltersProps> = ({
         <div className="mt-4 flex flex-wrap gap-2">
           {searchTerm && (
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              Search: "{searchTerm}"
+              Pesquisa: "{searchTerm}"
             </span>
           )}
                      {selectedModule !== 'all' && (
              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-               Module: {Array.isArray(modules) && modules.find(m => m.id === selectedModule)?.name || selectedModule}
+               Módulo: {Array.isArray(modules) && modules.find(m => m.id === selectedModule)?.name || selectedModule}
              </span>
            )}
         </div>

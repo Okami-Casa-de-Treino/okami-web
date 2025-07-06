@@ -16,7 +16,7 @@ export const VideoContentStats: React.FC<VideoContentStatsProps> = ({
 }) => {
   const stats = [
     {
-      name: 'Total Videos',
+      name: 'Total de Vídeos',
       value: totalVideos,
       icon: Video,
       color: 'bg-blue-500',
@@ -24,7 +24,7 @@ export const VideoContentStats: React.FC<VideoContentStatsProps> = ({
       textColor: 'text-blue-600',
     },
     {
-      name: 'Total Modules',
+      name: 'Total de Módulos',
       value: Array.isArray(modules) ? modules.length : 0,
       icon: FolderOpen,
       color: 'bg-green-500',
@@ -32,8 +32,8 @@ export const VideoContentStats: React.FC<VideoContentStatsProps> = ({
       textColor: 'text-green-600',
     },
     {
-      name: 'Active Filter',
-      value: selectedModule === 'all' ? 'All Modules' : 'Filtered',
+      name: 'Filtro Ativo',
+      value: selectedModule === 'all' ? 'Todos os Módulos' : 'Filtrado',
       icon: Clock,
       color: 'bg-purple-500',
       bgColor: 'bg-purple-100',
