@@ -22,5 +22,8 @@ export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProg
 // Video Store
 export { useVideoStore } from './videoStore';
 
+// Module Store
+export { useModuleStore } from './moduleStore';
+
 // Sidebar Store
 export { useSidebarStore } from './sidebarStore'; 

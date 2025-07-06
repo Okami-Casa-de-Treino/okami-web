@@ -3,11 +3,10 @@ import {
   Video, 
   VideoUploadData, 
   VideoUpdateData, 
-  Module,
   PaginatedResponse,
   FilterParams
 } from '../types';
-import { IVideoService, IModuleService } from '../types/interfaces';
+import { IVideoService } from '../types/interfaces';
 
 // Helper to get video duration from a File
 async function getVideoDuration(file: File): Promise<number | undefined> {
@@ -60,10 +59,10 @@ class VideoService implements IVideoService {
     const videoRecord = {
       title: videoData.title,
       description: videoData.description,
-      fileUrl: fileUploadResponse.data.fileUrl,
-      thumbnailUrl: fileUploadResponse.data.thumbnailUrl,
-      moduleId: videoData.moduleId,
-      ...(videoData.assignedClassId && videoData.assignedClassId.trim() !== '' ? { assignedClassId: videoData.assignedClassId } : {}),
+      file_url: fileUploadResponse.data.file_url,
+      thumbnail_url: fileUploadResponse.data.thumbnail_url,
+      module_id: videoData.module_id,
+      ...(videoData.assigned_class_id && videoData.assigned_class_id.trim() !== '' ? { assigned_class_id: videoData.assigned_class_id } : {}),
       duration,
       fileSize,
       mimeType,
@@ -98,11 +97,11 @@ class VideoService implements IVideoService {
     return response.data;
   }
 
-  async uploadFile(file: File): Promise<{ success: boolean; data: { fileUrl: string; thumbnailUrl?: string; fileSize?: number; mimeType?: string } }> {
+  async uploadFile(file: File): Promise<{ success: boolean; data: { file_url: string; thumbnail_url?: string; file_size?: number; mime_type?: string } }> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await httpClient.post<{ success: boolean; data: { fileUrl: string; thumbnailUrl?: string; fileSize?: number; mimeType?: string } }>(
+    const response = await httpClient.post<{ success: boolean; data: { file_url: string; thumbnail_url?: string; file_size?: number; mime_type?: string } }>(
       '/videos/upload',
       formData,
       {
@@ -115,31 +114,4 @@ class VideoService implements IVideoService {
   }
 }
 
-class ModuleService implements IModuleService {
-  async getAll(): Promise<Module[]> {
-    const response = await httpClient.get<{ success: boolean; data: Module[] }>('/modules');
-    return response.data.data || [];
-  }
-
-  async getById(id: string): Promise<Module> {
-    const response = await httpClient.get<Module>(`/modules/${id}`);
-    return response.data;
-  }
-
-  async create(module: Omit<Module, 'id' | 'created_at' | 'updated_at'>): Promise<Module> {
-    const response = await httpClient.post<Module>('/modules', module);
-    return response.data;
-  }
-
-  async update(id: string, module: Partial<Module>): Promise<Module> {
-    const response = await httpClient.put<Module>(`/modules/${id}`, module);
-    return response.data;
-  }
-
-  async delete(id: string): Promise<void> {
-    await httpClient.delete(`/modules/${id}`);
-  }
-}
-
-export const videoService = new VideoService();
-export const moduleService = new ModuleService(); 
+export const videoService = new VideoService(); 

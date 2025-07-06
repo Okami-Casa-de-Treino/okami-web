@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Video, Module, VideoUploadData, VideoUpdateData, FilterParams, PaginatedResponse } from '../types';
-import { videoService, moduleService } from '../services/videoService';
+import { videoService } from '../services/videoService';
+import { moduleService } from '../services/moduleService';
 import { toastService } from '../services/toastService';
 
 interface VideoState {

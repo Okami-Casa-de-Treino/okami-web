@@ -52,6 +52,11 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
   const handleFormSubmit = async (data: VideoUpdateFormData) => {
     setIsSubmitting(true);
     try {
+      if (!data.module_id) {
+        alert('Selecione um módulo antes de salvar!');
+        setIsSubmitting(false);
+        return;
+      }
       await onSubmit(data);
       handleClose();
     } catch (error) {
@@ -127,7 +132,7 @@ export const VideoEditModal: React.FC<VideoEditModalProps> = ({
                 Módulo
               </label>
               <select
-                {...register('module_id')}
+                {...register('module_id', { required: 'Selecione um módulo' })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-white text-gray-900"
               >
                 <option value="">Selecione um módulo</option>

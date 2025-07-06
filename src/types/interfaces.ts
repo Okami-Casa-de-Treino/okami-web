@@ -138,7 +138,7 @@ export interface IVideoService {
   getByModule(moduleId: string): Promise<Video[]>;
   getByClass(classId: string): Promise<Video[]>;
   getFreeVideos(): Promise<Video[]>;
-  uploadFile(file: File): Promise<{ success: boolean; data: { fileUrl: string; thumbnailUrl?: string; fileSize?: number; mimeType?: string } }>;
+  uploadFile(file: File): Promise<{ success: boolean; data: { file_url: string; thumbnail_url?: string; file_size?: number; mime_type?: string } }>;
 }
 
 export interface IModuleService {

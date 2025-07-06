@@ -106,6 +106,7 @@ export const adminRoutes: RouteConfig[] = [
     showInSidebar: true,
     roles: ['admin', 'teacher'],
   },
+
   {
     path: '/financial',
     name: 'Financeiro',

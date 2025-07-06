@@ -21,6 +21,7 @@ import Financial from '../pages/admin/Financial';
 import Reports from '../pages/admin/Reports';
 import Profile from '../pages/common/Profile';
 
+
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
@@ -176,6 +177,8 @@ const AppRoutes: React.FC = () => {
           </RoleProtectedRoute>
         } 
       />
+      
+
       
       {/* Financial Routes - Admin only */}
       <Route 
