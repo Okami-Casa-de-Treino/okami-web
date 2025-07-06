@@ -216,7 +216,7 @@ export const VideoUploadModal: React.FC<VideoUploadModalProps> = ({
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                <div className="space-y-3 text-center">
+                <div className="space-y-3 text-center flex flex-col items-center justify-center">
                   {selectedFile ? (
                     <div className="flex flex-col items-center">
                       <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-3">
@@ -247,7 +247,7 @@ export const VideoUploadModal: React.FC<VideoUploadModalProps> = ({
                         }`}
                       >
                         <Upload
-                          className={`h-8 w-8 transition-colors ${
+                          className={`h-8 w-8 transition-colors  ${
                             isDragOver ? "text-blue-600" : "text-gray-400"
                           }`}
                         />
@@ -255,7 +255,7 @@ export const VideoUploadModal: React.FC<VideoUploadModalProps> = ({
                       <div className="space-y-2">
                         <div className="flex text-sm text-gray-600 justify-center">
                           <label className="relative cursor-pointer font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                            <span>Clique para selecionar</span>
+                            <span className="mr-1">Clique para selecionar</span>
                             <input
                               type="file"
                               accept="video/*"
