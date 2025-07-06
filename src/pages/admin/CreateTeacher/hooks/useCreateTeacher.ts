@@ -17,6 +17,7 @@ import {
   formatCPF
 } from '../../../../utils/masks';
 import { SPECIALTIES } from '../../../../utils/constants';
+import { AppRoutes } from '../../../../routes/routes.constants';
 
 type SpecialtyType = z.infer<typeof SpecialtiesEnum>;
 
@@ -90,7 +91,7 @@ export const useCreateTeacher = () => {
         setIsSubmitting(false);
       } else {
         success('Professor criado com sucesso!');
-        navigate('/teachers');
+        navigate(AppRoutes.TEACHERS);
         setIsSubmitting(false);
       }
     }
@@ -201,7 +202,7 @@ export const useCreateTeacher = () => {
   };
 
   const goBack = () => {
-    navigate('/teachers');
+    navigate(AppRoutes.TEACHERS);
   };
 
   return {

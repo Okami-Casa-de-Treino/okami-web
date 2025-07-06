@@ -1,3 +1,5 @@
+import { AppRoutes } from './routes.constants';
+
 export interface RouteConfig {
   path: string;
   name: string;
@@ -10,21 +12,21 @@ export interface RouteConfig {
 // Admin routes - full access
 export const adminRoutes: RouteConfig[] = [
   {
-    path: '/dashboard',
+    path: AppRoutes.DASHBOARD,
     name: 'Dashboard',
     icon: 'LayoutDashboard',
     showInSidebar: true,
     roles: ['admin'],
   },
   {
-    path: '/students',
+    path: AppRoutes.STUDENTS,
     name: 'Alunos',
     icon: 'Users',
     showInSidebar: true,
     roles: ['admin', 'receptionist'],
     children: [
       {
-        path: '/students/create',
+        path: AppRoutes.STUDENTS_CREATE,
         name: 'Novo Aluno',
         showInSidebar: false,
         roles: ['admin', 'receptionist'],
@@ -32,26 +34,26 @@ export const adminRoutes: RouteConfig[] = [
     ],
   },
   {
-    path: '/teachers',
+    path: AppRoutes.TEACHERS,
     name: 'Professores',
     icon: 'UserCheck',
     showInSidebar: true,
     roles: ['admin'],
     children: [
       {
-        path: '/teachers/create',
+        path: AppRoutes.TEACHERS_CREATE,
         name: 'Novo Professor',
         showInSidebar: false,
         roles: ['admin'],
       },
       {
-        path: '/teachers/:id',
+        path: `${AppRoutes.TEACHERS}/:id`,
         name: 'Ver Professor',
         showInSidebar: false,
         roles: ['admin'],
       },
       {
-        path: '/teachers/:id/edit',
+        path: `${AppRoutes.TEACHERS_EDIT}/:id`,
         name: 'Editar Professor',
         showInSidebar: false,
         roles: ['admin'],
@@ -59,26 +61,26 @@ export const adminRoutes: RouteConfig[] = [
     ],
   },
   {
-    path: '/classes',
+    path: AppRoutes.CLASSES,
     name: 'Turmas',
     icon: 'Calendar',
     showInSidebar: true,
     roles: ['admin', 'teacher'],
     children: [
       {
-        path: '/classes/create',
+        path: AppRoutes.CLASSES_CREATE,
         name: 'Nova Turma',
         showInSidebar: false,
         roles: ['admin'],
       },
       {
-        path: '/classes/:id',
+        path: `${AppRoutes.CLASSES}/:id`,
         name: 'Ver Turma',
         showInSidebar: false,
         roles: ['admin', 'teacher'],
       },
       {
-        path: '/classes/:id/edit',
+        path: `${AppRoutes.CLASSES_EDIT}/:id`,
         name: 'Editar Turma',
         showInSidebar: false,
         roles: ['admin'],
@@ -86,21 +88,21 @@ export const adminRoutes: RouteConfig[] = [
     ],
   },
   {
-    path: '/checkin',
+    path: AppRoutes.CHECKIN,
     name: 'Check-in',
     icon: 'CheckCircle',
     showInSidebar: true,
     roles: ['admin', 'teacher', 'receptionist'],
   },
   {
-    path: '/belt-progression',
+    path: AppRoutes.BELT_PROGRESSION,
     name: 'Progressão de Faixas',
     icon: 'TrendingUp',
     showInSidebar: true,
     roles: ['admin', 'teacher'],
   },
   {
-    path: '/video-content',
+    path: AppRoutes.VIDEO_CONTENT,
     name: 'Conteúdo de Vídeo',
     icon: 'Video',
     showInSidebar: true,
@@ -108,14 +110,14 @@ export const adminRoutes: RouteConfig[] = [
   },
 
   {
-    path: '/financial',
+    path: AppRoutes.FINANCIAL,
     name: 'Financeiro',
     icon: 'DollarSign',
     showInSidebar: true,
     roles: ['admin'],
   },
   {
-    path: '/reports',
+    path: AppRoutes.REPORTS,
     name: 'Relatórios',
     icon: 'BarChart3',
     showInSidebar: true,
@@ -126,49 +128,49 @@ export const adminRoutes: RouteConfig[] = [
 // Teacher routes - limited access
 export const teacherRoutes: RouteConfig[] = [
   {
-    path: '/dashboard',
+    path: AppRoutes.DASHBOARD,
     name: 'Dashboard',
     icon: 'LayoutDashboard',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/my-classes',
+    path: AppRoutes.MY_CLASSES,
     name: 'Minhas Turmas',
     icon: 'Calendar',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/checkin',
+    path: AppRoutes.CHECKIN,
     name: 'Check-in',
     icon: 'CheckCircle',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/belt-progression',
+    path: AppRoutes.BELT_PROGRESSION,
     name: 'Progressão de Faixas',
     icon: 'Award',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/video-content',
+    path: AppRoutes.VIDEO_CONTENT,
     name: 'Conteúdo de Vídeo',
     icon: 'Video',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/students',
+    path: AppRoutes.STUDENTS,
     name: 'Alunos',
     icon: 'Users',
     showInSidebar: true,
     roles: ['teacher'],
   },
   {
-    path: '/profile',
+    path: AppRoutes.PROFILE,
     name: 'Meu Perfil',
     icon: 'User',
     showInSidebar: true,
@@ -179,35 +181,35 @@ export const teacherRoutes: RouteConfig[] = [
 // Student routes - very limited access
 export const studentRoutes: RouteConfig[] = [
   {
-    path: '/dashboard',
+    path: AppRoutes.DASHBOARD,
     name: 'Dashboard',
     icon: 'LayoutDashboard',
     showInSidebar: true,
     roles: ['student'],
   },
   {
-    path: '/my-classes',
+    path: AppRoutes.MY_CLASSES,
     name: 'Minhas Turmas',
     icon: 'Calendar',
     showInSidebar: true,
     roles: ['student'],
   },
   {
-    path: '/my-checkins',
+    path: AppRoutes.MY_CHECKINS,
     name: 'Minhas Presenças',
     icon: 'CheckCircle',
     showInSidebar: true,
     roles: ['student'],
   },
   {
-    path: '/my-payments',
+    path: AppRoutes.MY_PAYMENTS,
     name: 'Mensalidades',
     icon: 'DollarSign',
     showInSidebar: true,
     roles: ['student'],
   },
   {
-    path: '/profile',
+    path: AppRoutes.PROFILE,
     name: 'Meu Perfil',
     icon: 'User',
     showInSidebar: true,
@@ -266,5 +268,5 @@ export const canAccessRoute = (route: RouteConfig, userRole: string): boolean =>
 
 // Helper function to get default route for a role
 export const getDefaultRouteForRole = (): string => {
-  return '/dashboard'; // All roles start at dashboard, but will see different content
+  return AppRoutes.DASHBOARD; // All roles start at dashboard, but will see different content
 }; 

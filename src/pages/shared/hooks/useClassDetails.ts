@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
+import { AppRoutes, RouteHelpers } from '../../../routes/routes.constants';
 
 import { TabType } from '../ClassDetails/types';
 
@@ -43,7 +44,7 @@ export const useClassDetails = () => {
 
   const handleEdit = useCallback(() => {
     if (id) {
-      navigate(`/classes/${id}/edit`);
+      navigate(RouteHelpers.classEdit(id));
     }
   }, [id, navigate]);
 
@@ -51,7 +52,7 @@ export const useClassDetails = () => {
     if (id) {
       try {
         await deleteClass(id);
-        navigate('/classes', {
+        navigate(AppRoutes.CLASSES, {
           state: { message: 'Aula excluída com sucesso!' }
         });
       } catch (err) {

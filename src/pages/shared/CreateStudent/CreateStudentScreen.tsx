@@ -159,6 +159,28 @@ const CreateStudentScreen: React.FC = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Shield size={16} className="inline mr-2" />
+                      Senha *
+                    </label>
+                    <input
+                      type="password"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.password ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      {...register('password')}
+                      placeholder="Digite a senha (mín. 6 caracteres)"
+                      minLength={6}
+                    />
+                    {errors.password && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" />
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Phone size={16} className="inline mr-2" />
                       Telefone *
                     </label>

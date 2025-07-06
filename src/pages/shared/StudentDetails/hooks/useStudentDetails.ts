@@ -5,6 +5,7 @@ import { StudentClass, Checkin, Payment } from '../../../../types';
 import { studentService } from '../../../../services/studentService';
 import { checkinService } from '../../../../services/checkinService';
 import { paymentService } from '../../../../services/paymentService';
+import { AppRoutes, RouteHelpers } from '../../../../routes/routes.constants';
 
 export type TabType = 'details' | 'belt-progression' | 'classes' | 'checkins' | 'payments';
 
@@ -87,7 +88,7 @@ export const useStudentDetails = () => {
 
   const handleEdit = () => {
     if (student?.id) {
-      navigate(`/students/edit/${student.id}`);
+      navigate(RouteHelpers.studentEdit(student.id));
     }
   };
 
@@ -95,7 +96,7 @@ export const useStudentDetails = () => {
     if (student?.id && window.confirm('Tem certeza que deseja excluir este aluno?')) {
       try {
         await deleteStudent(student.id);
-        navigate('/students', { 
+        navigate(AppRoutes.STUDENTS, { 
           state: { message: 'Aluno excluído com sucesso!' }
         });
       } catch (error) {

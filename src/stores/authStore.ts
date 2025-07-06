@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { User } from '../types';
+import { User, Student } from '../types';
 import { httpClient } from '../services/httpClient';
 
 // ============================================================================
@@ -71,11 +71,45 @@ export const useAuthStore = create<AuthStore>()(
           try {
             const response = await httpClient.post('/auth/login', credentials);
             
-            const responseData = response.data as { data: { user: User; token: string } };
-            const { user, token } = responseData.data;
+            const responseData = response.data as { 
+              data: { 
+                user?: User; 
+                student?: Student; 
+                token: string 
+              } 
+            };
             
-            // Store the token (API returns single token, not separate access/refresh tokens)
+            const { token } = responseData.data;
+            
+            // Store the token
             httpClient.setToken(token);
+            
+            // Handle different response structures
+            let user: User | null = null;
+            
+            if (responseData.data.student) {
+              // Student login response
+              const student = responseData.data.student;
+              user = {
+                id: student.id,
+                username: student.email || student.full_name,
+                name: student.full_name,
+                email: student.email,
+                role: 'student',
+                studentId: student.id,
+                student: student,
+                status: student.status === 'suspended' ? 'inactive' : student.status,
+                created_at: student.created_at,
+                updated_at: student.updated_at,
+              };
+            } else if (responseData.data.user) {
+              // Regular user login response
+              user = responseData.data.user;
+            }
+            
+            if (!user) {
+              throw new Error('Invalid login response: no user data found');
+            }
             
             set({
               user,

@@ -21,6 +21,12 @@ export const createStudentSchema = z.object({
     .email('E-mail inválido')
     .max(100, 'E-mail deve ter no máximo 100 caracteres'),
   
+  password: z
+    .string()
+    .min(1, 'Senha é obrigatória')
+    .min(6, 'Senha deve ter pelo menos 6 caracteres')
+    .max(100, 'Senha deve ter no máximo 100 caracteres'),
+  
   phone: z
     .string()
     .min(1, 'Telefone é obrigatório')

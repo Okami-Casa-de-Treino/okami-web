@@ -19,6 +19,7 @@ import {
   XCircle
 } from 'lucide-react';
 import { useTeacherStore } from '../../stores';
+import { AppRoutes, RouteHelpers } from '../../routes/routes.constants';
 
 const TeacherActions: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +48,7 @@ const TeacherActions: React.FC = () => {
   const handleDelete = async () => {
     if (id) {
       await deleteTeacher(id);
-      navigate('/teachers', { 
+      navigate(AppRoutes.TEACHERS, { 
         state: { message: 'Professor excluído com sucesso!' }
       });
     }
@@ -55,7 +56,7 @@ const TeacherActions: React.FC = () => {
 
   const handleEdit = () => {
     if (id) {
-      navigate(`/teachers/${id}/edit`);
+      navigate(RouteHelpers.teacherEdit(id));
     }
   };
 
@@ -130,7 +131,7 @@ const TeacherActions: React.FC = () => {
                 <p className="text-red-800">{error || 'Professor não encontrado'}</p>
               </div>
               <button
-                onClick={() => navigate('/teachers')}
+                onClick={() => navigate(AppRoutes.TEACHERS)}
                 className="text-red-600 hover:text-red-800"
               >
                 Voltar
@@ -150,7 +151,7 @@ const TeacherActions: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => navigate('/teachers')}
+                onClick={() => navigate(AppRoutes.TEACHERS)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <ArrowLeft size={20} />

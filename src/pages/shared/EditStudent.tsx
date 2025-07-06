@@ -16,12 +16,14 @@ import {
 import { useStudentStore } from '../../stores/studentStore';
 import { getBeltOptions, getMaxDegree, relationshipOptions, AgeGroup } from '../../utils/beltSystem';
 import { StepIndicator } from '../../components/common/StepIndicator';
+import { AppRoutes } from '../../routes/routes.constants';
 
 interface EditStudentForm {
   full_name: string;
   email: string;
   phone: string;
   birth_date: string;
+  password?: string;
   cpf?: string;
   rg?: string;
   address?: string;
@@ -93,6 +95,7 @@ const EditStudent: React.FC = () => {
         email: selectedStudent.email || '',
         phone: selectedStudent.phone || '',
         birth_date: birthDate,
+        password: '', // Password is not populated for security reasons
         cpf: selectedStudent.cpf || '',
         rg: selectedStudent.rg || '',
         address: selectedStudent.address || '',
@@ -119,8 +122,13 @@ const EditStudent: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { age_group, ...studentData } = data;
       
+      // Only include password if it's provided (not empty)
+      if (!studentData.password || studentData.password.trim() === '') {
+        delete studentData.password;
+      }
+      
       await updateStudent(id, studentData);
-      navigate('/students', { 
+      navigate(AppRoutes.STUDENTS, { 
         state: { message: 'Aluno atualizado com sucesso!' }
       });
     } catch (err) {
@@ -317,6 +325,30 @@ const EditStudent: React.FC = () => {
                       <p className="mt-1 text-sm text-red-600 flex items-center">
                         <AlertCircle size={14} className="mr-1" />
                         {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <Shield size={16} className="inline mr-2" />
+                      Nova Senha (opcional)
+                    </label>
+                    <input
+                      type="password"
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
+                        errors.password ? 'border-red-500' : 'border-gray-300'
+                      }`}
+                      {...register('password', { 
+                        minLength: { value: 6, message: 'Senha deve ter pelo menos 6 caracteres' }
+                      })}
+                      placeholder="Deixe em branco para manter a senha atual"
+                      minLength={6}
+                    />
+                    {errors.password && (
+                      <p className="mt-1 text-sm text-red-600 flex items-center">
+                        <AlertCircle size={14} className="mr-1" />
+                        {errors.password.message}
                       </p>
                     )}
                   </div>

@@ -15,6 +15,7 @@ import {
   formatCPF
 } from '../../../../utils/masks';
 import { getBeltOptions, getMaxDegree, relationshipOptions, AgeGroup } from '../../../../utils/beltSystem';
+import { AppRoutes } from '../../../../routes/routes.constants';
 
 export const useCreateStudent = () => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ export const useCreateStudent = () => {
         setIsSubmitting(false);
       } else {
         success('Aluno criado com sucesso!');
-        navigate('/students');
+        navigate(AppRoutes.STUDENTS);
         setIsSubmitting(false);
       }
     }
@@ -118,7 +119,7 @@ export const useCreateStudent = () => {
   const getFieldsForStep = (step: number): (keyof CreateStudentFormData)[] => {
     switch (step) {
       case 1:
-        return ['full_name', 'email', 'phone', 'birth_date'];
+        return ['full_name', 'email', 'password', 'phone', 'birth_date'];
       case 2:
         return []; // Step 2 fields are all optional
       case 3:
@@ -167,7 +168,7 @@ export const useCreateStudent = () => {
   };
 
   const goBack = () => {
-    navigate('/students');
+    navigate(AppRoutes.STUDENTS);
   };
 
   return {

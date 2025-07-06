@@ -2,6 +2,7 @@ import React from 'react';
 import { Plus, Search, Calendar, MoreHorizontal, Edit, Trash2, Eye, Clock, Users, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useClasses } from './hooks/useClasses';
+import { AppRoutes, RouteHelpers } from '../../routes/routes.constants';
 
 const Classes: React.FC = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const Classes: React.FC = () => {
             Grade de Horários
           </button>
           <button 
-            onClick={() => navigate('/classes/create')}
+            onClick={() => navigate(AppRoutes.CLASSES_CREATE)}
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
           >
             <Plus size={20} />
@@ -243,14 +244,14 @@ const Classes: React.FC = () => {
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-2">
                         <button 
-                          onClick={() => navigate(`/classes/${classItem.id}`)}
+                          onClick={() => navigate(RouteHelpers.classDetails(classItem.id))}
                           className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Ver detalhes"
                         >
                           <Eye size={16} />
                         </button>
                         <button 
-                          onClick={() => navigate(`/classes/${classItem.id}/edit`)}
+                          onClick={() => navigate(RouteHelpers.classEdit(classItem.id))}
                           className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                           title="Editar aula"
                         >
@@ -283,7 +284,7 @@ const Classes: React.FC = () => {
                         <p className="text-gray-500 text-sm">Comece criando sua primeira aula</p>
                       </div>
                       <button 
-                        onClick={() => navigate('/classes/create')}
+                        onClick={() => navigate(AppRoutes.CLASSES_CREATE)}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         <Plus size={16} />

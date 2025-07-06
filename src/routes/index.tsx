@@ -20,19 +20,20 @@ import { VideoContent } from '../pages/shared/VideoContent';
 import Financial from '../pages/admin/Financial';
 import Reports from '../pages/admin/Reports';
 import Profile from '../pages/common/Profile';
+import { AppRoutes as RoutesConstants } from './routes.constants';
 
 
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to={RoutesConstants.DASHBOARD} replace />} />
       
       {/* Dashboard - accessible to all authenticated users */}
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path={RoutesConstants.DASHBOARD} element={<Dashboard />} />
       
       {/* Student Routes - Admin and Receptionist only */}
       <Route 
-        path="/students" 
+        path={RoutesConstants.STUDENTS} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'receptionist', 'teacher']}>
             <Students />
@@ -40,7 +41,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/students/create" 
+        path={RoutesConstants.STUDENTS_CREATE} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'receptionist']}>
             <CreateStudent />
@@ -48,7 +49,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/students/edit/:id" 
+        path={RoutesConstants.STUDENTS_EDIT + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'receptionist']}>
             <EditStudent />
@@ -56,7 +57,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/students/:id" 
+        path={RoutesConstants.STUDENTS + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'receptionist', 'teacher']}>
             <StudentDetails />
@@ -66,7 +67,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Teacher Routes - Admin only */}
       <Route 
-        path="/teachers" 
+        path={RoutesConstants.TEACHERS} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <Teachers />
@@ -74,7 +75,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/teachers/create" 
+        path={RoutesConstants.TEACHERS_CREATE} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <CreateTeacher />
@@ -82,7 +83,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/teachers/:id" 
+        path={RoutesConstants.TEACHERS + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <TeacherActions />
@@ -90,7 +91,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/teachers/:id/edit" 
+        path={RoutesConstants.TEACHERS_EDIT + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <EditTeacher />
@@ -100,7 +101,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Classes Routes - Admin and Teacher */}
       <Route 
-        path="/classes" 
+        path={RoutesConstants.CLASSES} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <Classes />
@@ -108,7 +109,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/classes/create" 
+        path={RoutesConstants.CLASSES_CREATE} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <CreateClass />
@@ -116,7 +117,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/classes/:id" 
+        path={RoutesConstants.CLASSES + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <ClassDetails />
@@ -124,7 +125,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/classes/:id/edit" 
+        path={RoutesConstants.CLASSES_EDIT + '/:id'} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <EditClass />
@@ -132,7 +133,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/my-classes" 
+        path={RoutesConstants.MY_CLASSES} 
         element={
           <RoleProtectedRoute allowedRoles={['teacher', 'student']}>
             <Classes />
@@ -142,7 +143,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Check-in Routes - Admin, Teacher, and Receptionist */}
       <Route 
-        path="/checkin" 
+        path={RoutesConstants.CHECKIN} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher', 'receptionist']}>
             <Checkin />
@@ -150,7 +151,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/my-checkins" 
+        path={RoutesConstants.MY_CHECKINS} 
         element={
           <RoleProtectedRoute allowedRoles={['student']}>
             <Checkin />
@@ -160,7 +161,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Belt Progression Routes - Admin and Teacher */}
       <Route 
-        path="/belt-progression" 
+        path={RoutesConstants.BELT_PROGRESSION} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <BeltProgression />
@@ -170,7 +171,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Video Content Routes - Admin and Teacher */}
       <Route 
-        path="/video-content" 
+        path={RoutesConstants.VIDEO_CONTENT} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <VideoContent />
@@ -182,7 +183,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Financial Routes - Admin only */}
       <Route 
-        path="/financial" 
+        path={RoutesConstants.FINANCIAL} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <Financial />
@@ -190,7 +191,7 @@ const AppRoutes: React.FC = () => {
         } 
       />
       <Route 
-        path="/my-payments" 
+        path={RoutesConstants.MY_PAYMENTS} 
         element={
           <RoleProtectedRoute allowedRoles={['student']}>
             <Financial />
@@ -200,7 +201,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Reports Routes - Admin only */}
       <Route 
-        path="/reports" 
+        path={RoutesConstants.REPORTS} 
         element={
           <RoleProtectedRoute allowedRoles={['admin']}>
             <Reports />
@@ -210,7 +211,7 @@ const AppRoutes: React.FC = () => {
       
       {/* Profile Route - All authenticated users */}
       <Route 
-        path="/profile" 
+        path={RoutesConstants.PROFILE} 
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher', 'receptionist', 'student']}>
             <Profile />
@@ -219,7 +220,7 @@ const AppRoutes: React.FC = () => {
       />
       
       {/* Catch all - redirect to dashboard */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to={RoutesConstants.DASHBOARD} replace />} />
     </Routes>
   );
 };

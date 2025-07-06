@@ -1,38 +1,16 @@
 import React from 'react';
-import { useAuthStore } from '../../stores/authStore';
 import { Calendar, CheckCircle, DollarSign, Clock, Award } from 'lucide-react';
+import { useStudentDashboard } from './hooks/useStudentDashboard';
 
 const StudentDashboard: React.FC = () => {
-  const { user } = useAuthStore();
-  
-  // Mock data - in real app, this would come from API
-  const studentStats = {
-    upcomingClasses: 3,
-    attendanceThisMonth: 12,
-    nextPaymentDue: '2024-02-15',
-    currentBelt: 'Azul',
-    beltDegree: 2,
-    enrollmentDate: '2023-06-01',
-  };
-
-  const upcomingClasses = [
-    { id: 1, name: 'Jiu-Jitsu Adulto', time: '19:00', day: 'Segunda-feira', instructor: 'Prof. João' },
-    { id: 2, name: 'Jiu-Jitsu Adulto', time: '19:00', day: 'Quarta-feira', instructor: 'Prof. João' },
-    { id: 3, name: 'Jiu-Jitsu Adulto', time: '19:00', day: 'Sexta-feira', instructor: 'Prof. João' },
-  ];
-
-  const recentCheckins = [
-    { id: 1, date: '2024-01-10', time: '19:00', class: 'Jiu-Jitsu Adulto' },
-    { id: 2, date: '2024-01-08', time: '19:00', class: 'Jiu-Jitsu Adulto' },
-    { id: 3, date: '2024-01-05', time: '19:00', class: 'Jiu-Jitsu Adulto' },
-  ];
+  const { studentStats, upcomingClasses, recentCheckins, studentName } = useStudentDashboard();
 
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">
-          Bem-vindo, {user?.name || user?.username || 'Aluno'}!
+          Bem-vindo, {studentName}!
         </h1>
         <p className="text-blue-100">
           Acompanhe seu progresso e mantenha-se atualizado com suas aulas

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
 import { Class, Teacher } from '../../../types';
+import { AppRoutes } from '../../../routes/routes.constants';
 
 export interface EditClassForm {
   name: string;
@@ -144,7 +145,7 @@ export const useEditClass = () => {
       };
 
       await updateClass(id, classData);
-      navigate('/classes', { 
+      navigate(AppRoutes.CLASSES, { 
         state: { message: 'Aula atualizada com sucesso!' }
       });
     } catch (err) {
@@ -220,7 +221,7 @@ export const useEditClass = () => {
   }, [clearError]);
 
   const handleCancel = useCallback(() => {
-    navigate('/classes');
+    navigate(AppRoutes.CLASSES);
   }, [navigate]);
 
   return {

@@ -212,6 +212,7 @@ const AdminDashboard: React.FC = () => {
 
 const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
+  console.log(user);
 
   if (!user) {
     return <div>Loading...</div>;

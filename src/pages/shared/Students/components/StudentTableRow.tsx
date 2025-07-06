@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react';
 import { Student } from '../../../../types';
+import { RouteHelpers } from '../../../../routes/routes.constants';
 
 interface StudentTableRowProps {
   student: Student;
@@ -44,13 +45,13 @@ export const StudentTableRow: React.FC<StudentTableRowProps> = ({
 
   const handleEditStudent = () => {
     if (student.id) {
-      navigate(`/students/edit/${student.id}`);
+      navigate(RouteHelpers.studentEdit(student.id));
     }
   };
 
   const handleViewStudent = () => {
     if (student.id) {
-      navigate(`/students/${student.id}`);
+      navigate(RouteHelpers.studentDetails(student.id));
     }
   };
 

@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useTeacherStore } from '../../stores';
 import { Teacher } from '../../types';
+import { AppRoutes } from '../../routes/routes.constants';
 
 interface EditTeacherForm {
   full_name: string;
@@ -131,7 +132,7 @@ const EditTeacher: React.FC = () => {
       };
 
       await updateTeacher(id, updateData);
-      navigate('/teachers', { 
+      navigate(AppRoutes.TEACHERS, { 
         state: { message: 'Professor atualizado com sucesso!' }
       });
     } catch (err) {
@@ -175,7 +176,7 @@ const EditTeacher: React.FC = () => {
                 <p className="text-red-800">{error || 'Professor não encontrado'}</p>
               </div>
               <button
-                onClick={() => navigate('/teachers')}
+                onClick={() => navigate(AppRoutes.TEACHERS)}
                 className="text-red-600 hover:text-red-800"
               >
                 Voltar
@@ -447,7 +448,7 @@ const EditTeacher: React.FC = () => {
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <button
                 type="button"
-                onClick={() => navigate('/teachers')}
+                onClick={() => navigate(AppRoutes.TEACHERS)}
                 className="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 disabled={isUpdating}
               >

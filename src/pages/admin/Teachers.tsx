@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Search, Filter, MoreHorizontal, Edit, Trash2, Eye, Award } from 'lucide-react';
 import { useTeacherStore, useTeacherSelectors } from '../../stores';
+import { AppRoutes, RouteHelpers } from '../../routes/routes.constants';
 
 const Teachers: React.FC = () => {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const Teachers: React.FC = () => {
           <p className="text-gray-600 mt-1">Gerenciar professores cadastrados</p>
         </div>
         <button 
-          onClick={() => navigate('/teachers/create')}
+          onClick={() => navigate(AppRoutes.TEACHERS_CREATE)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm"
         >
           <Plus size={20} />
@@ -245,14 +246,14 @@ const Teachers: React.FC = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
                           <button 
-                            onClick={() => navigate(`/teachers/${teacher.id}`)}
+                            onClick={() => navigate(RouteHelpers.teacherDetails(teacher.id))}
                             className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             title="Ver detalhes"
                           >
                             <Eye size={16} />
                           </button>
                           <button 
-                            onClick={() => navigate(`/teachers/${teacher.id}/edit`)}
+                            onClick={() => navigate(RouteHelpers.teacherEdit(teacher.id))}
                             className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
                             title="Editar professor"
                           >
@@ -284,7 +285,7 @@ const Teachers: React.FC = () => {
                           <p className="text-gray-500 text-sm">Comece adicionando seu primeiro professor</p>
                         </div>
                         <button 
-                          onClick={() => navigate('/teachers/create')}
+                          onClick={() => navigate(AppRoutes.TEACHERS_CREATE)}
                           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
                           <Plus size={16} />

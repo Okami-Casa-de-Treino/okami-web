@@ -3,6 +3,7 @@ import { ArrowLeft, Edit, Trash2, User, Phone, Mail } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Student } from '../../../../types';
 import { calculateAge } from '../../../../utils';
+import { AppRoutes } from '../../../../routes/routes.constants';
 
 interface StudentDetailsHeaderProps {
   student: Student;
@@ -20,7 +21,7 @@ export const StudentDetailsHeader: React.FC<StudentDetailsHeaderProps> = ({
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate('/students');
+    navigate(AppRoutes.STUDENTS);
   };
 
   const getStatusText = (status: string): string => {

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
 import { useToast } from '../../../hooks/useToast';
 import { Class, Teacher } from '../../../types';
+import { AppRoutes } from '../../../routes/routes.constants';
 
 export interface CreateClassForm {
   name: string;
@@ -93,7 +94,7 @@ export const useCreateClass = () => {
         setIsSubmitting(false);
       } else {
         success('Aula criada com sucesso!');
-        navigate('/classes');
+        navigate(AppRoutes.CLASSES);
         setIsSubmitting(false);
       }
     }
@@ -106,6 +107,7 @@ export const useCreateClass = () => {
         days_of_week: selectedDays,
         start_time: data.start_time, // API expects HH:MM format
         end_time: data.end_time, // API expects HH:MM format
+        student_classes: [], // Initialize with empty array
       };
 
       // Clear any previous errors and set submitting state
