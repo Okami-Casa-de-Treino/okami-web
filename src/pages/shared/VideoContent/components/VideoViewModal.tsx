@@ -16,7 +16,6 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoError, setVideoError] = useState<string | null>(null);
   const [isVideoLoading, setIsVideoLoading] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   console.log('video', video);
 
@@ -39,18 +38,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
   useEffect(() => {
     setVideoError(null);
     setIsVideoLoading(false);
-    setIsPlaying(false);
   }, [video]);
-
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-    }
-  };
 
   if (!isOpen || !video) return null;
 
@@ -58,7 +46,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         {/* Backdrop */}
-        <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+        <div className="fixed inset-0 transition-opacity backdrop-blur-sm" aria-hidden="true"></div>
 
         {/* Modal Content */}
         <div className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
@@ -95,14 +83,6 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                         console.log('Video can play');
                         setIsVideoLoading(false);
                         setVideoError(null);
-                      }}
-                      onPlay={() => {
-                        console.log('Video started playing');
-                        setIsPlaying(true);
-                      }}
-                      onPause={() => {
-                        console.log('Video paused');
-                        setIsPlaying(false);
                       }}
                       onError={(e) => {
                         console.error('Video error:', e);
@@ -153,29 +133,7 @@ export const VideoViewModal: React.FC<VideoViewModalProps> = ({
                       </div>
                     )}
                     
-                    {/* Custom play button overlay */}
-                    {!isVideoLoading && !videoError && !isPlaying && (
-                      <div className="absolute inset-0 flex items-center justify-center transition-all cursor-pointer group">
-                        <button
-                          onClick={handlePlayPause}
-                          className="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 transition-all group-hover:scale-110 shadow-lg"
-                        >
-                          <div className="w-0 h-0 border-l-[20px] border-l-blue-600 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-1"></div>
-                        </button>
-                      </div>
-                    )}
 
-                    {/* Pause button overlay when playing */}
-                    {!isVideoLoading && !videoError && isPlaying && (
-                      <div className="absolute inset-0 flex items-center justify-center transition-all cursor-pointer group opacity-0 hover:opacity-100">
-                        <button
-                          onClick={handlePlayPause}
-                          className="bg-white bg-opacity-90 hover:bg-opacity-100 rounded-full p-3 transition-all group-hover:scale-110 shadow-lg"
-                        >
-                          <div className="w-4 h-4 border-l-2 border-r-2 border-blue-600 ml-1"></div>
-                        </button>
-                      </div>
-                    )}
                     
                     {/* Error overlay */}
                     {videoError && (
