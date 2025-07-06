@@ -270,4 +270,50 @@ export interface PromotionResponse {
     promotion_date: string;
     notes?: string;
   };
+}
+
+export interface Video {
+  id: string;
+  title: string;
+  description: string;
+  file_url: string;
+  thumbnail_url?: string;
+  module_id: string;
+  module?: Module;
+  duration?: number; // in seconds
+  assigned_class_id?: string;
+  assigned_class?: Class;
+  upload_date: string;
+  file_size?: number;
+  mime_type?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Module {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+  _count?: {
+    videos: number;
+  };
+}
+
+export interface VideoUploadData {
+  title: string;
+  description: string;
+  file: File;
+  module_id: string;
+  assigned_class_id?: string;
+}
+
+export interface VideoUpdateData {
+  title?: string;
+  description?: string;
+  module_id?: string;
+  assigned_class_id?: string;
 } 

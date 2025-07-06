@@ -16,6 +16,7 @@ import ClassDetails from '../pages/shared/ClassDetails';
 import EditClass from '../pages/shared/EditClass';
 import Checkin from '../pages/student/Checkin';
 import BeltProgression from '../pages/shared/BeltProgression';
+import { VideoContent } from '../pages/shared/VideoContent';
 import Financial from '../pages/admin/Financial';
 import Reports from '../pages/admin/Reports';
 import Profile from '../pages/common/Profile';
@@ -162,6 +163,16 @@ const AppRoutes: React.FC = () => {
         element={
           <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
             <BeltProgression />
+          </RoleProtectedRoute>
+        } 
+      />
+      
+      {/* Video Content Routes - Admin and Teacher */}
+      <Route 
+        path="/video-content" 
+        element={
+          <RoleProtectedRoute allowedRoles={['admin', 'teacher']}>
+            <VideoContent />
           </RoleProtectedRoute>
         } 
       />

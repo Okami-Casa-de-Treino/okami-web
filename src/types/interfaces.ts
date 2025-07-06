@@ -13,7 +13,11 @@ import {
   BeltProgress,
   BeltOverview,
   PromoteStudentData,
-  PromotionResponse
+  PromotionResponse,
+  Video,
+  VideoUploadData,
+  VideoUpdateData,
+  Module
 } from '.';
 import { StudentEnrollment } from '../pages/shared/ClassDetails/types';
 
@@ -123,4 +127,24 @@ export interface IToastService {
   loading: (message: string, options?: ToastOptions) => void;
   dismiss: (toastId?: string | number) => void;
   dismissAll: () => void;
+}
+
+export interface IVideoService {
+  getAll(params?: FilterParams): Promise<PaginatedResponse<Video>>;
+  getById(id: string): Promise<Video>;
+  create(videoData: VideoUploadData): Promise<Video>;
+  update(id: string, videoData: VideoUpdateData): Promise<Video>;
+  delete(id: string): Promise<void>;
+  getByModule(moduleId: string): Promise<Video[]>;
+  getByClass(classId: string): Promise<Video[]>;
+  getFreeVideos(): Promise<Video[]>;
+  uploadFile(file: File): Promise<{ success: boolean; data: { fileUrl: string; thumbnailUrl?: string; fileSize?: number; mimeType?: string } }>;
+}
+
+export interface IModuleService {
+  getAll(): Promise<Module[]>;
+  getById(id: string): Promise<Module>;
+  create(module: Omit<Module, 'id' | 'created_at' | 'updated_at'>): Promise<Module>;
+  update(id: string, module: Partial<Module>): Promise<Module>;
+  delete(id: string): Promise<void>;
 } 

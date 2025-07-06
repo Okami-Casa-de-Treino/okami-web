@@ -15,6 +15,8 @@ export { paymentService } from './paymentService';
 export type { PaymentResponse, PaymentCreateData, MarkAsPaidData } from './paymentService';
 export { beltProgressionService } from './beltProgressionService';
 export type { BeltProgressionService, BeltProgressionResponse, BeltProgressResponse, BeltOverviewResponse } from './beltProgressionService';
+export { videoService, moduleService } from './videoService';
+export type { IVideoService, IModuleService } from '../types/interfaces';
 export { toastService } from './toastService';
 export type { IToastService, ToastOptions } from '../types/interfaces';
 

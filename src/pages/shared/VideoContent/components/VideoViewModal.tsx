@@ -1,0 +1,346 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { X, Play, Clock, Calendar, Tag, Users, AlertCircle } from 'lucide-react';
+import { Video } from '../../../../types';
+
+interface VideoViewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  video: Video | null;
+}
+
+export const VideoViewModal: React.FC<VideoViewModalProps> = ({
+  isOpen,
+  onClose,
+  video,
+}) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  console.log('video', video);
+
+  const formatDuration = (seconds?: number): string => {
+    if (!seconds) return 'Unknown';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  // Reset error state when video changes
+  useEffect(() => {
+    setVideoError(null);
+    setIsVideoLoading(false);
+    setIsPlaying(false);
+  }, [video]);
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  if (!isOpen || !video) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        {/* Backdrop */}
+        <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true"></div>
+
+        {/* Modal Content */}
+        <div className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                Video Details
+              </h3>
+              <button
+                onClick={onClose}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Video Player */}
+              <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden relative">
+                {video.file_url ? (
+                  <>
+                    <video
+                      ref={videoRef}
+                      className="w-full h-full object-contain rounded-lg"
+                      controls
+                      preload="metadata"
+                      poster={video.thumbnail_url}
+                      onLoadStart={() => {
+                        console.log('Video loading started');
+                        setIsVideoLoading(true);
+                        setVideoError(null);
+                      }}
+                      onCanPlay={() => {
+                        console.log('Video can play');
+                        setIsVideoLoading(false);
+                        setVideoError(null);
+                      }}
+                      onPlay={() => {
+                        console.log('Video started playing');
+                        setIsPlaying(true);
+                      }}
+                      onPause={() => {
+                        console.log('Video paused');
+                        setIsPlaying(false);
+                      }}
+                      onError={(e) => {
+                        console.error('Video error:', e);
+                        const videoElement = e.currentTarget;
+                        const error = videoElement.error;
+                        let errorMessage = 'Failed to load video';
+                        
+                        if (error) {
+                          switch (error.code) {
+                            case MediaError.MEDIA_ERR_ABORTED:
+                              errorMessage = 'Video loading was aborted';
+                              break;
+                            case MediaError.MEDIA_ERR_NETWORK:
+                              errorMessage = 'Network error while loading video';
+                              break;
+                            case MediaError.MEDIA_ERR_DECODE:
+                              errorMessage = 'Video format not supported';
+                              break;
+                            case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                              errorMessage = 'Video source not supported';
+                              break;
+                            default:
+                              errorMessage = `Video error: ${error.message || 'Unknown error'}`;
+                          }
+                        }
+                        
+                        setVideoError(errorMessage);
+                        setIsVideoLoading(false);
+                      }}
+                      style={{ backgroundColor: '#000' }}
+                    >
+                      <source src={video.file_url} type="video/mp4" />
+                      <source src={video.file_url} type="video/webm" />
+                      <source src={video.file_url} type="video/ogg" />
+                      Your browser does not support the video tag.
+                    </video>
+                    
+                    {/* Loading overlay */}
+                    {isVideoLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 pointer-events-none">
+                        <div className="text-center">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
+                          <p className="mt-2 text-sm text-white">Loading video...</p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Custom play button overlay */}
+                    {!isVideoLoading && !videoError && !isPlaying && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 hover:bg-opacity-30 transition-all cursor-pointer group">
+                        <button
+                          onClick={handlePlayPause}
+                          className="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full p-4 transition-all group-hover:scale-110"
+                        >
+                          <Play className="h-12 w-12 text-white" />
+                        </button>
+                      </div>
+                    )}
+                    
+                    {/* Error overlay */}
+                    {videoError && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
+                        <div className="text-center p-4">
+                          <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-2" />
+                          <p className="text-sm text-white mb-2">{videoError}</p>
+                          <p className="text-xs text-gray-300">Video URL: {video.file_url}</p>
+                          <button
+                            onClick={() => {
+                              setVideoError(null);
+                              setIsVideoLoading(false);
+                              if (videoRef.current) {
+                                videoRef.current.load();
+                              }
+                            }}
+                            className="mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700"
+                          >
+                            Retry
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : video.thumbnail_url ? (
+                  <div className="w-full h-full flex items-center justify-center relative">
+                    <img
+                      src={video.thumbnail_url}
+                      alt={video.title}
+                      className="w-full h-full object-cover rounded-lg"
+                      style={{ opacity: 1 }}
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <div className="text-center">
+                        <Play className="mx-auto h-16 w-16 text-white" />
+                        <p className="text-sm text-white">Video not available</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <Play className="mx-auto h-16 w-16 text-gray-400" />
+                      <p className="text-sm text-gray-400">No video available</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Video Information */}
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-xl font-semibold text-gray-900 mb-2">
+                    {video.title}
+                  </h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    {video.description}
+                  </p>
+                </div>
+
+                {/* Debug Info */}
+                <div className="bg-gray-100 p-3 rounded-lg">
+                  <p className="text-xs text-gray-600 mb-1">
+                    <strong>Video URL:</strong> {video.file_url || 'No URL'}
+                  </p>
+                  <p className="text-xs text-gray-600 mb-1">
+                    <strong>Thumbnail URL:</strong> {video.thumbnail_url || 'No thumbnail'}
+                  </p>
+                  <p className="text-xs text-gray-600 mb-2">
+                    <strong>Duration:</strong> {formatDuration(video.duration)}
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if (video.file_url) {
+                          window.open(video.file_url, '_blank');
+                        }
+                      }}
+                      className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                    >
+                      Open Video in New Tab
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (video.thumbnail_url) {
+                          window.open(video.thumbnail_url, '_blank');
+                        }
+                      }}
+                      className="px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
+                    >
+                      Open Thumbnail in New Tab
+                    </button>
+                  </div>
+                </div>
+
+                {/* Metadata */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      Duration: {formatDuration(video.duration)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      Uploaded: {formatDate(video.upload_date)}
+                    </span>
+                  </div>
+
+                  {video.module && (
+                    <div className="flex items-center space-x-2">
+                      <Tag className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">
+                        Module: {video.module.name}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      {video.assigned_class ? (
+                        <>Assigned to: {video.assigned_class.name}</>
+                      ) : (
+                        <>Free video (not assigned to any class)</>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Module Badge */}
+                {video.module && (
+                  <div className="flex items-center space-x-2">
+                    <span
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                      style={{
+                        backgroundColor: `${video.module.color}20`,
+                        color: video.module.color,
+                      }}
+                    >
+                      {video.module.name}
+                    </span>
+                    {video.module.description && (
+                      <span className="text-sm text-gray-500">
+                        - {video.module.description}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Assigned Class Badge */}
+                {video.assigned_class && (
+                  <div className="flex items-center space-x-2">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      {video.assigned_class.name}
+                    </span>
+                    {video.assigned_class.description && (
+                      <span className="text-sm text-gray-500">
+                        - {video.assigned_class.description}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}; 

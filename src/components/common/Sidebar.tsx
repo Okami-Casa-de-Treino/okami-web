@@ -10,7 +10,9 @@ import {
   BarChart3,
   User,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Video,
+  TrendingUp
 } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import { useSidebarStore } from '../../stores/sidebarStore';
@@ -26,6 +28,8 @@ const iconMap = {
   DollarSign,
   BarChart3,
   User,
+  Video,
+  TrendingUp
 };
 
 const Sidebar: React.FC = () => {

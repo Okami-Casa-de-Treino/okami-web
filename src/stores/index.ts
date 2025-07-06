@@ -19,5 +19,8 @@ export { usePaymentStore } from './paymentStore';
 // Belt Progression Store
 export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProgressionStore';
 
+// Video Store
+export { useVideoStore } from './videoStore';
+
 // Sidebar Store
 export { useSidebarStore } from './sidebarStore'; 
