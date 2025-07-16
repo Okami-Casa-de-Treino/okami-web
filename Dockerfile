@@ -1,10 +1,11 @@
-# Stage 1: Build the app
-FROM node:18-alpine AS builder
+# Stage 1: Build the app with Bun
+FROM oven/bun:1.0.25 as builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --frozen-lockfile || yarn install --frozen-lockfile
+COPY bun.lockb ./
+RUN bun install --frozen-lockfile
 COPY . .
-RUN npm run build || yarn build
+RUN bun run build
 
 # Stage 2: Serve with nginx
 FROM nginx:alpine
