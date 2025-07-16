@@ -104,6 +104,22 @@ export interface Payment {
   updated_at: string;
 }
 
+export interface Expense {
+  id: string;
+  title: string;
+  description?: string;
+  amount: number | string;
+  category: 'rent' | 'utilities' | 'equipment' | 'maintenance' | 'marketing' | 'insurance' | 'taxes' | 'salary' | 'other';
+  expense_date: string;
+  due_date: string;
+  payment_method?: 'cash' | 'card' | 'bank_transfer';
+  status: 'pending' | 'paid' | 'cancelled';
+  receipt_url?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface User {
   id: string;
   username?: string;
@@ -241,6 +257,22 @@ export interface PromoteStudentData {
   student_id: string;
   new_belt: string;
   new_degree: number;
+  promotion_type?: 'regular' | 'skip_degree' | 'honorary' | 'correction';
+  requirements_met?: {
+    technique_test?: boolean;
+    sparring_test?: boolean;
+    attendance?: boolean;
+    time_requirement?: boolean;
+    [key: string]: boolean | undefined;
+  };
+  notes?: string;
+  certificate_url?: string;
+  promotion_date?: string;
+}
+
+export interface UpdatePromotionData {
+  new_belt?: string;
+  new_degree?: number;
   promotion_type?: 'regular' | 'skip_degree' | 'honorary' | 'correction';
   requirements_met?: {
     technique_test?: boolean;

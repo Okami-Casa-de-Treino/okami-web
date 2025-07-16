@@ -13,6 +13,8 @@ export { checkinService } from './checkinService';
 export type { CheckinResponse, CheckinCreateData } from './checkinService';
 export { paymentService } from './paymentService';
 export type { PaymentResponse, PaymentCreateData, MarkAsPaidData } from './paymentService';
+export { expenseService } from './expenseService';
+export type { ExpenseResponse, ExpenseCreateData } from './expenseService';
 export { beltProgressionService } from './beltProgressionService';
 export type { BeltProgressionService, BeltProgressionResponse, BeltProgressResponse, BeltOverviewResponse } from './beltProgressionService';
 export { videoService } from './videoService';

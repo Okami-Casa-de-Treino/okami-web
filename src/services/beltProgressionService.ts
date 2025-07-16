@@ -3,6 +3,7 @@ import {
   BeltProgress, 
   BeltOverview, 
   PromoteStudentData, 
+  UpdatePromotionData,
   PromotionResponse,
   PaginatedResponse,
   FilterParams,
@@ -25,6 +26,15 @@ export class BeltProgressionService implements IBeltProgressionService {
   async promoteStudent(data: PromoteStudentData): Promise<PromotionResponse> {
     const response = await httpClient.post<PromotionResponse>('/belts/promote', data);
     return response.data;
+  }
+
+  async updatePromotion(id: string, data: UpdatePromotionData): Promise<BeltPromotion> {
+    const response = await httpClient.put<BeltPromotion>(`/belts/promotions/${id}`, data);
+    return response.data;
+  }
+
+  async deletePromotion(id: string): Promise<void> {
+    await httpClient.delete(`/belts/promotions/${id}`);
   }
 
   async getStudentProgress(studentId: string): Promise<BeltProgress> {

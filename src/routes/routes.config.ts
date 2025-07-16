@@ -188,7 +188,7 @@ export const studentRoutes: RouteConfig[] = [
     roles: ['student'],
   },
   {
-    path: AppRoutes.MY_CLASSES,
+    path: AppRoutes.MY_CLASSES_STUDENT,
     name: 'Minhas Turmas',
     icon: 'Calendar',
     showInSidebar: true,

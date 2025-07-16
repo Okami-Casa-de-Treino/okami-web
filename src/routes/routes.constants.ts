@@ -19,6 +19,7 @@ export enum AppRoutes {
   CLASSES_CREATE = '/turmas/criar',
   CLASSES_EDIT = '/turmas/editar',
   MY_CLASSES = '/minhas-turmas',
+  MY_CLASSES_STUDENT = '/minhas-turmas-aluno',
   
   // Check-in routes
   CHECKIN = '/checkin',

@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { X, Award, User, FileText, Calendar } from 'lucide-react';
-import { PromoteStudentData, Student } from '../../../../types';
+import { X, Award, FileText, Calendar, Edit } from 'lucide-react';
+import { BeltPromotion, UpdatePromotionData } from '../../../../types';
 import { useBeltProgressionStore } from '../../../../stores';
-import { useStudentStore } from '../../../../stores';
 import { useToast } from '../../../../hooks/useToast';
 import { getBeltOptions, getMaxDegree, determineAgeGroup } from '../../../../utils/beltSystem';
 
-interface PromoteStudentModalProps {
+interface EditPromotionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  promotion: BeltPromotion | null;
 }
 
-interface PromoteForm extends PromoteStudentData {
+interface EditForm extends UpdatePromotionData {
   promotion_date_display: string;
 }
 
-export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen, onClose }) => {
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showStudentList, setShowStudentList] = useState(false);
-
-  const { promoteStudent, isPromoting, error } = useBeltProgressionStore();
-  const { students, fetchStudents } = useStudentStore();
+export const EditPromotionModal: React.FC<EditPromotionModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  promotion 
+}) => {
+  const { updatePromotion, isPromoting, error } = useBeltProgressionStore();
   const toast = useToast();
 
   const {
@@ -32,7 +31,7 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
     reset,
     watch,
     setValue,
-  } = useForm<PromoteForm>({
+  } = useForm<EditForm>({
     defaultValues: {
       promotion_type: 'regular',
       promotion_date_display: new Date().toISOString().split('T')[0],
@@ -46,14 +45,28 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
   });
 
   const watchedBelt = watch('new_belt');
-  const watchedStudentId = watch('student_id');
 
-  // Load students on mount
+  // Load promotion data when modal opens
   useEffect(() => {
-    if (isOpen) {
-      fetchStudents();
+    if (promotion && isOpen) {
+      const ageGroup = promotion.student?.birth_date 
+        ? determineAgeGroup(promotion.student.birth_date) 
+        : 'Adulto';
+      
+      setValue('new_belt', promotion.new_belt);
+      setValue('new_degree', promotion.new_degree);
+      setValue('promotion_type', promotion.promotion_type);
+      setValue('promotion_date_display', promotion.promotion_date.split('T')[0]);
+      setValue('notes', promotion.notes || '');
+      setValue('certificate_url', promotion.certificate_url || '');
+      setValue('requirements_met', {
+        technique_test: promotion.requirements_met?.technique_test || false,
+        sparring_test: promotion.requirements_met?.sparring_test || false,
+        attendance: promotion.requirements_met?.attendance || false,
+        time_requirement: promotion.requirements_met?.time_requirement || false,
+      });
     }
-  }, [isOpen, fetchStudents]);
+  }, [promotion, isOpen, setValue]);
 
   // Display store errors via toast
   useEffect(() => {
@@ -62,55 +75,48 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
     }
   }, [error, toast]);
 
-  // Filter students based on search
-  const filteredStudents = students.filter(student =>
-    student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    student.cpf?.includes(searchTerm)
-  );
-
-  // Get current student details
-  const currentStudent = students.find(s => s.id === watchedStudentId);
-  const ageGroup = currentStudent ? determineAgeGroup(currentStudent.birth_date) : 'Adulto';
+  // Get available belts and max degree
+  const ageGroup = promotion?.student?.birth_date 
+    ? determineAgeGroup(promotion.student.birth_date) 
+    : 'Adulto';
   const availableBelts = getBeltOptions(ageGroup);
   const maxDegree = watchedBelt ? getMaxDegree(watchedBelt, ageGroup) : 1;
 
-  const onSubmit = async (data: PromoteForm) => {
+  const onSubmit = async (data: EditForm) => {
+    if (!promotion) return;
+
     try {
-      const submitData: PromoteStudentData = {
+      const submitData: UpdatePromotionData = {
         ...data,
         promotion_date: data.promotion_date_display,
       };
       
-      await promoteStudent(submitData);
-      toast.success(`${selectedStudent?.full_name} promovido com sucesso!`);
+      await updatePromotion(promotion.id, submitData);
+      toast.success(`Promoção de ${promotion.student?.full_name} atualizada com sucesso!`);
       reset();
-      setSelectedStudent(null);
       onClose();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro ao promover aluno';
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao atualizar promoção';
       toast.error(errorMessage);
     }
   };
 
-  const handleStudentSelect = (student: Student) => {``
-    setSelectedStudent(student);
-    setValue('student_id', student.id);
-    setShowStudentList(false);
-    setSearchTerm(student.full_name);
-  };
-
-  if (!isOpen) return null;
+  if (!isOpen || !promotion) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <Award className="text-yellow-600" size={20} />
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Edit className="text-blue-600" size={20} />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">Promover Aluno</h2>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Editar Promoção</h2>
+              <p className="text-sm text-gray-600">
+                {promotion.student?.full_name} - {promotion.previous_belt} {promotion.previous_degree}° → {promotion.new_belt} {promotion.new_degree}°
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -121,52 +127,27 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
-
-          {/* Student Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <User size={16} className="inline mr-2" />
-              Selecionar Aluno
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Buscar aluno por nome, email ou CPF..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setShowStudentList(true);
-                }}
-                onFocus={() => setShowStudentList(true)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              
-              {showStudentList && filteredStudents.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
-                  {filteredStudents.slice(0, 10).map((student) => (
-                    <button
-                      key={student.id}
-                      type="button"
-                      onClick={() => handleStudentSelect(student)}
-                      className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="font-medium text-gray-900">{student.full_name}</div>
-                      <div className="text-sm text-gray-600">
-                        {student.belt} {student.belt_degree}° grau • {student.email}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {selectedStudent && (
-              <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="font-medium text-blue-900">{selectedStudent.full_name}</p>
-                <p className="text-sm text-blue-700">
-                  Faixa atual: {selectedStudent.belt} {selectedStudent.belt_degree}° grau
-                </p>
+          {/* Current Promotion Info */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h3 className="font-medium text-gray-900 mb-2">Informações da Promoção</h3>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Aluno:</span>
+                <p className="font-medium">{promotion.student?.full_name}</p>
               </div>
-            )}
+              <div>
+                <span className="text-gray-600">Data Original:</span>
+                <p className="font-medium">{new Date(promotion.promotion_date).toLocaleDateString('pt-BR')}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Promovido por:</span>
+                <p className="font-medium">{promotion.promoted_by_user?.username || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Tipo Original:</span>
+                <p className="font-medium capitalize">{promotion.promotion_type}</p>
+              </div>
+            </div>
           </div>
 
           {/* Belt Selection */}
@@ -176,7 +157,7 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
                 Nova Faixa
               </label>
               <select
-                {...register('new_belt', { required: 'Selecione a nova faixa' })}
+                {...register('new_belt')}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
                 <option value="">Selecione a faixa</option>
@@ -200,7 +181,6 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
                 min="0"
                 max={maxDegree}
                 {...register('new_degree', { 
-                  required: 'Informe o novo grau',
                   valueAsNumber: true,
                   min: { value: 0, message: 'Grau mínimo é 0' },
                   max: { value: maxDegree, message: `Grau máximo é ${maxDegree}` }
@@ -284,6 +264,19 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
             </div>
           </div>
 
+          {/* Certificate URL */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              URL do Certificado
+            </label>
+            <input
+              type="url"
+              {...register('certificate_url')}
+              placeholder="https://example.com/certificate.pdf"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
           {/* Notes */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -309,10 +302,10 @@ export const PromoteStudentModal: React.FC<PromoteStudentModalProps> = ({ isOpen
             </button>
             <button
               type="submit"
-              disabled={isPromoting || !selectedStudent}
+              disabled={isPromoting}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {isPromoting ? 'Promovendo...' : 'Promover Aluno'}
+              {isPromoting ? 'Atualizando...' : 'Atualizar Promoção'}
             </button>
           </div>
         </form>

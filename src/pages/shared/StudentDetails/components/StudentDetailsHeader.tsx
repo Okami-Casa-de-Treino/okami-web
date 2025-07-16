@@ -20,11 +20,24 @@ export const StudentDetailsHeader: React.FC<StudentDetailsHeaderProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Safety check for student object
+  if (!student) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="text-center text-gray-500">
+          <p>Carregando informações do estudante...</p>
+        </div>
+      </div>
+    );
+  }
+
   const handleBack = () => {
     navigate(AppRoutes.STUDENTS);
   };
 
   const getStatusText = (status: string): string => {
+    if (!status) return 'Inativo';
+    
     switch (status) {
       case 'active':
         return 'Ativo';
@@ -84,16 +97,16 @@ export const StudentDetailsHeader: React.FC<StudentDetailsHeaderProps> = ({
         {/* Student Info */}
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold text-gray-900">{student.full_name}</h1>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(student.status)}`}>
-              {getStatusText(student.status)}
+            <h1 className="text-3xl font-bold text-gray-900">{student.full_name || 'Nome não informado'}</h1>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(student.status || 'inactive')}`}>
+              {getStatusText(student.status || 'inactive')}
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
             <div className="flex items-center gap-2">
               <User size={16} />
-              <span>{calculateAge(student.birth_date)} anos</span>
+              <span>{student.birth_date ? `${calculateAge(student.birth_date)} anos` : 'Idade não informada'}</span>
             </div>
             
             {student.email && (
@@ -123,7 +136,7 @@ export const StudentDetailsHeader: React.FC<StudentDetailsHeaderProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-sm">Matrícula:</span>
               <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-                {student.id.slice(0, 8).toUpperCase()}
+                {student.id ? student.id.slice(0, 8).toUpperCase() : 'N/A'}
               </span>
             </div>
           </div>

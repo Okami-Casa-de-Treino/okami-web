@@ -1,7 +1,10 @@
-import React from 'react';
-import { Award, User, Calendar, FileText, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { Award, User, Calendar, FileText, Edit, Trash2 } from 'lucide-react';
 import { BeltPromotion } from '../../../../types';
 import { formatDate } from '../../../../utils';
+import { useAuthStore } from '../../../../stores';
+import { EditPromotionModal } from './EditPromotionModal';
+import { DeletePromotionModal } from './DeletePromotionModal';
 
 interface BeltProgressionTableProps {
   promotions: BeltPromotion[];
@@ -13,7 +16,7 @@ interface BeltProgressionTableProps {
     limit: number;
     totalPages: number;
   };
-  onPromoteStudent: (data: any) => Promise<any>;
+  onPromoteStudent: (data: unknown) => Promise<unknown>;
   onFetchPromotions: () => void;
 }
 
@@ -23,6 +26,33 @@ export const BeltProgressionTable: React.FC<BeltProgressionTableProps> = ({
   pagination,
   onFetchPromotions,
 }) => {
+  const { user } = useAuthStore();
+  const [selectedPromotion, setSelectedPromotion] = useState<BeltPromotion | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // Check if user can delete promotions (admin only)
+  const canDeletePromotions = user?.role === 'admin';
+
+  const handleEditPromotion = (promotion: BeltPromotion) => {
+    setSelectedPromotion(promotion);
+    setShowEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+    setSelectedPromotion(null);
+  };
+
+  const handleDeletePromotion = (promotion: BeltPromotion) => {
+    setSelectedPromotion(promotion);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setSelectedPromotion(null);
+  };
   const getBeltColor = (belt: string) => {
     const colors: Record<string, string> = {
       'Branca': 'bg-gray-100 text-gray-800',
@@ -155,11 +185,21 @@ export const BeltProgressionTable: React.FC<BeltProgressionTableProps> = ({
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
-                          title="Ver detalhes"
+                          onClick={() => handleEditPromotion(promotion)}
+                          className="text-green-600 hover:text-green-800 transition-colors"
+                          title="Editar promoção"
                         >
-                          <Eye size={16} />
+                          <Edit size={16} />
                         </button>
+                        {canDeletePromotions && (
+                          <button
+                            onClick={() => handleDeletePromotion(promotion)}
+                            className="text-red-600 hover:text-red-800 transition-colors"
+                            title="Excluir promoção"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                         {promotion.notes && (
                           <button
                             className="text-gray-600 hover:text-gray-800 transition-colors"
@@ -209,6 +249,20 @@ export const BeltProgressionTable: React.FC<BeltProgressionTableProps> = ({
           )}
         </>
       )}
+
+      {/* Edit Promotion Modal */}
+      <EditPromotionModal
+        isOpen={showEditModal}
+        onClose={handleCloseEditModal}
+        promotion={selectedPromotion}
+      />
+
+      {/* Delete Promotion Modal */}
+      <DeletePromotionModal
+        isOpen={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        promotion={selectedPromotion}
+      />
     </div>
   );
 }; 

@@ -4,6 +4,7 @@ import {
   Class, 
   Checkin, 
   Payment, 
+  Expense,
   User, 
   DashboardStats,
   ApiResponse,
@@ -13,6 +14,7 @@ import {
   BeltProgress,
   BeltOverview,
   PromoteStudentData,
+  UpdatePromotionData,
   PromotionResponse,
   Video,
   VideoUploadData,
@@ -82,6 +84,14 @@ export interface IPaymentService {
   generateMonthlyPayments(reference_month: string, due_day: number): Promise<ApiResponse<Payment[]>>;
 }
 
+export interface IExpenseService {
+  getAll(params?: FilterParams): Promise<PaginatedResponse<Expense>>;
+  getById(id: string): Promise<Expense>;
+  create(expense: Omit<Expense, 'id' | 'created_at' | 'updated_at'>): Promise<Expense>;
+  update(id: string, expense: Partial<Expense>): Promise<Expense>;
+  delete(id: string): Promise<void>;
+}
+
 export interface IAuthService {
   login(username: string, password: string): Promise<{ user: User; token: string }>;
   logout(): Promise<void>;
@@ -102,6 +112,8 @@ export interface IBeltProgressionService {
   getAllPromotions(params?: FilterParams): Promise<PaginatedResponse<BeltPromotion>>;
   getPromotionById(id: string): Promise<BeltPromotion>;
   promoteStudent(data: PromoteStudentData): Promise<PromotionResponse>;
+  updatePromotion(id: string, data: UpdatePromotionData): Promise<BeltPromotion>;
+  deletePromotion(id: string): Promise<void>;
   
   // Student progress
   getStudentProgress(studentId: string): Promise<BeltProgress>;

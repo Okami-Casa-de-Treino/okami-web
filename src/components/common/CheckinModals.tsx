@@ -3,6 +3,7 @@ import { X, User, Clock, MapPin, Users, CheckCircle, AlertCircle } from 'lucide-
 import { useCheckinStore, useClassStore, useStudentStore } from '../../stores';
 import { Class } from '../../types';
 import { checkinService } from '../../services/checkinService';
+import { useToast } from '../../hooks/useToast';
 
 // ============================================================================
 // TYPES
@@ -38,6 +39,7 @@ export const TeacherCheckinModal: React.FC<TeacherCheckinModalProps> = ({
   const { isCreating } = useCheckinStore();
   const { schedule, isLoadingSchedule, fetchClassStudents, classStudents, isLoadingStudents } = useClassStore();
   const { students, fetchStudents, isLoading: isLoadingAllStudents } = useStudentStore();
+  const { success, error: showError } = useToast();
 
   // Get today's classes
   const todayClasses = React.useMemo(() => {
@@ -117,6 +119,9 @@ export const TeacherCheckinModal: React.FC<TeacherCheckinModalProps> = ({
 
       await Promise.all(checkinPromises);
       
+      // Show success toast
+      success(`Check-in realizado com sucesso para ${selectedStudents.length} aluno${selectedStudents.length !== 1 ? 's' : ''}`);
+      
       // Reset form and close modal
       setSelectedStudents([]);
       setSelectedClassId('');
@@ -125,6 +130,17 @@ export const TeacherCheckinModal: React.FC<TeacherCheckinModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Failed to create check-ins:', error);
+      
+      // Try to extract error message from API response
+      let errorMessage = 'Erro ao realizar check-in. Tente novamente.';
+      
+      if (error && typeof error === 'object' && 'error' in error) {
+        errorMessage = String(error.error);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      showError(errorMessage);
     }
   };
 
@@ -338,6 +354,7 @@ export const StudentCheckinModal: React.FC<StudentCheckinModalProps> = ({
 
   const { isCreating } = useCheckinStore();
   const { schedule, isLoadingSchedule } = useClassStore();
+  const { success, error: showError } = useToast();
 
   // Get today's available classes for the student
   const availableClasses = React.useMemo(() => {
@@ -381,12 +398,26 @@ export const StudentCheckinModal: React.FC<StudentCheckinModalProps> = ({
         notes: notes || undefined,
       });
       
+      // Show success toast
+      success('Check-in realizado com sucesso!');
+      
       // Reset form and close modal
       setSelectedClassId('');
       setNotes('');
       onClose();
     } catch (error) {
       console.error('Failed to create check-in:', error);
+      
+      // Try to extract error message from API response
+      let errorMessage = 'Erro ao realizar check-in. Tente novamente.';
+      
+      if (error && typeof error === 'object' && 'error' in error) {
+        errorMessage = String(error.error);
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      
+      showError(errorMessage);
     }
   };
 

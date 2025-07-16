@@ -5,6 +5,7 @@ import {
   BeltProgress, 
   BeltOverview, 
   PromoteStudentData, 
+  UpdatePromotionData,
   PromotionResponse,
   PaginatedResponse,
   FilterParams 
@@ -48,6 +49,8 @@ interface BeltProgressionActions {
   fetchPromotions: (params?: FilterParams) => Promise<void>;
   fetchPromotionById: (id: string) => Promise<void>;
   promoteStudent: (data: PromoteStudentData) => Promise<PromotionResponse>;
+  updatePromotion: (id: string, data: UpdatePromotionData) => Promise<BeltPromotion>;
+  deletePromotion: (id: string) => Promise<void>;
   
   // Student progress
   fetchStudentProgress: (studentId: string) => Promise<void>;
@@ -165,6 +168,45 @@ export const useBeltProgressionStore = create<BeltProgressionStore>()(
         } catch (error) {
           set({
             error: error instanceof Error ? error.message : 'Failed to promote student',
+            isPromoting: false,
+          });
+          throw error;
+        }
+      },
+
+      updatePromotion: async (id: string, data: UpdatePromotionData) => {
+        set({ isPromoting: true, error: null });
+        
+        try {
+          const result = await beltProgressionService.updatePromotion(id, data);
+          
+          // Refresh promotions list
+          await get().fetchPromotions();
+          
+          set({ isPromoting: false });
+          return result;
+        } catch (error) {
+          set({
+            error: error instanceof Error ? error.message : 'Failed to update promotion',
+            isPromoting: false,
+          });
+          throw error;
+        }
+      },
+
+      deletePromotion: async (id: string) => {
+        set({ isPromoting: true, error: null });
+        
+        try {
+          await beltProgressionService.deletePromotion(id);
+          
+          // Refresh promotions list
+          await get().fetchPromotions();
+          
+          set({ isPromoting: false });
+        } catch (error) {
+          set({
+            error: error instanceof Error ? error.message : 'Failed to delete promotion',
             isPromoting: false,
           });
           throw error;

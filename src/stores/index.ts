@@ -16,6 +16,9 @@ export { useCheckinStore, useCheckinSelectors } from './checkinStore';
 // Payment Store
 export { usePaymentStore } from './paymentStore';
 
+// Expense Store
+export { useExpenseStore } from './expenseStore';
+
 // Belt Progression Store
 export { useBeltProgressionStore, useBeltProgressionSelectors } from './beltProgressionStore';
 
