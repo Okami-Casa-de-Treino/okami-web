@@ -101,13 +101,13 @@ export const adminRoutes: RouteConfig[] = [
     showInSidebar: true,
     roles: ['admin', 'teacher'],
   },
-  {
-    path: AppRoutes.VIDEO_CONTENT,
-    name: 'Conteúdo de Vídeo',
-    icon: 'Video',
-    showInSidebar: true,
-    roles: ['admin', 'teacher'],
-  },
+  // {
+  //   path: AppRoutes.VIDEO_CONTENT,
+  //   name: 'Conteúdo de Vídeo',
+  //   icon: 'Video',
+  //   showInSidebar: true,
+  //   roles: ['admin', 'teacher'],
+  // },
 
   {
     path: AppRoutes.FINANCIAL,
@@ -155,13 +155,13 @@ export const teacherRoutes: RouteConfig[] = [
     showInSidebar: true,
     roles: ['teacher'],
   },
-  {
-    path: AppRoutes.VIDEO_CONTENT,
-    name: 'Conteúdo de Vídeo',
-    icon: 'Video',
-    showInSidebar: true,
-    roles: ['teacher'],
-  },
+  // {
+  //   path: AppRoutes.VIDEO_CONTENT,
+  //   name: 'Conteúdo de Vídeo',
+  //   icon: 'Video',
+  //   showInSidebar: true,
+  //   roles: ['teacher'],
+  // },
   {
     path: AppRoutes.STUDENTS,
     name: 'Alunos',
