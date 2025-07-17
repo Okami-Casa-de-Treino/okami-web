@@ -1,7 +1,7 @@
 import { IApiService } from '../types/interfaces';
 import { ApiResponse } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://okami-api.phmarques.com.br/api/';
 
 export class ApiService implements IApiService {
   private baseUrl: string;
