@@ -1,7 +1,7 @@
-version: '3.8'
 services:
   okami-web:
     build: .
+    platform: linux/amd64
     labels:
       - "traefik.http.routers.okamiweb.rule=Host(`okami.phmarques.com.br`)"
       - "traefik.http.routers.okamiweb.entrypoints=web,websecure"
