@@ -1,4 +1,4 @@
-import { Class, PaginatedResponse, FilterParams, Student, Checkin, ApiResponse } from '../types';
+import { Class, PaginatedResponse, FilterParams, Checkin, ApiResponse } from '../types';
 import { httpClient } from './httpClient';
 import { IClassService } from '../types/interfaces';
 import { StudentEnrollment } from '../pages/shared/ClassDetails/types';

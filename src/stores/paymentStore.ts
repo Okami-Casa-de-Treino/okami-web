@@ -199,7 +199,7 @@ export const usePaymentStore = create<PaymentState>()(
           const newPayment = await paymentService.create({
             ...data,
             status: 'pending',
-            discount: data.discount || 0,
+            discount: data.discount ?? 0,
             late_fee: 0,
           });
           

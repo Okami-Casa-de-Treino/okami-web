@@ -62,20 +62,12 @@ export const FinancialScreen: React.FC = () => {
     error: expenseError,
     pagination: expensePagination,
     
-    // Filters
-    filters: expenseFilters,
-    searchTerm: expenseSearchTerm,
-    setSearchTerm: setExpenseSearchTerm,
-    setFilters: setExpenseFilters,
-    clearFilters: clearExpenseFilters,
-    
     // Pagination
     currentPage: expenseCurrentPage,
     setCurrentPage: setExpenseCurrentPage,
     
     // Actions
     handleCreateExpense,
-    handleEditExpense,
     handleDeleteExpense,
     
     // Modals
@@ -84,10 +76,7 @@ export const FinancialScreen: React.FC = () => {
     showEditModal: showEditExpenseModal,
     setShowEditModal: setShowEditExpenseModal,
     selectedExpense,
-    setSelectedExpense,
-    
-    // Stats
-    stats: expenseStats
+    setSelectedExpense
   } = useExpenses();
 
   if (paymentError || expenseError) {
@@ -235,6 +224,19 @@ export const FinancialScreen: React.FC = () => {
         <CreateExpenseModal 
           isOpen={showCreateExpenseModal}
           onClose={() => setShowCreateExpenseModal(false)}
+          onSubmit={handleCreateExpense}
+          loading={expenseLoading.create}
+        />
+      )}
+      
+      {showEditExpenseModal && selectedExpense && (
+        <CreateExpenseModal 
+          isOpen={showEditExpenseModal}
+          onClose={() => {
+            setShowEditExpenseModal(false);
+            setSelectedExpense(null);
+          }}
+          expense={selectedExpense}
           onSubmit={handleCreateExpense}
           loading={expenseLoading.create}
         />

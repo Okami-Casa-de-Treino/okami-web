@@ -3,7 +3,7 @@ import { httpClient } from './httpClient';
 
 export interface StudentService {
   getStudents(params?: FilterParams): Promise<PaginatedResponse<Student>>;
-  getStudentById(id: string): Promise<Student>;
+  getStudentById(id: string): Promise<{ data: Student }>;
   createStudent(data: Omit<Student, 'id' | 'created_at' | 'updated_at'>): Promise<Student>;
   updateStudent(id: string, data: Partial<Student>): Promise<Student>;
   deleteStudent(id: string): Promise<void>;
@@ -20,8 +20,8 @@ class StudentServiceImpl implements StudentService {
     return response.data;
   }
 
-  async getStudentById(id: string): Promise<Student> {
-    const response = await httpClient.get<Student>(`${this.baseUrl}/${id}`);
+  async getStudentById(id: string): Promise<{ data: Student }> {
+    const response = await httpClient.get<{ data: Student }>(`${this.baseUrl}/${id}`);
     return response.data;
   }
 

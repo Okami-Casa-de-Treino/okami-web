@@ -11,8 +11,8 @@ interface CreatePaymentData {
   amount: number;
   due_date: string;
   reference_month: string;
-  discount?: number;
-  notes?: string;
+  discount?: number | null;
+  notes?: string | null;
 }
 
 interface MarkAsPaidData {
@@ -38,8 +38,11 @@ export const StudentPaymentsList: React.FC<StudentPaymentsListProps> = ({
 
   const handleCreatePayment = async (modalData: CreatePaymentData): Promise<boolean> => {
     try {
-      
-      const result = await createPayment(modalData);
+      const result = await createPayment({
+        ...modalData,
+        discount: modalData.discount ?? undefined,
+        notes: modalData.notes ?? undefined
+      });
       if (result) {
         setShowCreateModal(false);
         onRefresh(); // Refresh the payments list

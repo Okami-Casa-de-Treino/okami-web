@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { X, Award, FileText, Calendar, Edit } from 'lucide-react';
+import { X, FileText, Calendar, Edit } from 'lucide-react';
 import { BeltPromotion, UpdatePromotionData } from '../../../../types';
 import { useBeltProgressionStore } from '../../../../stores';
 import { useToast } from '../../../../hooks/useToast';
@@ -49,10 +49,6 @@ export const EditPromotionModal: React.FC<EditPromotionModalProps> = ({
   // Load promotion data when modal opens
   useEffect(() => {
     if (promotion && isOpen) {
-      const ageGroup = promotion.student?.birth_date 
-        ? determineAgeGroup(promotion.student.birth_date) 
-        : 'Adulto';
-      
       setValue('new_belt', promotion.new_belt);
       setValue('new_degree', promotion.new_degree);
       setValue('promotion_type', promotion.promotion_type);
