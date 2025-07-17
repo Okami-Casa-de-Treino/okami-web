@@ -236,7 +236,6 @@ export const FinancialScreen: React.FC = () => {
             setShowEditExpenseModal(false);
             setSelectedExpense(null);
           }}
-          expense={selectedExpense}
           onSubmit={handleCreateExpense}
           loading={expenseLoading.create}
         />
