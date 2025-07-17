@@ -6,6 +6,11 @@ services:
       - "traefik.http.routers.okamiweb.rule=Host(`okami.phmarques.com.br`)"
       - "traefik.http.routers.okamiweb.entrypoints=web,websecure"
       - "traefik.http.routers.okamiweb.tls.certresolver=myresolver"
+      # Add these security headers
+      - "traefik.http.middlewares.okamiweb-security.headers.sslredirect=true"
+      - "traefik.http.middlewares.okamiweb-security.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.okamiweb-security.headers.stsIncludeSubdomains=true"
+      - "traefik.http.routers.okamiweb.middlewares=okamiweb-security"
     networks:
       - web
     restart: unless-stopped
