@@ -23,5 +23,3 @@ export type { IVideoService, IModuleService } from '../types/interfaces';
 export { toastService } from './toastService';
 export type { IToastService, ToastOptions } from '../types/interfaces';
 
-// Legacy API service (if still needed)
-export { apiService } from './api'; 

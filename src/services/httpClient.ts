@@ -55,7 +55,7 @@ class HttpClient {
 
   constructor(config: HttpClientConfig = {}) {
     this.client = axios.create({
-      baseURL: config.baseURL || 'http://localhost:3000/api',
+      baseURL: config.baseURL || 'https://okami-api.phmarques.com.br/api/',
       timeout: config.timeout || 10000,
       headers: {
         'Content-Type': 'application/json',

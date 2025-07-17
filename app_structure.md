@@ -94,7 +94,6 @@ frontend/
 │   │   ├── Reports.jsx
 │   │   └── Login.jsx
 │   ├── hooks/
-│   │   ├── useApi.js
 │   │   ├── useAuth.js
 │   │   └── useLocalStorage.js
 │   ├── services/
