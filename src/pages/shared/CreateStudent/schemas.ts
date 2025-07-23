@@ -126,7 +126,7 @@ export const createStudentSchema = z.object({
   
   belt_degree: z
     .number()
-    .min(1, 'Grau mínimo é 1')
+    .min(0, 'Grau mínimo é 0')
     .max(10, 'Grau máximo é 10'),
   
   status: StudentStatusEnum,

@@ -52,7 +52,7 @@ export const getMaxDegree = (belt: string, ageGroup: AgeGroup): number => {
     case 'Preta':
       return 10;
     default:
-      return 1;
+      return 0;
   }
 };
 

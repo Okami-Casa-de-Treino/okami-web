@@ -455,7 +455,7 @@ const CreateStudentScreen: React.FC = () => {
                       </label>
                       <input
                         type="number"
-                        min="1"
+                        min="0"
                         max={getMaxDegree(watch('belt') || 'Branca', selectedAgeGroup)}
                         className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
                           errors.belt_degree ? 'border-red-500' : 'border-gray-300'

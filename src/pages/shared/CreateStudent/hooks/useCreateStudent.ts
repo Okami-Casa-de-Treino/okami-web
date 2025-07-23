@@ -29,7 +29,7 @@ export const useCreateStudent = () => {
     resolver: zodResolver(createStudentSchema),
     defaultValues: {
       status: 'active',
-      belt_degree: 1,
+      belt_degree: 0,
       age_group: 'Adulto',
       belt: 'Branca',
       full_name: '',
