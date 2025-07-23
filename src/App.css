@@ -59,5 +59,38 @@
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
 }
 
+.hover-delay {
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 200ms;
+}
+.hover-delay:hover {
+  transition-delay: 200ms;
+}
+
+
+.animated-gradient-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, var(--color-secondary), var(--color-primary));
+  transition: background 0.3s;
+}
+.animated-gradient-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.animated-gradient-btn:hover::before,
+.animated-gradient-btn:focus-visible::before {
+  opacity: 1;
+}
+.animated-gradient-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
 
 

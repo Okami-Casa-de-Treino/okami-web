@@ -17,6 +17,7 @@ interface StatCard {
 const AdminDashboard: React.FC = () => {
   const { stats: dashboardStats, recentActivities, upcomingClasses, isLoading } = useAdminDashboard();
 
+  console.log(dashboardStats);
   // Map dashboard stats to StatCard format
   const stats: StatCard[] = [
     {
@@ -133,12 +134,15 @@ const AdminDashboard: React.FC = () => {
                 {stat.icon}
               </div>
             </div>
-            {stat.trend && (
-              <div className="mt-4 flex items-center">
-                <TrendingUp size={16} className="text-green-500 mr-1" />
-                <span className="text-sm font-medium text-green-600">{stat.trend}</span>
-                <span className="text-sm text-gray-500 ml-1">vs mês anterior</span>
-              </div>
+            {stat.trend &&
+              stat.trend !== '0%' &&
+              stat.trend !== '0' &&
+              stat.trend !== 'R$ 0,00' && (
+                <div className="mt-4 flex items-center">
+                  <TrendingUp size={16} className="text-green-500 mr-1" />
+                  <span className="text-sm font-medium text-green-600">{stat.trend}</span>
+                  <span className="text-sm text-gray-500 ml-1">vs mês anterior</span>
+                </div>
             )}
           </div>
         ))}

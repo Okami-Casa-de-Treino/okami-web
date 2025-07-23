@@ -52,6 +52,24 @@ export const useCreateStudent = () => {
 
   const selectedAgeGroup = watch('age_group') as AgeGroup;
 
+  // Address/CEP state
+  const [cep, setCep] = useState('');
+  const [street, setStreet] = useState('');
+  const [number, setNumber] = useState('');
+  const [neighborhood, setNeighborhood] = useState('');
+  const [city, setCity] = useState('');
+  const [uf, setUf] = useState('');
+  const [addressLoading, setAddressLoading] = useState(false);
+  const [addressError, setAddressError] = useState<string | null>(null);
+
+  // Compose address string
+  useEffect(() => {
+    if (street || number || neighborhood || city || uf) {
+      const composed = `${street}${number ? ', ' + number : ''}${neighborhood ? ' - ' + neighborhood : ''}${city ? ' - ' + city : ''}${uf ? ' - ' + uf : ''}`;
+      setValue('address', composed);
+    }
+  }, [street, number, neighborhood, city, uf, setValue]);
+
   useEffect(() => {
     if (isSubmitting && !isCreating) {
       if (error) {
@@ -69,6 +87,12 @@ export const useCreateStudent = () => {
     // Only allow submission if we're on the last step
     if (currentStep !== totalSteps) {
       return;
+    }
+    // Compose address before submit
+    if (street || number || neighborhood || city || uf) {
+      const composed = `${street}${number ? ', ' + number : ''}${neighborhood ? ' - ' + neighborhood : ''}${city ? ' - ' + city : ''}${uf ? ' - ' + uf : ''}`;
+      setValue('address', composed);
+      data.address = composed;
     }
 
     try {
@@ -167,6 +191,52 @@ export const useCreateStudent = () => {
     setValue('cpf', formatted);
   };
 
+  // Handler for CEP input change
+  const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    setCep(value);
+    setAddressError(null);
+    if (value.length === 8) {
+      setAddressLoading(true);
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${value}/json/`);
+        const data = await res.json();
+        if (data.erro) {
+          setAddressError('CEP não encontrado');
+          setStreet('');
+          setNeighborhood('');
+          setCity('');
+          setUf('');
+        } else {
+          setStreet(data.logradouro || '');
+          setNeighborhood(data.bairro || '');
+          setCity(data.localidade || '');
+          setUf(data.uf || '');
+        }
+      } catch (err) {
+        setAddressError('Erro ao buscar CEP');
+        setStreet('');
+        setNeighborhood('');
+        setCity('');
+        setUf('');
+      } finally {
+        setAddressLoading(false);
+      }
+    }
+  };
+
+  // Handler for address subfields
+  const handleAddressFieldChange = (field: string, value: string) => {
+    switch (field) {
+      case 'street': setStreet(value); break;
+      case 'number': setNumber(value); break;
+      case 'neighborhood': setNeighborhood(value); break;
+      case 'city': setCity(value); break;
+      case 'uf': setUf(value); break;
+      default: break;
+    }
+  };
+
   const goBack = () => {
     navigate(AppRoutes.STUDENTS);
   };
@@ -206,5 +276,17 @@ export const useCreateStudent = () => {
     isCreating,
     error,
     clearError,
+    
+    // Address/CEP
+    cep,
+    street,
+    number,
+    neighborhood,
+    city,
+    uf,
+    addressLoading,
+    addressError,
+    handleCepChange,
+    handleAddressFieldChange,
   };
 }; 

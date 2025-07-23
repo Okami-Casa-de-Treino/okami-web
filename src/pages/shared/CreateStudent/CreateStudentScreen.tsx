@@ -48,6 +48,17 @@ const CreateStudentScreen: React.FC = () => {
     isCreating,
     error,
     clearError,
+    // New state for address lookup
+    cep,
+    addressLoading,
+    addressError,
+    street,
+    number,
+    neighborhood,
+    city,
+    uf,
+    handleCepChange,
+    handleAddressFieldChange,
   } = useCreateStudent();
 
   return (
@@ -272,18 +283,97 @@ const CreateStudentScreen: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
+                {/* Address Fields with CEP Lookup */}
+                <div className="space-y-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <MapPin size={16} className="inline mr-2" />
                     Endereço Completo
                   </label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                    <div className="col-span-1">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]{8}"
+                        maxLength={8}
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={cep}
+                        onChange={handleCepChange}
+                        placeholder="CEP (somente números)"
+                        aria-label="CEP"
+                      />
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      {addressLoading && (
+                        <span className="text-blue-600 text-sm ml-2 animate-pulse">Buscando endereço...</span>
+                      )}
+                      {addressError && (
+                        <span className="text-red-600 text-sm ml-2">{addressError}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={street}
+                        onChange={e => handleAddressFieldChange('street', e.target.value)}
+                        placeholder="Rua"
+                        aria-label="Rua"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={number}
+                        onChange={e => handleAddressFieldChange('number', e.target.value)}
+                        placeholder="Número"
+                        aria-label="Número"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={neighborhood}
+                        onChange={e => handleAddressFieldChange('neighborhood', e.target.value)}
+                        placeholder="Bairro"
+                        aria-label="Bairro"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={city}
+                        onChange={e => handleAddressFieldChange('city', e.target.value)}
+                        placeholder="Cidade"
+                        aria-label="Cidade"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        value={uf}
+                        onChange={e => handleAddressFieldChange('uf', e.target.value)}
+                        placeholder="UF"
+                        aria-label="UF"
+                        maxLength={2}
+                      />
+                    </div>
+                  </div>
+                  {/* Hidden textarea for form validation, not shown to user */}
                   <textarea
-                    rows={3}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.address ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className="hidden"
                     {...register('address')}
-                    placeholder="Rua, número, bairro, cidade, CEP..."
+                    value={street || number || neighborhood || city || uf ? `${street}${number ? ', ' + number : ''}${neighborhood ? ' - ' + neighborhood : ''}${city ? ' - ' + city : ''}${uf ? ' - ' + uf : ''}` : ''}
+                    readOnly
+                    tabIndex={-1}
                   />
                   {errors.address && (
                     <p className="mt-1 text-sm text-red-600 flex items-center">

@@ -79,13 +79,13 @@ export const useAdminDashboard = () => {
         title: 'Professores Ativos',
         value: activeTeachers.length,
         description: `${activeTeachers.length} de ${teachers.length} disponíveis`,
-        trend: `${Math.round((activeTeachers.length / teachers.length) * 100)}%`
+        trend: teachers.length > 0 ? `${Math.round((activeTeachers.length / teachers.length) * 100)}%` : '0%'
       },
       {
         title: 'Aulas Ativas',
         value: activeClasses.length,
         description: `${activeClasses.length} aulas disponíveis`,
-        trend: `${Math.round((activeClasses.length / classes.length) * 100)}%`
+        trend: classes.length > 0 ? `${Math.round((activeClasses.length / classes.length) * 100)}%` : '0%'
       },
       {
         title: 'Check-ins Hoje',
