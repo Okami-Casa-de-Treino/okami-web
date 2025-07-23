@@ -3,6 +3,8 @@ import { Plus } from 'lucide-react';
 import { Student } from '../../../../types';
 import { StudentTableRow } from './StudentTableRow';
 import { StudentsPagination } from './StudentsPagination';
+import { AppRoutes } from '../../../../routes/routes.constants';
+import { useNavigate } from 'react-router-dom';
 
 interface StudentsTableProps {
   students: Student[];
@@ -26,6 +28,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = ({
   onDeleteStudent,
   onFetchStudents
 }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
@@ -70,7 +73,7 @@ export const StudentsTable: React.FC<StudentsTableProps> = ({
                       <p className="text-gray-900 font-medium">Nenhum aluno encontrado</p>
                       <p className="text-gray-500 text-sm">Comece adicionando seu primeiro aluno</p>
                     </div>
-                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" onClick={() => navigate(AppRoutes.STUDENTS_CREATE)}>
                       <Plus size={16} />
                       Adicionar Aluno
                     </button>
