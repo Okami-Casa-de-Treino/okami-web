@@ -38,7 +38,7 @@ export const getBeltOptions = (ageGroup: AgeGroup): string[] => {
 
 export const getMaxDegree = (belt: string, ageGroup: AgeGroup): number => {
   if (ageGroup === 'Infantil') {
-    return 1; // Kids belts typically don't have degrees
+    return 4;
   }
   
   // Adult belt degrees
