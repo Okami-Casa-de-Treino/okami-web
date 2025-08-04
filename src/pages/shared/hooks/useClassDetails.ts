@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
 import { AppRoutes, RouteHelpers } from '../../../routes/routes.constants';
+import { formatTime } from '../../../utils/dateUtils';
 
 import { TabType } from '../ClassDetails/types';
 
@@ -87,25 +88,17 @@ export const useClassDetails = () => {
     return days.map(day => dayNames[day]).join(', ');
   };
 
-  const formatTime = (timeString: string): string => {
-    if (!timeString) return '';
-    try {
-      // Handle both ISO format and HH:MM format
-      if (timeString.includes('T')) {
-        const date = new Date(timeString);
-        return date.toTimeString().slice(0, 5);
-      }
-      return timeString.slice(0, 5);
-    } catch {
-      return timeString;
-    }
-  };
+
 
   const getDuration = (startTime: string, endTime: string): string => {
     if (!startTime || !endTime) return '';
     try {
-      const start = new Date(`2000-01-01T${formatTime(startTime)}:00`);
-      const end = new Date(`2000-01-01T${formatTime(endTime)}:00`);
+      // Handle both HH:mm format and ISO datetime strings
+      const startFormatted = formatTime(startTime);
+      const endFormatted = formatTime(endTime);
+      
+      const start = new Date(`2000-01-01T${startFormatted}:00`);
+      const end = new Date(`2000-01-01T${endFormatted}:00`);
       const diffMs = end.getTime() - start.getTime();
       const diffMins = Math.round(diffMs / (1000 * 60));
       const hours = Math.floor(diffMins / 60);

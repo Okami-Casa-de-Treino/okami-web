@@ -4,6 +4,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useClassStore, useTeacherStore } from '../../../stores';
 import { Class, Teacher } from '../../../types';
 import { AppRoutes } from '../../../routes/routes.constants';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+// Configure dayjs for timezone handling
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export interface EditClassForm {
   name: string;
@@ -137,11 +144,37 @@ export const useEditClass = () => {
     if (!id) return;
     
     try {
+      // Convert Brazilian time to UTC timezone using dayjs
+      const createDateTimeWithTimezone = (brazilianTime: string): string => {
+        if (!brazilianTime) return '';
+        
+        // Parse the time components
+        const [hours, minutes] = brazilianTime.split(':').map(Number);
+        
+        // Add 3 hours to convert from Brazilian time (UTC-3) to UTC
+        const utcHours = (hours + 3) % 24;
+        const utcTime = `${utcHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        
+        // Create UTC datetime
+        const today = dayjs().utc();
+        const dateStr = today.format('YYYY-MM-DD');
+        
+        const result = `${dateStr}T${utcTime}:00.000Z`;
+        
+        console.log('Time conversion:', {
+          brazilianTime,
+          utcTime,
+          result
+        });
+        
+        return result;
+      };
+
       const classData: Partial<Class> = {
         ...data,
         days_of_week: selectedDays,
-        start_time: data.start_time, // API expects HH:MM format
-        end_time: data.end_time, // API expects HH:MM format
+        start_time: createDateTimeWithTimezone(data.start_time),
+        end_time: createDateTimeWithTimezone(data.end_time),
       };
 
       await updateClass(id, classData);

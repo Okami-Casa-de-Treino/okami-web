@@ -30,6 +30,10 @@ export const formatDateTime = (date: string | Date): string => {
  * Format time only (HH:mm)
  */
 export const formatTime = (date: string | Date): string => {
+  // If it's already a time string in HH:mm format, return as is
+  if (typeof date === 'string' && date.match(/^\d{2}:\d{2}$/)) {
+    return date;
+  }
   // If it's an ISO string with timezone, use UTC to avoid timezone conversion
   if (typeof date === 'string' && date.includes('T') && date.includes('Z')) {
     return dayjs.utc(date).format('HH:mm');

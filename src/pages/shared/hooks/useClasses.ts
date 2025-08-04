@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useClassStore, useClassSelectors } from '../../../stores';
 import { FilterParams } from '../../../types';
+import { formatTime } from '../../../utils/dateUtils';
 
 export const useClasses = () => {
   // Store actions
@@ -26,6 +27,8 @@ export const useClasses = () => {
     activeClasses,
     totalClasses
   } = useClassSelectors();
+
+  console.log('classes', classes);
 
   // Local state for search and filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,8 +79,9 @@ export const useClasses = () => {
   const formatSchedule = (daysOfWeek: number[], startTime: string, endTime: string) => {
     const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     const daysList = daysOfWeek.map(day => dayNames[day]).join(', ');
-    const start = new Date(startTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const end = new Date(endTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    
+    const start = formatTime(startTime);
+    const end = formatTime(endTime);
     return `${daysList} - ${start}-${end}`;
   };
 
