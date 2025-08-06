@@ -170,7 +170,7 @@ export const useCreateStudent = () => {
     // Reset belt when age group changes
     const defaultBelt = ageGroup === 'Infantil' ? 'Branca' : 'Branca';
     setValue('belt', defaultBelt);
-    setValue('belt_degree', 1);
+    setValue('belt_degree', 0);
   };
 
   // Phone number formatting
