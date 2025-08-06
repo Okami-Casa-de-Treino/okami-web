@@ -20,7 +20,7 @@ import { AppRoutes } from '../../routes/routes.constants';
 
 interface EditStudentForm {
   full_name: string;
-  email: string;
+  email?: string;
   phone: string;
   birth_date: string;
   password?: string;
@@ -122,38 +122,23 @@ const EditStudent: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { age_group, ...studentData } = data;
       
-      // Only include password if it's provided (not empty)
-      if (!studentData.password || studentData.password.trim() === '') {
-        delete studentData.password;
-      }
-
-      // Convert empty strings to undefined for optional fields
-      if (!studentData.email || studentData.email.trim() === '') {
-        delete studentData.email;
-      }
-      if (!studentData.cpf || studentData.cpf.trim() === '') {
-        delete studentData.cpf;
-      }
-      if (!studentData.rg || studentData.rg.trim() === '') {
-        delete studentData.rg;
-      }
-      if (!studentData.address || studentData.address.trim() === '') {
-        delete studentData.address;
-      }
-      if (!studentData.emergency_contact_name || studentData.emergency_contact_name.trim() === '') {
-        delete studentData.emergency_contact_name;
-      }
-      if (!studentData.emergency_contact_phone || studentData.emergency_contact_phone.trim() === '') {
-        delete studentData.emergency_contact_phone;
-      }
-      if (!studentData.emergency_contact_relationship || studentData.emergency_contact_relationship.trim() === '') {
-        delete studentData.emergency_contact_relationship;
-      }
-      if (!studentData.medical_observations || studentData.medical_observations.trim() === '') {
-        delete studentData.medical_observations;
-      }
+      // Transform the data to handle empty strings properly
+      const transformedData = {
+        ...studentData,
+        // Only include password if it's provided (not empty)
+        ...(studentData.password && studentData.password.trim() !== '' ? { password: studentData.password } : {}),
+        // Convert empty strings to undefined for optional fields
+        ...(studentData.email && studentData.email.trim() !== '' ? { email: studentData.email } : {}),
+        ...(studentData.cpf && studentData.cpf.trim() !== '' ? { cpf: studentData.cpf } : {}),
+        ...(studentData.rg && studentData.rg.trim() !== '' ? { rg: studentData.rg } : {}),
+        ...(studentData.address && studentData.address.trim() !== '' ? { address: studentData.address } : {}),
+        ...(studentData.emergency_contact_name && studentData.emergency_contact_name.trim() !== '' ? { emergency_contact_name: studentData.emergency_contact_name } : {}),
+        ...(studentData.emergency_contact_phone && studentData.emergency_contact_phone.trim() !== '' ? { emergency_contact_phone: studentData.emergency_contact_phone } : {}),
+        ...(studentData.emergency_contact_relationship && studentData.emergency_contact_relationship.trim() !== '' ? { emergency_contact_relationship: studentData.emergency_contact_relationship } : {}),
+        ...(studentData.medical_observations && studentData.medical_observations.trim() !== '' ? { medical_observations: studentData.medical_observations } : {}),
+      };
       
-      await updateStudent(id, studentData);
+      await updateStudent(id, transformedData);
       navigate(AppRoutes.STUDENTS, { 
         state: { message: 'Aluno atualizado com sucesso!' }
       });
