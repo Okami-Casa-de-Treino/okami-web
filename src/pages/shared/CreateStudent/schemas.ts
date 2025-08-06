@@ -17,9 +17,14 @@ export const createStudentSchema = z.object({
   
   email: z
     .string()
-    .min(1, 'E-mail é obrigatório')
-    .email('E-mail inválido')
-    .max(100, 'E-mail deve ter no máximo 100 caracteres'),
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true;
+        return z.string().email('E-mail inválido').max(100, 'E-mail deve ter no máximo 100 caracteres').safeParse(value).success;
+      },
+      'E-mail inválido'
+    ),
   
   password: z
     .string()
@@ -138,8 +143,14 @@ export type CreateStudentFormData = z.infer<typeof createStudentSchema>;
 export const createStudentTransformSchema = createStudentSchema.transform((data) => ({
   ...data,
   phone: unformatPhoneNumber(data.phone),
-  cpf: data.cpf ? unformatCPF(data.cpf) : undefined,
-  emergency_contact_phone: data.emergency_contact_phone ? unformatPhoneNumber(data.emergency_contact_phone) : undefined,
+  email: data.email && data.email.trim() !== '' ? data.email : undefined,
+  cpf: data.cpf && data.cpf.trim() !== '' ? unformatCPF(data.cpf) : undefined,
+  rg: data.rg && data.rg.trim() !== '' ? data.rg : undefined,
+  address: data.address && data.address.trim() !== '' ? data.address : undefined,
+  emergency_contact_name: data.emergency_contact_name && data.emergency_contact_name.trim() !== '' ? data.emergency_contact_name : undefined,
+  emergency_contact_phone: data.emergency_contact_phone && data.emergency_contact_phone.trim() !== '' ? unformatPhoneNumber(data.emergency_contact_phone) : undefined,
+  emergency_contact_relationship: data.emergency_contact_relationship && data.emergency_contact_relationship.trim() !== '' ? data.emergency_contact_relationship : undefined,
+  medical_observations: data.medical_observations && data.medical_observations.trim() !== '' ? data.medical_observations : undefined,
   // Remove age_group as it's only used for UI logic, not stored in database
 }));
 

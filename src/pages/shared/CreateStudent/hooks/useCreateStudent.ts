@@ -143,7 +143,7 @@ export const useCreateStudent = () => {
   const getFieldsForStep = (step: number): (keyof CreateStudentFormData)[] => {
     switch (step) {
       case 1:
-        return ['full_name', 'email', 'password', 'phone', 'birth_date'];
+        return ['full_name', 'password', 'phone', 'birth_date'];
       case 2:
         return []; // Step 2 fields are all optional
       case 3:

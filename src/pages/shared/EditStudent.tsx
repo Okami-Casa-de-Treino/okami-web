@@ -126,6 +126,32 @@ const EditStudent: React.FC = () => {
       if (!studentData.password || studentData.password.trim() === '') {
         delete studentData.password;
       }
+
+      // Convert empty strings to undefined for optional fields
+      if (!studentData.email || studentData.email.trim() === '') {
+        delete studentData.email;
+      }
+      if (!studentData.cpf || studentData.cpf.trim() === '') {
+        delete studentData.cpf;
+      }
+      if (!studentData.rg || studentData.rg.trim() === '') {
+        delete studentData.rg;
+      }
+      if (!studentData.address || studentData.address.trim() === '') {
+        delete studentData.address;
+      }
+      if (!studentData.emergency_contact_name || studentData.emergency_contact_name.trim() === '') {
+        delete studentData.emergency_contact_name;
+      }
+      if (!studentData.emergency_contact_phone || studentData.emergency_contact_phone.trim() === '') {
+        delete studentData.emergency_contact_phone;
+      }
+      if (!studentData.emergency_contact_relationship || studentData.emergency_contact_relationship.trim() === '') {
+        delete studentData.emergency_contact_relationship;
+      }
+      if (!studentData.medical_observations || studentData.medical_observations.trim() === '') {
+        delete studentData.medical_observations;
+      }
       
       await updateStudent(id, studentData);
       navigate(AppRoutes.STUDENTS, { 
@@ -164,7 +190,7 @@ const EditStudent: React.FC = () => {
   const getFieldsForStep = (step: number): (keyof EditStudentForm)[] => {
     switch (step) {
       case 1:
-        return ['full_name', 'email', 'phone', 'birth_date'];
+        return ['full_name', 'phone', 'birth_date'];
       case 2:
         return []; // Step 2 fields are all optional
       case 3:
@@ -305,7 +331,7 @@ const EditStudent: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Mail size={16} className="inline mr-2" />
-                      Email *
+                      Email
                     </label>
                     <input
                       type="email"
@@ -313,7 +339,6 @@ const EditStudent: React.FC = () => {
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
                       {...register('email', { 
-                        required: 'Email é obrigatório',
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                           message: 'Email inválido'

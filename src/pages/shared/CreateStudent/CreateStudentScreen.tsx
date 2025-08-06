@@ -150,7 +150,7 @@ const CreateStudentScreen: React.FC = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       <Mail size={16} className="inline mr-2" />
-                      Email *
+                      Email
                     </label>
                     <input
                       type="email"
